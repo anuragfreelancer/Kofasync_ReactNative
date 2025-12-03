@@ -1,288 +1,297 @@
 import React, { useState } from "react";
 import {
+  StyleSheet,
   View,
   Text,
-  StyleSheet,
+  Image,
   TouchableOpacity,
+  FlatList,
   ScrollView,
-  Image
- } from "react-native";
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import font from "../../../theme/font";
 import imageIndex from "../../../assets/imageIndex";
-import CustomButton from "../../../compoent/CustomButton";
-import HomeHeaderBar from "../../../compoent/HomeHeaderBar";
+import SearchBar from "../../../compoent/SearchBar";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
+import { useNavigation } from "@react-navigation/native";
 import ScreenNameEnum from "../../../routes/screenName.enum";
- import AddressModalInput from "../../../compoent/AutocompleteData";
-import useDashboard from "./useDashboard";
-import CurrentLocation from "../../../CurrentLocation";
-import LoadingModal from "../../../utils/Loader";
- 
-const ShippingScreen = () => {
-   
 
-  const { 
-     navigation ,
-     isLoading,
-     locationRef,
-     currentlocation,
-    address, setAddress , 
-    location, setLocation,
-    locationModal, setlocationModal}= useDashboard()
+// ---------------------- HEADER -------------------------
+const Header = () => (
+  <View style={styles.header}>
+    <View style={{ flexDirection: "row" }}>
+      <Image source={imageIndex.prfile} style={styles.profileImg} />
+      <View style={{ marginLeft: 5 }}>
+        <Text style={styles.welcome}>Hello, Welcome 🎉</Text>
+        <Text style={styles.name}>Savannah Nguyen</Text>
+      </View>
+    </View>
+
+    <TouchableOpacity style={{ flexDirection: "row" }}>
+      <Image source={imageIndex.notification} style={styles.profileImg} />
+    </TouchableOpacity>
+  </View>
+);
+
+// ---------------------- BANNER ------------------------
+const Banner = () => (
+  <View style={styles.bannerContainer}>
+    <Image source={imageIndex.banner1} style={styles.bannerImg} />
+
+    <View style={styles.bannerOverlay}>
+      <Text style={styles.bannerSubtitle}>Get a discount for every service</Text>
+      <Text style={styles.bannerTitle}>Today's Special</Text>
+
+      <TouchableOpacity style={styles.shopNow}>
+        <Text style={styles.shopText}>Shop Now</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+);
+
+// ---------------------- LIKE BUTTON -------------------
+const LikeButton = () => {
+  const [liked, setLiked] = useState(false);
 
   return (
-    <SafeAreaView style={styles.container}>
-        <StatusBarComponent/>
-                                        {/* <LoadingModal visible ={isLoading}/> */}
-
-              <CurrentLocation ref={locationRef} />
-
-        <HomeHeaderBar
-       location= { currentlocation  || address} 
-      onLocationPress={() => setlocationModal(true)}
-      onNotificationPress={() => console.log("Notifications clicked")}
-      hasNotification={true}
-    />
-
-      <TouchableOpacity style={styles.inputBox} 
-      onPress={()=> navigation.navigate(ScreenNameEnum.PickupLocation)}
-      >
-        <Text style={{ color: "black" ,fontSize:14,fontWeight:"600", fontFamily:font.MonolithRegular}}>Enter Pickup Location</Text>
-      <Image source={imageIndex.Next} 
-      style={{
-        height:20,
-        width:20
-      }}
+    <TouchableOpacity
+      style={styles.likeBtn}
+      onPress={() => setLiked(!liked)}
+      activeOpacity={0.7}
+    >
+      <Image
+        source={liked ? imageIndex.heart : imageIndex.heart}
+        style={[styles.likeIcon, { tintColor: !liked ? "black" : "#09BFCD" }]}
       />
-       </TouchableOpacity>  
-
-  <View style={{
-    marginTop:11 ,marginBottom:5
-  }}>
-      <CustomButton title={"Create Parcel"} 
-      onPress={()=> navigation.navigate(ScreenNameEnum.PickupFromLocation)}
-      />
-      </View>
-      {/* Shipping History */} 
-
-      <View style={{
-        flexDirection:"row",
-        justifyContent:"space-between" ,
-        alignItems:"center" ,
-        marginTop:18 ,
-        marginBottom:10
-      }}>
-      <Text style={styles.sectionTitle}>Orders</Text>
-
-        <Image source={imageIndex.Filter} 
-
-        style={{
-            height:24,
-            width:24
-        }}
-        />
-      </View>
-
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {[1].map((item, index) => (
-          <View key={index} style={styles.card}>
-             <View style={styles.cardTop}>
-                
-              <View style={[styles.iconBox, ]}>
-              
-              <Image source={imageIndex.icons} 
-      style={{
-        height:40,
-        width:40
-      }}
-      />
-               </View>
-              <Text style={[styles.cardId,{
-                fontFamily:font.MonolithRegular ,
-                fontSize:14,
-                color:"black"
-              }]}>#5R9G87R</Text>
-               <Text style={styles.cardDate}>{item.date}</Text>
-           <Text style={styles.cardDate}>14 may 2023</Text>
-
-            </View>
-
-            {/* From / To */}
-            <View style={{
-                flexDirection:"row",
-                justifyContent:"space-evenly" ,
-                alignItems:"center"
-            }}>
-                <Image source={imageIndex.Vector} 
-                style={{
-                    height:88,
-                    width:10
-                }}
-                resizeMode="contain"
-                />
-
-  <View style={{
-                flexDirection:"column",
-                right:11
-             }}>
-<Text style={styles.label}>From</Text>
-            <Text style={[styles.value,{
-                marginTop:5
-            }]}>1234 Elm Street Springfield, IL 62701</Text>
-            <Text style={[styles.label,{
-                marginTop:10
-            }]}>To</Text>
-            <Text style={[styles.value,{
-                marginTop:5
-            }]}>{item.to || "5678 Maple Avenue Seattle, WA 98101"}</Text>
-
-            {/* Status */}
-            <View style={styles.statusRow}>
-              <Text style={styles.statusText}>Delivery Status :</Text>
-              <Text style={[styles.statusValue, { color: item.statusColor }]}>
-                {item.status}
-              </Text>
-            </View>
-</View>
-            </View>
-           
-          </View>
-        ))}
-      </ScrollView>
-      <AddressModalInput
-        value={address}
-        modalVisible ={locationModal}       
-      setModalVisible ={()=>setlocationModal(false)}
-        onChange={setAddress}
-        onSelect={(loc) => setLocation(loc)}
-        placeholder="Select your delivery address"
-      />
-    </SafeAreaView>
+    </TouchableOpacity>
   );
 };
 
-export default ShippingScreen;
+// -------------------- COMPANY CARD ----------------------
+const CompanyCard = ({ item }) => (
+  <View style={styles.companyCard}>
+    <Image source={item.image} style={styles.companyImg} />
 
+
+    <View style={styles.companyContent}>
+      <Text style={styles.companyName}>{item.name}</Text>
+
+      <View style={styles.locationRow}>
+        <View style={{
+          flexDirection: "row"
+        }}>
+          <Image source={imageIndex.location} style={styles.locationIcon} />
+          <Text style={styles.locationText}>{item.location}</Text>
+        </View>
+        <LikeButton />
+
+      </View>
+
+      <TouchableOpacity>
+        <Text style={styles.viewServices}>View Services</Text>
+      </TouchableOpacity>
+    </View>
+
+    <View style={styles.ratingRow}>
+      <Image source={imageIndex.star} style={styles.starIcon} />
+      <Text style={styles.ratingText}>{item.rating}</Text>
+    </View>
+  </View>
+);
+
+// ====================== MAIN APP ======================
+export default function App() {
+  const categories = [
+    { id: "1", title: "Wellness", icon: imageIndex.category1 },
+    { id: "2", title: "Beauty", icon: imageIndex.category2 },
+    { id: "3", title: "Health", icon: imageIndex.category3 },
+    { id: "4", title: "Consulting", icon: imageIndex.category4 },
+    { id: "5", title: "Services", icon: imageIndex.category5 },
+  ];
+
+  const companies = [
+    {
+      id: "1",
+      name: "Glow Spa & Beauty",
+      location: "Grand Park, New York",
+      rating: "5.0",
+      image: imageIndex.girlImg,
+    },
+    {
+      id: "2",
+      name: "Glow Spa & Beauty",
+      location: "Grand Park, New York",
+      rating: "5.0",
+      image: imageIndex.officeImg,
+    },
+
+  ];
+  const navigation = useNavigation()
+
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <StatusBarComponent backgroundColor="#09BFCD" barStyle="dark-content" />
+      <ScrollView style={{ paddingBottom: 100, }}>
+        <View style={{ backgroundColor: "#09BFCD", paddingBottom: 15 }}>
+          <View style={{ marginHorizontal: 10, marginTop: 15 }}>
+            <Header />
+          </View>
+
+          <View style={{ marginHorizontal: 10 }}>
+            <SearchBar placeholder="Search Services or Companies" />
+          </View>
+        </View>
+
+        {/* Banner */}
+        <Banner />
+
+        {/* Categories Section */}
+        <Text style={styles.sectionTitle}>Categories</Text>
+
+        <FlatList
+          data={categories}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.categoryCard}>
+              <View style={styles.catCircle}>
+                <Image source={item.icon} style={styles.catIcon} />
+              </View>
+              <Text style={styles.catTitle}>{item.title}</Text>
+            </TouchableOpacity>
+          )}
+          contentContainerStyle={styles.categoryList}
+        />
+
+        {/* Popular Companies */}
+        <View style={styles.sectionRow}>
+          <Text style={styles.sectionTitle}>Popular Companies</Text>
+          <Text style={styles.seeAll}>See all</Text>
+        </View>
+
+        <FlatList
+          data={companies}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          horizontal
+          ListHeaderComponent={
+            <>
+              {/* HEADER BG */}
+            </>
+          }
+          renderItem={({ item }) => <TouchableOpacity  onPress={()=>navigation.navigate(ScreenNameEnum.DetailScreen)}>
+          <CompanyCard item={item} />
+          </TouchableOpacity>
+          }
+          contentContainerStyle={{ paddingBottom: 50 }}
+        />
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+// ====================== STYLES =======================
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#fff",
-  },
-  locationRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 14,
-  },
-  locationText: {
-    fontSize: 14,
-    fontWeight: "500",
-    marginLeft: 6,
-  },
-  inputBox: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 17,
-    marginBottom: 15,
-     borderColor: "#eee",
-    marginHorizontal: 2,
-    marginTop:11,
-    // iOS shadow
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-    // Android shadow
-  
+  container: { flex: 1, backgroundColor: "#F7FBFD" },
 
-    flexDirection:"row" ,
-    justifyContent:"space-between"
-  },
-  createBtn: {
-    backgroundColor: "#FFD600",
-    padding: 16,
-    borderRadius: 16,
-    alignItems: "center",
-    marginBottom: 22,
-  },
-  createBtnText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#000",
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-     color:"black",
-      
-  },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 16,
-    padding: 17,
-    marginBottom: 20,
-     borderColor: "#eee",
-    marginHorizontal: 1,
-    marginTop:2,
-    // iOS shadow
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-    // Android shadow
-     
-  },
-  cardTop: {
+  header: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 12,
   },
-  iconBox: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    alignItems: "center",
+  welcome: { fontSize: 14, color: "white" },
+  name: { fontSize: 20, fontWeight: "bold", color: "white" },
+  profileImg: { width: 42, height: 42, borderRadius: 21 },
+
+  bannerContainer: {
+    height: 160,
+    marginTop: 20,
+    marginHorizontal: 15,
+    borderRadius: 16,
+    overflow: "hidden",
+    elevation: 4,
+  },
+  bannerImg: { width: "100%", height: "100%" },
+  bannerOverlay: { position: "absolute", left: 15, bottom: 30 },
+  bannerSubtitle: { color: "#FFF", fontSize: 19 },
+  bannerTitle: { color: "#FFF", fontSize: 18, fontWeight: "bold" },
+  shopNow: {
+    marginTop: 15,
+    backgroundColor: "#09BFCD",
+    borderRadius: 5,
+    paddingHorizontal: 14,
+    height: 44,
+    width: 100,
     justifyContent: "center",
-    marginRight: 8,
   },
-  cardId: {
-    fontWeight: "700",
-    fontSize: 15,
-    marginRight: 8,
-  },
-  cardDate: {
-    fontSize: 14,
-    color: "#BABFC5",
-    fontFamily:font.MonolithRegular
+  shopText: { color: "#fff", fontWeight: "600" },
 
+  sectionTitle: {
+    marginTop: 25,
+    marginLeft: 20,
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#1A1A1A",
   },
-  label: {
-    fontSize: 14,
-    color: "#BABFC5",
-    marginTop: 6,
-    fontFamily:font.MonolithRegular
+  categoryList: { paddingLeft: 20, paddingTop: 10 },
+  categoryCard: { alignItems: "center", marginRight: 25 },
+  catCircle: {
 
+    justifyContent: "center",
+    alignItems: "center",
   },
-  value: {
-    fontSize: 14,
-     color: "#76889A",
-     fontFamily:font.MonolithRegular
-  },
-  statusRow: {
+  catIcon: { width: 70, height: 70 },
+  catTitle: { marginTop: 6, fontSize: 13, fontWeight: "700", color: "black" },
+
+  sectionRow: {
+    marginTop: 25,
+    marginHorizontal: 20,
     flexDirection: "row",
-    marginTop: 10,
+    justifyContent: "space-between",
   },
-  statusText: {
-    fontSize: 12,
-    color: "#76889A",
-    marginRight: 6,
-    fontFamily:font.MonolithRegular
-  },
-  statusValue: {
-    fontSize: 13,
-     color: "#555",
-    fontFamily:font.MonolithRegular
+  seeAll: { color: "#09BFCD", fontWeight: "600" },
 
+  companyCard: {
+    width: 220,
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    marginRight: 20,
+    marginTop: 10,
+    marginLeft: 20,
+    overflow: "hidden",
+    marginBottom: 30,
   },
+  companyImg: {
+    width: "100%",
+    height: 140,
+  },
+
+  likeBtn: {
+
+    padding: 6,
+  },
+  likeIcon: { width: 28, height: 28 },
+
+  companyContent: { padding: 12 },
+  companyName: { fontSize: 16, fontWeight: "700", color: "#1A1A1A" },
+
+  locationRow: {
+    flexDirection: "row", alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 4
+  },
+  locationIcon: { width: 14, height: 14, tintColor: "#09BFCD" },
+  locationText: { marginLeft: 4, fontSize: 12, color: "#666" },
+
+  viewServices: { color: "#09BFCD", fontWeight: "600" },
+
+  ratingRow: {
+    position: "absolute",
+    left: 12,
+    top: 12,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  starIcon: { width: 16, height: 16, tintColor: "#FFB400" },
+  ratingText: { marginLeft: 4, color: "#fff", fontWeight: "600" },
 });

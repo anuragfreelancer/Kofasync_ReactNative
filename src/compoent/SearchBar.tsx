@@ -5,30 +5,30 @@ import imageIndex from "../assets/imageIndex";
 interface SearchBarProps {
   placeholder?: string;
   onSearchChange?: (text: string) => void;
-  value?:string
+  value?:string,
+  searchBar1:any
  }
 
-const SearchBar: React.FC<SearchBarProps> = ({ placeholder = "Search", onSearchChange ,value}) => {
+const SearchBar: React.FC<SearchBarProps> = ({ searchBar1,placeholder = "Search", onSearchChange ,value}) => {
   return (
-    <View style={styles.searchBar}>
-      <Image source={imageIndex.search} style={styles.icon} resizeMode="cover" />
+    <View style={[styles.searchBar,searchBar1]}>
+      <Image source={imageIndex.search1} style={styles.icon} resizeMode="cover" />
       <TextInput 
        allowFontScaling={false} 
         style={styles.input}
         placeholder={placeholder}
-        placeholderTextColor="rgba(48, 45, 45, 1)"
+        placeholderTextColor="white"
         onChangeText={onSearchChange}
         value={value}
       />
-      <Image source={imageIndex.filter} style={styles.icon} resizeMode="cover"  />
+      {/* <Image source={imageIndex.filter} style={styles.icon} resizeMode="cover"  /> */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   searchBar: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 15,
+     borderRadius: 10,
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 10,
@@ -36,22 +36,16 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     marginBottom: 20,
     marginTop: 30,
-    borderWidth: 0,
-    height: 58,
+    borderWidth: 1,
+    height: 55,
+    borderColor:"white"
   
-    // ✅ iOS Shadow
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-  
-    // ✅ Android Shadow
-    elevation: 6,
   
   },
   icon: {
     height: 20,
     width: 20,
+    tintColor:"white"
   },
   input: {
     flex: 1,

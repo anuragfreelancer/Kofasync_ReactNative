@@ -19,6 +19,7 @@ export const styles = StyleSheet.create({
   logo: {
     width: width * 0.35,   // responsive size
     height: width * 0.35,
+    borderRadius:20
   },
 
   versionContainer: {

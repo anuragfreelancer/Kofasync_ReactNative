@@ -122,7 +122,7 @@ const navagtaion = useNavigation()
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent/>
-      <Text style={styles.header}>Inbox</Text>
+      <Text style={styles.header}>Chat</Text>
 
       <View style={styles.searchBox}>
         <TextInput
@@ -136,7 +136,7 @@ const navagtaion = useNavigation()
       </View>
 
       <FlatList
-        data={[]} 
+        data={SAMPLE_DATA} 
         style={{
           marginTop:15
         }}
@@ -163,7 +163,8 @@ const styles = StyleSheet.create({
     fontSize: 28,
      marginBottom: 12,
     color: "#0f172a",
-    fontFamily:font.MonolithRegular
+    // fontFamily:font.MonolithRegular
+    fontWeight:'bold'
   },
   searchBox: {
     backgroundColor: "white",
@@ -256,13 +257,13 @@ const styles = StyleSheet.create({
 
   },
   unread: {
-    color: "#FFCC00",
+    color: "#09BFCD",
     fontFamily:font.MonolithRegular ,
     fontSize:12
 
    },
   badge: {
-    backgroundColor: "#FFCC00",
+    backgroundColor: "#09BFCD",
     borderRadius: 10,
     paddingHorizontal: 6,
     paddingVertical: 2,

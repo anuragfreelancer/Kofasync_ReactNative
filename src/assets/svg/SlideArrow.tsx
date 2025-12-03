@@ -34,7 +34,7 @@ const SlideArrow = (props) => (
         gradientUnits="userSpaceOnUse"
       >
         <Stop stopColor="#F58D17" />
-        <Stop offset={1} stopColor="#EF571F" />
+        <Stop offset={1} stopColor="#09BFCD" />
       </LinearGradient>
       <LinearGradient
         id="b"
@@ -45,7 +45,7 @@ const SlideArrow = (props) => (
         gradientUnits="userSpaceOnUse"
       >
         <Stop stopColor="#F58D17" />
-        <Stop offset={1} stopColor="#EF571F" />
+        <Stop offset={1} stopColor="#09BFCD" />
       </LinearGradient>
     </Defs>
   </Svg>

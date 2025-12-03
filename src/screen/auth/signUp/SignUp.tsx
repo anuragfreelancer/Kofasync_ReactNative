@@ -5,18 +5,21 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
- } from 'react-native';
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import React from 'react';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
- import StatusBarCompoent from '../../../compoent/StatusBarCompoent';
+import StatusBarCompoent from '../../../compoent/StatusBarCompoent';
 import imageIndex from '../../../assets/imageIndex';
 import ResponsiveSize from '../../../utils/ResponsiveSize';
- import CustomButton from '../../../compoent/CustomButton';
+import CustomButton from '../../../compoent/CustomButton';
 import ScreenNameEnum from '../../../routes/screenName.enum';
- import LoadingModal from '../../../utils/Loader';
-  import useSignup from './useSinup';
+import LoadingModal from '../../../utils/Loader';
+import useSignup from './useSinup';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TextInputField from '../../../compoent/TextInputField';
+import CustomHeader from '../../../compoent/CustomHeader';
 
 export default function SignUp() {
   const {
@@ -37,33 +40,39 @@ export default function SignUp() {
     handleCountryCodeSelect,
   } = useSignup();
 
- 
+
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarCompoent />
+      <CustomHeader label='Back' />
       {isLoading && <LoadingModal />}
-      
-      <ScrollView 
+ <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
         <View style={styles.content}>
           {/* Header Section */}
-             <Image
+          {/* <Image
               source={imageIndex.appLogo}
               style={styles.logo}
               resizeMode="contain"
             />
-      
+       */}
 
-             <Text style={styles.title}>Sign Up</Text>
-             <Text style={{
-              color:"#9DB2BF" ,
-              fontSize:17 ,
-              marginTop:8
-             }}>Let's get started by creating your account</Text>
- 
+
+          <Text style={styles.title}>Sign Up</Text>
+          <Text style={{
+            color: "#9DB2BF",
+            fontSize: 17,
+            marginTop: 8,
+            textAlign: 'center'
+          }}>Let's get started by creating your account</Text>
+
           {/* Form Section */}
           <View style={styles.formContainer}>
             {/* Full Name */}
@@ -93,15 +102,15 @@ export default function SignUp() {
             )}
 
             {/* Phone with Country Code */}
-           <TextInputField
+            <TextInputField
               onChangeText={(value: string) => handleChange('email', value)}
               placeholder="Phone Number"
               // value={credentials.email}
-      firstLogo={true}
+              firstLogo={true}
               img={imageIndex.Textphone}
-              // keyboardType=""
-              // autoCapitalize="none"
-             />
+            // keyboardType=""
+            // autoCapitalize="none"
+            />
 
             {/* Password */}
             <TextInputField
@@ -116,17 +125,31 @@ export default function SignUp() {
             {errors.password && (
               <Text style={styles.errorText}>{errors.password}</Text>
             )}
- 
- 
-          
+
+            <TextInputField
+              onChangeText={(value: string) => handleChange('password', value)}
+              placeholder="Confirm Password"
+              value={credentials.password}
+              firstLogo={true}
+              showEye={true}
+              img={imageIndex.textLock}
+              secureTextEntry
+
+            />
+            {errors.password && (
+              <Text style={styles.errorText}>{errors.password}</Text>
+            )}
+
+
+
           </View>
 
           {/* Sign Up Button */}
           <CustomButton
             title="Sign up"
             // onPress={handleSignup}
-               onPress={() => navigation.navigate(ScreenNameEnum.Login)}
-             disabled={isLoading}
+            onPress={() => navigation.navigate(ScreenNameEnum.Login)}
+            disabled={isLoading}
           />
 
           {/* Login Redirect */}
@@ -142,14 +165,14 @@ export default function SignUp() {
           </View>
         </View>
       </ScrollView>
-
+</KeyboardAvoidingView>
       {/* Modals */}
       {/* <CountryCodeModal
         visible={countyModal}
         onSelect={handleCountryCodeSelect}
         onClose={() => setCountyModal(false)}
       /> */}
-{/*       
+      {/*       
       <DropdownModal
         visible={dropOpen}
         options={injuryOptions}
@@ -176,7 +199,7 @@ const styles = StyleSheet.create({
     marginTop: hp(5),
   },
   header: {
-     justifyContent: 'center',
+    justifyContent: 'center',
     flex: 1,
   },
   logo: {
@@ -185,11 +208,12 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     marginTop: 5,
-   },
+  },
   title: {
     color: 'black',
     fontSize: 20,
     fontWeight: '600',
+    textAlign: 'center'
   },
   formContainer: {
     marginTop: ResponsiveSize.marginTop(10),
@@ -235,7 +259,7 @@ const styles = StyleSheet.create({
   },
   signupButton: {
     width: '100%',
-   },
+  },
   loginRedirect: {
     flexDirection: 'row',
     alignItems: 'center',

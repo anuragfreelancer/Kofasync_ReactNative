@@ -28,12 +28,14 @@ export const styles = StyleSheet.create({
     lineHeight: 36,
     color: 'rgba(0, 0, 0, 1)',
     marginTop: 10,
-    fontWeight:"500"
+    fontWeight:"500",
+    textAlign:'center'
    },
    txtDes:{
         color:'#9DB2BF',
         fontSize:16,
-          fontFamily:font.MonolithRegular
+          fontFamily:font.MonolithRegular,
+    textAlign:'center'
 
       },
   headerSection: {
@@ -57,11 +59,12 @@ export const styles = StyleSheet.create({
   otpFieldContainer: {
     height: hp(10),
       justifyContent: 'center',
+      alignSelf:'center'
   },
   cellWrapper: {
      alignItems: 'center',      // center horizontally
     justifyContent: 'center',  // center vertically
-  
+  marginHorizontal:8
   },
   cell: {
     width: 60,

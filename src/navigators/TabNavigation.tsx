@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, Platform,   Image } from 'react-native';
  import ScreenNameEnum from '../routes/screenName.enum';
@@ -9,6 +9,11 @@ import SvgIndex from '../assets/svgIndex';
  import Orders from '../screen/BottomTab/Orders/Orders';
 import Inbox from '../screen/BottomTab/Inbox/Inbox';
 import UserProfile from '../screen/BottomTab/Profile/UserProfile';
+import ChatScreen from '../screen/BottomTab/ChatScreen/ChatScreen';
+import ChatInboxScreen from '../screen/BottomTab/Inbox/Inbox';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ProviderDashboard from '../screen/DeliveryBottomTab/ProviderDashboard/ProviderDashboard';
+import CalendarTabScreen from '../screen/DeliveryBottomTab/CalendarTab';
  
 const Tab = createBottomTabNavigator();
 
@@ -19,13 +24,18 @@ const TAB_CONFIG:any = {
     iconInactive: SvgIndex.Home, 
   },
  
-  Orders: {
-    label: 'Orders',
+  Booking: {
+    label: 'Booking',
     iconActive: SvgIndex.Box, 
     iconInactive: SvgIndex.Box1,  
   },
-  Inbox: {
-    label: 'Inbox',
+  'My Calendar': {
+    label: 'My Calendar',
+    iconActive: SvgIndex.Box, 
+    iconInactive: SvgIndex.Box1,  
+  },
+  Chat: {
+    label: 'Chat',
     iconActive: SvgIndex.MessageActive, 
     iconInactive: SvgIndex.Message,
   },
@@ -41,6 +51,15 @@ const ICON_SIZE = 26;
 
 export default function TabNavigator() {
   const insets = useSafeAreaInsets();
+  const [loading, setLoading] =useState(true)
+  const [role, setRole ] = useState('user')
+  useEffect(()=>{
+    (async()=>{
+ const role =  await AsyncStorage.getItem("selectedRole")
+ setRole(role ?? 'user')
+
+    })()
+  },[])
   return (
     <Tab.Navigator
       screenOptions={({ route }) => {
@@ -52,7 +71,7 @@ export default function TabNavigator() {
               allowFontScaling={false}
               style={{
                 fontSize: 12,
-                color: focused ? '#EF571F' : '#2F4858',
+                color: focused ? '#09BFCD' : '#2F4858',
                 marginTop: 4,
                 fontFamily: font.MonolithRegular,
               }}
@@ -110,10 +129,10 @@ export default function TabNavigator() {
         };
       }}
     >
-      <Tab.Screen name={ScreenNameEnum.HomeStack} component={HomeStack} />
+      <Tab.Screen name={ScreenNameEnum.HomeStack} component={role =='user'? HomeStack: ProviderDashboard} />
       {/* <Tab.Screen name="MyTrack" component={MyTrack} /> */}
-       <Tab.Screen name="Orders" component={Orders} />
-       <Tab.Screen name="Inbox" component={Inbox} />
+       <Tab.Screen name={role =='user'?"Booking":"My Calendar"} component={role =='user'? Orders: CalendarTabScreen}  />
+       <Tab.Screen name="Chat" component={ChatInboxScreen}/>
        <Tab.Screen name="Profile" component={UserProfile} />
      </Tab.Navigator>
   );

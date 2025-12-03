@@ -696,16 +696,16 @@ const styles = StyleSheet.create({
  
   },
   selectedBox: {
-    borderColor: "#EF571F",
+    borderColor: "#09BFCD",
     backgroundColor: "#FFFBE6",
   },
   selectedText: {
-    color: "#EF571F",
+    color: "#09BFCD",
     fontWeight: "600",
   },
   submitBtn: {
     marginTop: 30,
-    backgroundColor: "#EF571F",
+    backgroundColor: "#09BFCD",
     borderRadius: 15,
     paddingVertical: 15,
     alignItems: "center",

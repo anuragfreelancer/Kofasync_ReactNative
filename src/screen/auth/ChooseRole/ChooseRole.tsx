@@ -20,11 +20,12 @@ import imageIndex from "../../../assets/imageIndex";
 import font from "../../../theme/font";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
 import CustomButton from "../../../compoent/CustomButton";
+import { color } from "../../../constant";
 
 // Types and Constants
 type RoleOption = {
   id: number;
-  type: "user" | "Delivery" | "Marketplace";
+  type: "user" | "Provider"
   label: string;
   image: any;
   description: string;
@@ -36,23 +37,16 @@ const ROLE_OPTIONS: RoleOption[] = [
   { 
     id: 1, 
     type: "user", 
-    label: "Sender", 
+    label: "User", 
     image: imageIndex.marketplace,
     description: "Send packages and track deliveries"
   },
   { 
     id: 2, 
-    type: "Delivery", 
-    label: "Courier Boy", 
+    type: "Provider", 
+    label: "Provider", 
     image: imageIndex.CourierBoy,
     description: "Deliver packages and earn money"
-  },
-  { 
-    id: 3, 
-    type: "Marketplace", 
-    label: "Marketplace", 
-    image: imageIndex.marketplace,
-    description: "Buy and sell products easily"
   },
 ];
 
@@ -139,9 +133,8 @@ const ChooseRole = () => {
       >
         <LinearGradient
           colors={
-            isSelected
-              ? ["#F58D17", "#F58D17", "#EF571F"]
-              : ["#FFFFFF", "#F8F8F8"]
+           
+               ["#FFFFFF", "#F8F8F8"]
           }
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -161,9 +154,10 @@ const ChooseRole = () => {
                   styles.icon,
                  ]}
                 resizeMode="contain"
+                tintColor={color.primary}
               />
             </View>
-            <Text style={[styles.label, { color: isSelected ? "#fff" : "#1A1A1A" }]}>
+            <Text style={[styles.label, ]}>
               {role.label}
             </Text>
             
@@ -196,7 +190,7 @@ const ChooseRole = () => {
           <View style={styles.headerContainer}>
             <Text style={styles.title}>Choose Your Role</Text>
             <Text style={styles.subTitle}>
-              Select how you want to use Cooli App
+              Select how you want to use Kofasync App
             </Text>
           </View>
 
@@ -275,15 +269,15 @@ const styles = StyleSheet.create({
   card: {
   borderRadius: 20,
     borderWidth: 1,
-    borderColor: "white",
-    elevation: 5, // shadow for Android
+    borderColor: "#e5e5e5",
+    // elevation: 10, // shadow for Android
      backgroundColor: "white", // make sure content is visible 
-    margin:5
+    margin:5,
    
     },
   cardSelected: {
  
- 
+ borderColor:color.primary
    },
   cardContent: {
     alignItems: "center",

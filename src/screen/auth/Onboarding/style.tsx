@@ -13,6 +13,7 @@ export const styles = StyleSheet.create({
     width,
     flex: 1,
      alignItems: 'center',
+    
     // paddingHorizontal: 2,
   },
   image: {
@@ -20,20 +21,22 @@ export const styles = StyleSheet.create({
     height: 500,
     resizeMode: 'contain',
     marginBottom: 30,
-    backgroundColor:"transparent"
+    backgroundColor:"transparent",
+    
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
      color: '#000',
-    textAlign: 'center',
+    textAlign: 'left',
     marginBottom: 12,
     fontFamily:"Bold",
-    marginTop:20
+    marginTop:20,
+    marginHorizontal:15
   },
   description: {
     fontSize: 14,
     color: '#76889A',
-    textAlign: 'center',
+    // textAlign: 'center',
      lineHeight:20,
     fontFamily:font.MonolithRegular,
     marginHorizontal:15
@@ -47,7 +50,7 @@ export const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: 16,
-    color: '#EF571F',
+    color: '#09BFCD',
     fontWeight:"600"
     },
   dotsContainer: {

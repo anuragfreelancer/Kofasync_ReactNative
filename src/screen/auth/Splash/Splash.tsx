@@ -71,7 +71,7 @@ const Splash: React.FC = () => {
         <Animated.View style={{ opacity: fadeAnim }}>
           <FastImage
             style={styles.logo}
-            source={imageIndex.appLogo1}
+            source={imageIndex.appLogo}
             resizeMode={FastImage.resizeMode.contain}
           />
         </Animated.View>

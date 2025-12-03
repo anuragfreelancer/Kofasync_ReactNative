@@ -11,11 +11,12 @@ import {
 } from 'react-native';
 import imageIndex from '../../assets/imageIndex';
 import font from '../../theme/font';
+import { color } from '../../constant';
 
 const { width, height } = Dimensions.get('window');
 
 // Your theme color
-const THEME_COLOR = '#FFCC00';
+const THEME_COLOR = color.primary;
 
 const LoadingModal = ({ visible, message = "Loading..." }:any) => {
   // Animation values

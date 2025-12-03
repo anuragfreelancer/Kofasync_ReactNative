@@ -19,28 +19,54 @@ import ChatScreen from "../screen/BottomTab/ChatScreen/ChatScreen";
 import OrdersPrfile from "../screen/Profile/OrdersPrfile/OrdersPrfile";
 import CourierTrackingScreen from "../screen/BottomTab/CourierTracking/CourierTracking";
 import DeliveryTabNavigator from "../navigators/DeliveryTabNavigator";
- import TripMap from "../screen/DeliveryBottomTab/TripMap/TripMap";
 import WalletScreen from "../screen/DeliveryBottomTab/WalletScreen/WalletScreen";
-import EarningsScreen from "../screen/DeliveryBottomTab/EarningsScreen/EarningsScreen";
 import HelpSupport from "../screen/DeliveryBottomTab/HelpSupport/HelpSupport";
 import NotificationsSetting from "../screen/DeliveryBottomTab/NotificationsSetting/NotificationsSetting";
-import ParcelDetails from "../screen/DeliveryBottomTab/ParcelDetails/ParcelDetails";
 import VehicleSetupScreen from "../screen/auth/VehicleSetup/VehicleSetupScreen";
 import ChooseRole from "../screen/auth/ChooseRole/ChooseRole";
-import AllOrder from "../screen/DeliveryBottomTab/Delivery/DeliveryHome/AllOrder";
 import RequestLoading from "../screen/BottomTab/DashBoard/RequestLoading";
 import DocumentShow from "../screen/auth/DocumentShow/DocumentShow";
-import DeliveryRequest from "../screen/DeliveryBottomTab/Delivery/DeliveryHome/DeliveryRequest";
 import Login from "../screen/auth/login/Login";
 import SignUp from "../screen/auth/signUp/SignUp";
 import CreateNewPassword from "../screen/auth/login/createNewPassword/CreateNewPassword";
 import PasswordReset from "../screen/auth/passwordReset/PasswordReset";
+import OurServices from "../screen/BottomTab/OurServices/OurServices";
+import BookServies from "../screen/BottomTab/BookServies/BookServies";
+import AppointmentScreen from "../screen/BottomTab/AppointmentScreen/AppointmentScreen";
+import TermsConditon from "../screen/Profile/TermsConditon";
+import BookingSuccess from "../screen/BottomTab/DashBoard/BookingSuccess";
+import BookingDetailScreen from "../screen/DeliveryBottomTab/BookingDetail";
+import MyReviews from "../screen/DeliveryBottomTab/MyReviews";
+import MYAvailability from "../screen/DeliveryBottomTab/MYAvailability";
   const _routes: any = {
   REGISTRATION_ROUTE: [
-    {
+       {
       name: ScreenNameEnum.SPLASH_SCREEN,
       Component: Splash,
     },
+
+        {
+      name: ScreenNameEnum.AppointmentScreen,
+      Component: AppointmentScreen,
+    },
+        {
+      name: ScreenNameEnum.BookServies,
+      Component: BookServies,
+    },
+      {
+      name: ScreenNameEnum.TermsCondition,
+      Component: TermsConditon,
+    },    
+      {
+      name: ScreenNameEnum.BookingSuccess,
+      Component: BookingSuccess,
+    },    
+    
+    {
+      name: ScreenNameEnum.OurServices,
+      Component: OurServices,
+    },
+ 
      {
       name: ScreenNameEnum.PasswordReset,
       Component: PasswordReset,
@@ -83,11 +109,7 @@ import PasswordReset from "../screen/auth/passwordReset/PasswordReset";
       name: ScreenNameEnum.HelpSupport,
       Component: HelpSupport,
     },
-    {
-      name: ScreenNameEnum.EarningsScreen,
-      Component: EarningsScreen,
-    },
-
+   
     
     {
       name: ScreenNameEnum.DocumentShow,
@@ -170,45 +192,28 @@ import PasswordReset from "../screen/auth/passwordReset/PasswordReset";
     },
   
      {
-      name: ScreenNameEnum.OfferOR,
-      Component: OfferOR,
+      name: ScreenNameEnum.MyReviews,
+      Component: MyReviews,
     },
   
+     
      {
-      name: ScreenNameEnum.DeliveryRequest,
-      Component: DeliveryRequest,
-    },
-    
-     {
-      name: ScreenNameEnum.PickupFromLocation,
-      Component: PickupFromLocation,
+      name: ScreenNameEnum.MYAvailability,
+      Component: MYAvailability,
     },
      {
       name: ScreenNameEnum.DeliveryTabNavigator,
       Component: DeliveryTabNavigator,
     },
-    
-     {
-      name: ScreenNameEnum.TripMap,
-      Component: TripMap,
-    },
-    
-     {
-      name: ScreenNameEnum.ParcelDetails,
-      Component: ParcelDetails,
-    },
-     {
-      name: ScreenNameEnum.AllOrder,
-      Component: AllOrder,
-    },
+ 
      {
       name: ScreenNameEnum.RequestLoading,
       Component: RequestLoading,
     },
-    //    {
-    //   name: ScreenNameEnum.DocumentShow,
-    //   Component: DocumentShow,
-    // },
+       {
+      name: ScreenNameEnum.BookingDetail,
+      Component: BookingDetailScreen,
+    },
     
   ],
 

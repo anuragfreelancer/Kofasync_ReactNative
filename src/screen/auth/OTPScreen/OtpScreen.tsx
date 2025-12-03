@@ -48,8 +48,8 @@ export default function OtpScreen() {
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.headerSection}>
-            <Text style={styles.txtHeading}>Enter the verification code</Text>
-            <Text style={styles.txtDes}>We sent you a 4-digit code to  {data?.code} {data?.mob}
+            <Text style={styles.txtHeading}>Check your SMS</Text>
+            <Text style={styles.txtDes}>Please put the 4 digits sent to you  {data?.code} {data?.mob}
             </Text>
            </View>
 
@@ -77,10 +77,10 @@ export default function OtpScreen() {
           </View>
  
         </ScrollView>
-      <Image source={imageIndex.bag} style={{ width: '80%', height: hp(45), alignSelf: 'center', marginBottom: 30 }} />  
+      <Image resizeMode='contain' source={imageIndex.bag} style={{ width: '70%', height: hp(30), alignSelf: 'center', marginBottom: 30 }} />  
 
         <CustomButton
-          title={"Continue"}
+          title={"Submit"}
           onPress={() => {
             
               navigation.navigate(ScreenNameEnum.CreateNewPassword)

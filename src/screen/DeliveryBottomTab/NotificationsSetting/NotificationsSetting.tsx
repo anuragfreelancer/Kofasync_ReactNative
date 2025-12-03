@@ -28,7 +28,10 @@ const NotificationsSetting = () => {
         <View style={{ marginTop: 40,marginHorizontal:15 }}>
 
           <View style={styles.notificationOption}>
-            <Text style={styles.optionText}>General Notification</Text>
+            <View>
+            <Text style={[styles.optionText, {fontWeight:'bold'}]}>Booking updates</Text>
+            <Text style={styles.optionText}>We'll remind you about all upcoming trips, payments, and cancellations.</Text>
+           </View>
             <Switch
               value={generalNotification}
               onValueChange={val => setGeneralNotification(val)}
@@ -37,8 +40,10 @@ const NotificationsSetting = () => {
             />
           </View>
           <View style={styles.notificationOption}>
-            <Text style={styles.optionText}>Sound</Text>
-            <Switch
+            <View>
+            <Text style={[styles.optionText, {fontWeight:'bold'}]}>Reviews</Text>
+            <Text style={styles.optionText}>Receive reminders to leave a review to help other travellers</Text>
+           </View>  <Switch
               value={sound}
               onValueChange={val => setSound(val)}
               trackColor={{ false: '#767577', true: color.primary }}
@@ -47,8 +52,11 @@ const NotificationsSetting = () => {
           </View>
 
           <View style={styles.notificationOption}>
-            <Text style={styles.optionText}>Vibrate</Text>
-            <Switch
+            <View>
+            <Text style={[styles.optionText, {fontWeight:'bold'}]}>Activities & Attractions</Text>
+            <Text style={styles.optionText}>Receive important messages and updates from your tour operator</Text>
+           </View>
+             <Switch
               value={vibrate}
               onValueChange={val => setVibrate(val)}
               trackColor={{ false: '#767577', true: color.primary }}
@@ -56,15 +64,6 @@ const NotificationsSetting = () => {
             />
           </View>
 
-          <View style={styles.notificationOption}>
-            <Text style={styles.optionText}>New Tips Available</Text>
-            <Switch
-              value={appUpdates}
-              onValueChange={val => setAppUpdates(val)}
-              trackColor={{ false: '#767577', true: color.primary }}
-              thumbColor={appUpdates ? '#fff' : '#fff'}
-            />
-          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -104,6 +103,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#1D3A70",
     fontFamily:font.MonolithRegular,
-    lineHeight:15
+    // flex:1,
+    maxWidth:'80%'
+    // lineHeight:15,
+
   },
 });

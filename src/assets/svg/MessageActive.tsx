@@ -9,7 +9,7 @@ const MessageActive = (props) => (
     {...props}
   >
     <Path
-      stroke="#EF571F"
+      stroke="#09BFCD"
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeMiterlimit={10}
@@ -17,7 +17,7 @@ const MessageActive = (props) => (
       d="M9 19.5h-.5c-4 0-6-1-6-6v-5c0-4 2-6 6-6h8c4 0 6 2 6 6v5c0 4-2 6-6 6H16c-.31 0-.61.15-.8.4l-1.5 2c-.66.88-1.74.88-2.4 0l-1.5-2c-.16-.22-.53-.4-.8-.4Z"
     />
     <Path
-      stroke="#EF571F"
+      stroke="#09BFCD"
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={2}

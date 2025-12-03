@@ -21,6 +21,7 @@ import ImagePickerModal from "../../../compoent/ImagePickerModal";
 import imageIndex from "../../../assets/imageIndex";
 import { GetProfileApi, UpdateProfile } from "../../../Api/apiRequest";
 import { loginSuccess } from "../../../redux/feature/authSlice";
+import { color } from "../../../constant";
 
 const EditProfile = () => {
   const navigation = useNavigation();
@@ -88,7 +89,7 @@ const getProfileApi = async () => {
 
       <KeyboardAvoidingView
       style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        behavior={Platform.OS === "ios" ? "padding" : 'padding'}
         keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0} // adjust offset if needed
 
        >
@@ -108,9 +109,10 @@ const getProfileApi = async () => {
               onPress={() => setIsModalVisible(true)}
             >
               <Image
-                source={imageIndex.eoditphots}
+                source={imageIndex.Editpen}
                 style={styles.editIcon}
                 resizeMode="contain"
+                tintColor={'#fff'}
               />
             </TouchableOpacity>
 
@@ -119,19 +121,26 @@ const getProfileApi = async () => {
                 placeholder="Full Name"
                 value={fullName}
                 onChangeText={setFullName}
-                leftIcon={<Image source={imageIndex.profiel} style={styles.icon} />}
+                // leftIcon={<Image source={imageIndex.profiel} style={styles.icon} />}
+              />
+
+               <CustomInput
+                placeholder="Contact"
+                // value={fullName}
+                // onChangeText={setFullName}
+                // leftIcon={<Image source={imageIndex.profiel} style={styles.icon} />}
               />
               <CustomInput
                 placeholder="Email"
                 value={email}
                 onChangeText={setEmail}
-                leftIcon={<Image source={imageIndex.mess} style={styles.icon} />}
+                // leftIcon={<Image source={imageIndex.mess} style={styles.icon} />}
               />
               <CustomInput
                 placeholder="Address"
                 value={address}
                 onChangeText={setAddress}
-                leftIcon={<Image source={imageIndex.location1} style={styles.icon} />}
+                // leftIcon={<Image source={imageIndex.location1} style={styles.icon} />}
               />
             </View>
           </View>
@@ -147,7 +156,9 @@ const getProfileApi = async () => {
       </KeyboardAvoidingView>
 
       <View style={styles.buttonContainer}>
-        <CustomButton title="Update" onPress={handleSave} loading={isLoading} />
+        <CustomButton title="Save" 
+        // onPress={handleSave}
+          />
       </View>
     </SafeAreaView>
   );
@@ -171,18 +182,23 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
+    borderWidth:2.5,
+    borderColor:color.primary
   },
   editIconContainer: {
     position: "relative",
     bottom: 20,
     right: 0,
-     padding: 5,
-     left:16
-  
+     padding: 8,
+     left:16,
+   backgroundColor:color.primary,
+
+    borderRadius:20
   },
   editIcon: {
-    width: 33,
-    height: 33,
+    width: 16,
+    height: 16,
+   
   },
   inputContainer: {
     marginTop: 20,

@@ -8,7 +8,7 @@ const Earing = (props) => (
     fill="none"
     {...props}
   >
-    <Circle cx={20} cy={20.486} r={20} fill="#EF571F" />
+    <Circle cx={20} cy={20.486} r={20} fill="#09BFCD" />
     <Path
       stroke="#fff"
       strokeWidth={1.5}

@@ -1,4 +1,4 @@
-package com.DainaApp
+package com.kofasync.app
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

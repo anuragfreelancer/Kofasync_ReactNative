@@ -9,35 +9,35 @@ import {
 } from 'react-native';
 import React from 'react';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
- import StatusBarCompoent from '../../../compoent/StatusBarCompoent';
+import StatusBarCompoent from '../../../compoent/StatusBarCompoent';
 import imageIndex from '../../../assets/imageIndex';
- import ResponsiveSize from '../../../utils/ResponsiveSize';
+import ResponsiveSize from '../../../utils/ResponsiveSize';
 import { wp } from '../../../utils/Constant';
 import CustomButton from '../../../compoent/CustomButton';
 import ScreenNameEnum from '../../../routes/screenName.enum';
 import LoadingModal from '../../../utils/Loader';
 import useLogin from './useLogin';
 import TextInputField from '../../../compoent/TextInputField';
-   
+
 export default function Login() {
   const {
     credentials,
     errors,
     isLoading,
-     navigation, 
-     handleChange,
-     handleLogin
+    navigation,
+    handleChange,
+    handleLogin
   } = useLogin()
   interface Option {
     team_name: string;
     id: string;
   }
 
- 
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <StatusBarCompoent />
-   <LoadingModal visible={isLoading}/>
+      <LoadingModal visible={isLoading} />
       <ScrollView showsVerticalScrollIndicator={false} >
         <View
           style={{
@@ -46,47 +46,49 @@ export default function Login() {
             flex: 1,
             marginTop: hp(8)
           }}>
- 
-            <Image
-              source={imageIndex.appLogo}
-              style={{ height: 88, width: 88 ,right:15}} resizeMode='cover'
-            />
-             <Text style={{
-              color:"black",
-              fontWeight:"bold" ,
-              fontSize:33
-             }}  >
-              Login
-            </Text>
-    
+
+          <Image
+            source={imageIndex.appLogo1}
+            style={{ height: 88, width: 88, right: 15, alignSelf: 'center' }} resizeMode='cover'
+          />
+          <Text style={{
+            color: "black",
+            fontWeight: "bold",
+            fontSize: 33,
+            textAlign: 'center'
+          }}  >
+            Login
+          </Text>
+
           <View style={{ marginTop: 5, }}>
-            <Text  style={{
-              color:"#9DB2BF",
-              fontSize:15
+            <Text style={{
+              color: "#9DB2BF",
+              textAlign: 'center',
+              fontSize: 15
             }} >
-           Enter your Number and password
+              Enter your Number and password
             </Text>
 
           </View>
           <View style={{ marginTop: ResponsiveSize.marginTop(25), paddingVertical: hp(2), }}>
-           <TextInputField
-  placeholder={'Phone Number'}
-  text={credentials.email}
-                img={imageIndex.userLogo}
+            <TextInputField
+              placeholder={'Phone Number'}
+              text={credentials.email}
+              img={imageIndex.userLogo}
 
-  firstLogo={true}
-  onChangeText={(value:any) => handleChange('email', value)}
- />
+              firstLogo={true}
+              onChangeText={(value: any) => handleChange('email', value)}
+            />
             {errors.email ? <Text style={{ color: 'red', fontSize: 12, marginTop: 10 }}>{errors.email}</Text> : null}
 
             <TextInputField
               lable={"Password"}
               placeholder="Password"
               firstLogo={true}
-               text={credentials.password}
-               showEye={true}
+              text={credentials.password}
+              showEye={true}
               img={imageIndex.lock}
-                onChangeText={(value:any) => handleChange('password', value)}
+              onChangeText={(value: any) => handleChange('password', value)}
 
             />
 
@@ -101,35 +103,37 @@ export default function Login() {
               color: "black",
               textAlign: "center",
               marginTop: 15,
-             
-              lineHeight:18,
+
+              lineHeight: 18,
 
             }}>Forgot your password?</Text>
           </TouchableOpacity>
-<View style={{
-  marginTop:20
-}}>
-          <CustomButton
-            title={'Login'}
-            onPress={handleLogin}
- 
-           />
-           </View>
+          <View style={{
+            marginTop: 20
+          }}>
+            <CustomButton
+              title={'Login'}
+              onPress={handleLogin}
+
+            />
+          </View>
         </View>
 
-     
+
         <Text style={{ marginTop: 20, fontSize: 16, lineHeight: 22, color: 'black', textAlign: "center", fontWeight: "500" }}>
           OR
         </Text>
-        <View style={{ alignItems: 'center', marginTop:5}}>
+        <View style={{ alignItems: 'center', marginTop: 25, flexDirection: 'row', alignSelf: 'center', borderWidth: 1, width: '90%', justifyContent: 'center', borderRadius: 10, borderColor: '#EBEBEB' }}>
 
           <Image
             source={imageIndex.google}
-            style={{ height: 80, width: 20 }} resizeMode='contain'
+            style={{ height: 45, width: 20 }} resizeMode='contain'
           />
-        </View>  
-      </ScrollView>
-   <View
+          <Text style={{ fontSize: 16, lineHeight: 22, color: '#909090', fontWeight: "500" }}>
+            {' '}  Sign In with Google
+          </Text>
+        </View>
+        <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -137,16 +141,18 @@ export default function Login() {
             alignSelf: 'center',
             justifyContent: 'flex-end', // Change this to flex-end 
           }}>
-          <Text style={{ fontSize: 16, lineHeight: 22, color: '#909090',fontWeight:"500" }}>
+          <Text style={{ fontSize: 16, lineHeight: 22, color: '#909090', fontWeight: "500" }}>
             Don’t have an account?{' '}
           </Text>
           <TouchableOpacity
-     onPress={() => navigation.navigate(ScreenNameEnum.Sinup)}
+            onPress={() => navigation.navigate(ScreenNameEnum.Sinup)}
 
           >
             <Text style={Styles.text}> Sign Up</Text>
           </TouchableOpacity>
         </View>
+      </ScrollView>
+
     </SafeAreaView>
   );
 }

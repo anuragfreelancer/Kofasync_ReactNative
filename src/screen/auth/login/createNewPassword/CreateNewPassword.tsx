@@ -4,7 +4,7 @@ import {
   Image,
    StyleSheet,
   ScrollView,
-  SafeAreaView,
+  
 } from 'react-native';
 import React  from 'react';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -17,6 +17,7 @@ import TextInputField from '../../../../compoent/TextInputField';
 import ResponsiveSize from '../../../../utils/ResponsiveSize';
 import CustomButton from '../../../../compoent/CustomButton';
 import { wp } from '../../../../utils/Constant';
+import { SafeAreaView } from 'react-native-safe-area-context';
  
 export default function CreateNewPassword() {
   const { credentials,
@@ -29,8 +30,8 @@ export default function CreateNewPassword() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <StatusBarComponent />
-      <View style={{ marginTop: 18 }}>
-        <CustomHeader   />
+      <View style={{ marginTop: 5 }}>
+        <CustomHeader   label="Back"/>
       </View>
       <ScrollView showsVerticalScrollIndicator={false} >
         {isLoading ? <LoadingModal /> : null}
@@ -49,13 +50,15 @@ export default function CreateNewPassword() {
                   fontSize: 24,
                   lineHeight: 36,
                   color: 'rgba(0, 0, 0, 1)',
+                  textAlign:'center'
              }}>Create New Password</Text>
             <Text style={{
                fontWeight: '400',
                fontSize: 16,
                 color: '#9DB2BF',
                 marginTop: 4,
-                lineHeight:20
+                lineHeight:20,
+                textAlign:'center'
              }}>
             Your new password must be different from{"\n"}previous used passwords.
             </Text>
@@ -89,8 +92,9 @@ export default function CreateNewPassword() {
 
       </ScrollView>
       <View style={{
-        justifyContent: 'flex-start', marginBottom: 11,
-        marginHorizontal: 15
+        justifyContent: 'flex-start', marginBottom:10,
+        marginHorizontal: 15,
+      
       }}>
         <CustomButton
           title={'Save'}

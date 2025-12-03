@@ -16,6 +16,7 @@ import imageIndex from "../../../assets/imageIndex";
 import { useNavigation } from "@react-navigation/native";
 import ScreenNameEnum from "../../../routes/screenName.enum";
 import font from "../../../theme/font";
+import { color } from "../../../constant";
  
 interface Message {
   id: string;
@@ -148,7 +149,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#eee",
   },
   avatar: { width: 40, height: 40, borderRadius: 20, marginRight: 10 },
-  name: {  fontFamily:font.MonolithRegular, fontSize: 16 },
+  name: {  fontFamily:font.TrialBold, fontSize: 16, color:color.primary },
   status: { fontSize: 12, color: "green",fontFamily:font.MonolithRegular, },
   chatContainer: { padding: 10 },
   messageBubble: {
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
   },
   myMessage: {
     alignSelf: "flex-end",
-    backgroundColor: "#FFCC00",
+    backgroundColor: "#09BFCD",
     borderBottomRightRadius: 0,
   },
   otherMessage: {

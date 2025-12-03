@@ -95,7 +95,7 @@ export default function TextInputField({ ...props }) {
               justifyContent: 'center',
             }}>
             <Image
-              source={!showPassword ? imageIndex.eye : imageIndex.visible}
+              source={!showPassword ? imageIndex.eye : imageIndex.eye}
               style={{ width: 24, height: 24, }}
               tintColor={"#ADA4A5"}
             />

@@ -3,19 +3,21 @@ import {
   Text,
   Image,
   ScrollView,
-  SafeAreaView,
+
 } from 'react-native';
 import React, { useState } from 'react';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
- import StatusBarCompoent from '../../../compoent/StatusBarCompoent';
+import StatusBarCompoent from '../../../compoent/StatusBarCompoent';
 import imageIndex from '../../../assets/imageIndex';
- import CustomButton from '../../../compoent/CustomButton';
+import CustomButton from '../../../compoent/CustomButton';
 import CustomHeader from '../../../compoent/CustomHeader';
 import useForgot from './useForgot';
- import LoadingModal from '../../../utils/Loader';
+import LoadingModal from '../../../utils/Loader';
 import { TextInput } from 'react-native';
 import ScreenNameEnum from '../../../routes/screenName.enum';
- 
+import { SafeAreaView } from 'react-native-safe-area-context';
+import TextInputField from '../../../compoent/TextInputField';
+
 export default function PasswordReset() {
   const { credentials,
     errors,
@@ -30,13 +32,13 @@ export default function PasswordReset() {
       <ScrollView showsVerticalScrollIndicator={false} >
         {isLoading ? <LoadingModal /> : null}
         <View style={{ marginTop: 18 }}>
-          <CustomHeader />
+          <CustomHeader label='Back' />
         </View>
         <View
           style={{
             backgroundColor: '#FFF',
-             marginTop: hp(2),
-             marginHorizontal:15
+            marginTop: hp(2),
+            marginHorizontal: 15
           }}>
           <View style={{ marginTop: 6 }}>
             <Text style={{
@@ -44,13 +46,16 @@ export default function PasswordReset() {
               fontSize: 24,
               lineHeight: 36,
               color: 'rgba(0, 0, 0, 1)',
+              textAlign: 'center'
             }}>Password Reset</Text>
             <Text style={{
-               fontWeight: '400',
-               fontSize: 16,
-                color: '#9DB2BF',
-                marginTop: 4,
-                lineHeight:20
+              fontWeight: '400',
+              fontSize: 16,
+              color: '#9DB2BF',
+              marginTop: 4,
+              lineHeight: 20,
+              textAlign: 'center'
+
             }}>
               Please put your mobile number to reset your password
             </Text>
@@ -62,13 +67,13 @@ export default function PasswordReset() {
               flexDirection: 'row', alignItems: "center", justifyContent: "center", marginTop: 15,
 
             }}>
-            <View
+            {/* <View
 
               style={[{
                 height: hp(15),
                 borderRadius: 20,
                 borderWidth: 1,
-                borderColor: "#EF571F",
+                borderColor: "#09BFCD",
                 padding: 15,
                 flexDirection: 'row',
                 alignItems: "center",
@@ -99,16 +104,25 @@ export default function PasswordReset() {
                    }}
                 />
               </View>
-            </View>
+            </View> */}
+            <TextInputField
+              placeholder={'Phone Number'}
+              text={credentials.email}
+              img={imageIndex.userLogo}
 
+              firstLogo={true}
+              onChangeText={(value: any) => handleChange('email', value)}
+            />
           </View>
-                        <Text style={{
-                          color:"red" ,
-                          marginTop:11,
-                          marginLeft:5
-                        }}>{errors.email}</Text>
+          <Text style={{
+            color: "red",
+            marginTop: 11,
+            marginLeft: 5
+          }}>{errors.email}</Text>
 
         </View>
+          <Image resizeMode='contain' source={imageIndex.resetPassword} style={{ width: '70%', height: hp(50), alignSelf: 'center', marginBottom: 30 }} />  
+        
       </ScrollView>
       <View style={{
         justifyContent: 'flex-start', marginBottom: 20
@@ -116,12 +130,12 @@ export default function PasswordReset() {
         marginHorizontal: 15
       }}>
         <CustomButton
-          title={'Submit'}
+          title={'Send'}
           // onPress={() => handleForgot()
 
           // }
-      onPress={()=>navigation.navigate(ScreenNameEnum.OtpScreen)}
-         />
+          onPress={() => navigation.navigate(ScreenNameEnum.OtpScreen)}
+        />
       </View>
     </SafeAreaView>
   );

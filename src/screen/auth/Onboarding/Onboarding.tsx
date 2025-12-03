@@ -13,7 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import imageIndex from '../../../assets/imageIndex';
 import StatusBarComponent from '../../../compoent/StatusBarCompoent';
- import { styles } from './style';
+import { styles } from './style';
 import CustomButton from '../../../compoent/CustomButton';
 import { color } from '../../../constant';
 import SlideButton from '../../../compoent/SlideRightButton/SlideRightButton';
@@ -31,21 +31,21 @@ interface Slide {
 const slides: Slide[] = [
   {
     id: '1',
-    title: 'Ship Your Parcel',
-    description: 'Experience smooth and completely stress-free shipping of your parcel.',
+    title: 'Find and Book Services Instantly',
+    description: 'From salons to clinics explore trusted professionals near you.',
     img: imageIndex.sp2,
   },
   {
     id: '2',
-    title: 'Ship Anywhere',
-    description: 'Send your parcel across borders with our reliable and secure shipping service.',
-    img: imageIndex.sp1,
+    title: 'Find and Book Services Instantly',
+    description: 'From salons to clinics explore trusted professionals near you.',
+    img: imageIndex.sp2,
   },
   {
     id: '3',
-    title: 'Track Your Parcel',
-    description: 'Stay updated and know the real-time location of your shipment anytime.',
-    img: imageIndex.sp3,
+    title: 'Find and Book Services Instantly',
+    description: 'From salons to clinics explore trusted professionals near you.',
+    img: imageIndex.sp2,
   },
 ];
 const OnboardingScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
@@ -61,30 +61,30 @@ const OnboardingScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     if (currentIndex < slides.length - 1) {
       flatListRef.current?.scrollToIndex({ index: currentIndex + 1 });
     } else {
+      navigation.navigate(ScreenNameEnum.ChooseRole)
+      // navigation.navigate(ScreenNameEnum.Login)
       // navigation.navigate(ScreenNameEnum.TabNavigator);
     }
   };
 
   const handleSkip = () => {
-  navigation.navigate(ScreenNameEnum.ChooseRole);
+    navigation.navigate(ScreenNameEnum.ChooseRole);
   };
 
   const renderSlide = ({ item }: { item: Slide }) => (
-    <View style={[styles.slide,  ]}>
-       <ImageBackground  source={imageIndex.bagonboard}  style={{
-        justifyContent:"center",
-        alignItems:"center" ,
-        flex:1 ,
-        width:"100%"
-       }}  >
+    <View style={[styles.slide,]}>
+      <View style={{ backgroundColor: '#7DBF8D15', height: '70%', width: '100%', borderBottomLeftRadius: 40, borderBottomRightRadius: 40 }}>
         <Image source={item.img} style={{
-          height:222,
-          width:222,
-          resizeMode:"cover"
+          height: '80%',
+          width: '100%',
+          resizeMode: "contain"
         }} />
-        </ImageBackground>
-       {/* Dots */}
-       <View style={styles.dotsContainer}>
+      </View>
+      {/* Dots */}
+
+      <Text style={styles.title}>{item.title}</Text>
+      <Text style={styles.description}>{item.description}</Text>
+      <View style={styles.dotsContainer}>
         {slides.map((_, index) => {
           const isActive = currentIndex === index;
           return (
@@ -92,13 +92,14 @@ const OnboardingScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
               key={index}
               style={[
                 styles.dot,
-                { backgroundColor: isActive ?     '#EF571F' :    color.onBoarding  ,
-                    width:isActive?  13 :8,
-                    height: isActive?  5 :8,
-                    justifyContent:"center" ,
-                    marginHorizontal: 5,
-                    borderRadius: isActive ? 8 :5,
-                    marginTop:15
+                {
+                  backgroundColor: isActive ? '#000000' : color.onBoarding,
+                  width: isActive ? 13 : 8,
+                  height: isActive ? 5 : 8,
+                  justifyContent: "center",
+                  marginHorizontal: 5,
+                  borderRadius: isActive ? 8 : 5,
+                  marginTop: 15
 
 
 
@@ -108,8 +109,6 @@ const OnboardingScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
           );
         })}
       </View>
-      <Text style={styles.title}>{item.title}</Text>
-      <Text style={styles.description}>{item.description}</Text>
     </View>
   );
 
@@ -119,11 +118,11 @@ const OnboardingScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
 
       {/* Skip Button */}
       <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
-        <Text style={styles.skipText}>Skip</Text>
+        {/* <Text style={styles.skipText}>Skip</Text> */}
       </TouchableOpacity>
 
-       <Animated.FlatList
-       
+      <Animated.FlatList
+
         data={slides}
         horizontal
         pagingEnabled
@@ -137,30 +136,11 @@ const OnboardingScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         )}
         scrollEventThrottle={16}
       />
-      {currentIndex === slides.length - 1  ?  
-      <View  style={{
-             marginBottom:1
+   <View style={{marginHorizontal:15, marginBottom:15}}>
+       
+          <CustomButton title={"Next"} onPress={handleNextPress} />
 
-      }}>
-        <SlideButton 
-        title="Continue" 
-        onSlideSuccess={() => navigation.navigate(ScreenNameEnum.ChooseRole)} 
-      />
-     </View>
-  :
-  <View style={{
-    width: "38%",
-    alignItems:"center",
-    justifyContent:"center",
-     alignSelf:"center",
-     marginBottom:15 ,
-     marginTop:10
-  }}>
-            <CustomButton title={"Continue"} onPress={handleNextPress} />
-  
-            </View>
-    }
-     
+</View>
 
     </SafeAreaView>
   );

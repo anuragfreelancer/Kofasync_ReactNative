@@ -72,7 +72,7 @@ const SlideButton: React.FC<SlideButtonProps> = ({
           style={[styles.buttonWrapper, { transform: [{ translateX }] }]}
         >
           <LinearGradient
-            colors={["#F58D17", "#F58D17", "#EF571F"]}
+            colors={["#F58D17", "#F58D17", "#09BFCD"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0.9, y: 0 }}
             style={styles.button}
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
 
   hintText: {
     fontSize: 16,
-    color: "#EF571F",
+    color: "#09BFCD",
     fontFamily: font.MonolithRegular,
   },
 

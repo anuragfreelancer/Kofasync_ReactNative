@@ -4,8 +4,6 @@ import { Text, Platform, View, Image } from 'react-native';
   import font from '../theme/font';
 import SvgIndex from '../assets/svgIndex';
  import { useSafeAreaInsets } from 'react-native-safe-area-context';
- import DeliveryHome from '../screen/DeliveryBottomTab/Delivery/DeliveryHome/DeliveryHome';
- import DeliverOrders from '../screen/DeliveryBottomTab/Delivery/DeliverOrders/DeliverOrders';
  import Inbox from '../screen/BottomTab/Inbox/Inbox';
 import DeliveryProfile from '../screen/DeliveryBottomTab/DeliveryProfile/DeliveryProfile';
 
@@ -109,9 +107,9 @@ export default function DeliveryTabNavigator() {
         };
       }}
     >
-      <Tab.Screen name={"Home"} component={DeliveryHome} />
+      {/* <Tab.Screen name={"Home"} component={DeliveryHome} /> */}
       {/* <Tab.Screen name="MyTrack" component={MyTrack} /> */}
-       <Tab.Screen name="Orders" component={DeliverOrders} />
+       {/* <Tab.Screen name="Orders" component={DeliverOrders} /> */}
        <Tab.Screen name="Inbox" component={Inbox} />
        <Tab.Screen name="Profile" component={DeliveryProfile} />
      </Tab.Navigator>

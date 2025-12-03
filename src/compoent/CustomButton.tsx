@@ -47,58 +47,63 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   } as const;
 
   return (
-    <LinearGradient
-      colors={['#F58D17', '#F58D17', '#EF571F']}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0.83, y: 0 }}
+    <TouchableOpacity
+      onPress={onPress}
+      disabled={disabled}
+      activeOpacity={0.7}
       style={[
-        styles.gradient,
-        { height: height, borderRadius: 9 },
-        style,
+        styles.button,
+        { 
+          height,
+          backgroundColor: bgColor,
+          opacity: disabled ? 0.5 : 1,
+        },
+        style, // parent styles ALWAYS override internal styles
       ]}
     >
-      <TouchableOpacity
-        onPress={onPress}
-        disabled={disabled}
-        style={[styles.button, { height: height }]}
-        activeOpacity={0.7}
-      >
-        <View style={[styles.content, { justifyContent: alignment[alignItm] }]}>
-          {leftIcon && <View style={styles.icon}>{leftIcon}</View>}
+      <View style={[styles.content, { justifyContent: alignment[alignItm] }]}>
+        
+        {/* ICON */}
+        {leftIcon && <View style={styles.icon}>{leftIcon}</View>}
 
-          <Text
-            allowFontScaling={false}
-            style={[styles.text, { color: txtcolor }, textStyle]}
-          >
-            {title}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    </LinearGradient>
+        {/* TITLE */}
+        <Text
+          allowFontScaling={false}
+          style={[
+            styles.text,
+            { color: txtcolor },
+            textStyle,
+          ]}
+        >
+          {title}
+        </Text>
+
+      </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  gradient: {
-    width: '100%',
-  },
   button: {
     width: '100%',
-    paddingHorizontal: 20,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    alignSelf: 'center',
   },
   content: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: '100%',
     width: '100%',
+    height: '100%',
   },
   icon: {
     marginRight: 10,
   },
   text: {
     fontSize: 16,
-     color:"white",
-    fontWeight:"bold"
+    fontWeight: '700',
   },
 });
 

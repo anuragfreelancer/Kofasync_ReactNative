@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
      bottom:6
     },
   tex: {
-    color: "##EF571F",
+    color: "##09BFCD",
     fontSize: 12,
      fontWeight:"800"
   },
