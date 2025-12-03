@@ -1,0 +1,54 @@
+import { useState } from 'react';
+ import { useNavigation } from '@react-navigation/native';
+  
+ const useForgot = () => {
+  const [errors, setErrors] = useState <any>({});
+  // test11@gmail.com
+   const navigation = useNavigation();
+   const [isLoading, setisLoading] = useState(false)
+  const [credentials, setCredentials] = useState({ email: '', });
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const handleChange = (field:string, value:string) => {
+    setCredentials(prev => ({ ...prev, [field]: value }));
+    setErrors((prev:any) => ({ ...prev, [field]: '' }));
+    if (field === 'email') {
+      if (!value.trim()) {
+        setErrors((prev:any) => ({ ...prev, email: 'Email is required.' }));
+      } else if (!emailRegex.test(value)) {
+        setErrors((prev:any) => ({ ...prev, email: 'Enter a valid email address.' }));
+      }
+    }
+ 
+  };
+  const handleForgot =async () => {
+    const { email } = credentials;
+    let validationErrors:any = {}; 
+ 
+    if (!email.trim()) {
+      validationErrors.email = 'Email is required.';
+    } else if (!emailRegex.test(email)) {
+      validationErrors.email = 'Enter a valid email address.';
+    }
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+     try {
+      const params = { email:email,navigation:navigation };
+      //  const response = await ForgotPassUserApi(params, setisLoading);
+    } catch (error) {
+     }
+   };
+
+
+  return {
+    credentials,
+    errors,
+    isLoading,
+    handleChange,
+    handleForgot,
+    navigation,
+  };
+};
+
+export default useForgot;
