@@ -193,8 +193,8 @@ const styles = StyleSheet.create({
 
   },
   separator: {
-    height: 1,
-    backgroundColor: "#eef2f7",
+    height: 3,
+    // backgroundColor: "#eef2f7",
     marginLeft: AVATAR_SIZE + 16, // align with text column
   },
   row: {
@@ -235,6 +235,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily:font.MonolithRegular,
     color: "#0f172a",
+    fontWeight:'bold'
   },
   time: {
     fontSize: 12,

@@ -47,17 +47,17 @@ export default function SignUp() {
       <StatusBarCompoent />
       <CustomHeader label='Back' />
       {isLoading && <LoadingModal />}
- <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <View style={styles.content}>
-          {/* Header Section */}
-          {/* <Image
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <View style={styles.content}>
+            {/* Header Section */}
+            {/* <Image
               source={imageIndex.appLogo}
               style={styles.logo}
               resizeMode="contain"
@@ -65,107 +65,111 @@ export default function SignUp() {
        */}
 
 
-          <Text style={styles.title}>Sign Up</Text>
-          <Text style={{
-            color: "#9DB2BF",
-            fontSize: 17,
-            marginTop: 8,
-            textAlign: 'center'
-          }}>Let's get started by creating your account</Text>
+            <Text style={styles.title}>Sign Up</Text>
+            <Text style={{
+              color: "#9DB2BF",
+              fontSize: 17,
+              marginTop: 8,
+              textAlign: 'center'
+            }}>Let's get started by creating your account</Text>
 
-          {/* Form Section */}
-          <View style={styles.formContainer}>
-            {/* Full Name */}
-            <TextInputField
-              onChangeText={(value: string) => handleChange('fullName', value)}
-              placeholder="Full Name"
-              value={credentials.fullName}
-              firstLogo={true}
-              img={imageIndex.Textprofile}
+            {/* Form Section */}
+            <View style={styles.formContainer}>
+              {/* Full Name */}
+              <TextInputField
+                onChangeText={(value: string) => handleChange('fullName', value)}
+                placeholder="Full Name"
+                value={credentials.fullName}
+                firstLogo={true}
+                img={imageIndex.Textprofile}
+              />
+              {errors.fullName && (
+                <Text style={styles.errorText}>{errors.fullName}</Text>
+              )}
+
+              {/* Email */}
+              <TextInputField
+                onChangeText={(value: string) => handleChange('email', value)}
+                placeholder="Email"
+                value={credentials.email}
+                firstLogo={true}
+                img={imageIndex.mess}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+              {errors.email && (
+                <Text style={styles.errorText}>{errors.email}</Text>
+              )}
+
+              {/* Phone with Country Code */}
+              <TextInputField
+                onChangeText={(value: string) => handleChange('mobile', value)}
+                placeholder="Phone Number"
+                value={credentials.mobile}
+                firstLogo={true}
+                img={imageIndex.Textphone}
+                keyboardType="number-pad"
+                maxLength={15}
+              // autoCapitalize="none"
+              />
+              {errors.mobile && (
+                <Text style={styles.errorText}>{errors.mobile}</Text>
+              )}
+
+              {/* Password */}
+              <TextInputField
+                onChangeText={(value: string) => handleChange('password', value)}
+                placeholder="Password"
+                value={credentials.password}
+                firstLogo={true}
+                showEye={true}
+                img={imageIndex.textLock}
+                secureTextEntry
+              />
+              {errors.password && (
+                <Text style={styles.errorText}>{errors.password}</Text>
+              )}
+
+              <TextInputField
+                onChangeText={(value: string) => handleChange('confirmPassword', value)}
+                placeholder="Confirm Password"
+                value={credentials.confirmPassword}
+                firstLogo={true}
+                showEye={true}
+                img={imageIndex.textLock}
+                secureTextEntry
+
+              />
+              {errors.confirmPassword && (
+                <Text style={styles.errorText}>{errors.confirmPassword}</Text>
+              )}
+
+
+
+            </View>
+
+            {/* Sign Up Button */}
+            <CustomButton
+              title="Sign up"
+              onPress={handleSignup}
+              // onPress={() => navigation.navigate(ScreenNameEnum.Login)}
+              disabled={isLoading}
             />
-            {errors.fullName && (
-              <Text style={styles.errorText}>{errors.fullName}</Text>
-            )}
 
-            {/* Email */}
-            <TextInputField
-              onChangeText={(value: string) => handleChange('email', value)}
-              placeholder="Email"
-              value={credentials.email}
-              firstLogo={true}
-              img={imageIndex.mess}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-            {errors.email && (
-              <Text style={styles.errorText}>{errors.email}</Text>
-            )}
-
-            {/* Phone with Country Code */}
-            <TextInputField
-              onChangeText={(value: string) => handleChange('email', value)}
-              placeholder="Phone Number"
-              // value={credentials.email}
-              firstLogo={true}
-              img={imageIndex.Textphone}
-            // keyboardType=""
-            // autoCapitalize="none"
-            />
-
-            {/* Password */}
-            <TextInputField
-              onChangeText={(value: string) => handleChange('password', value)}
-              placeholder="Password"
-              value={credentials.password}
-              firstLogo={true}
-              showEye={true}
-              img={imageIndex.textLock}
-              secureTextEntry
-            />
-            {errors.password && (
-              <Text style={styles.errorText}>{errors.password}</Text>
-            )}
-
-            <TextInputField
-              onChangeText={(value: string) => handleChange('password', value)}
-              placeholder="Confirm Password"
-              value={credentials.password}
-              firstLogo={true}
-              showEye={true}
-              img={imageIndex.textLock}
-              secureTextEntry
-
-            />
-            {errors.password && (
-              <Text style={styles.errorText}>{errors.password}</Text>
-            )}
-
-
-
+            {/* Login Redirect */}
+            <View style={styles.loginRedirect}>
+              <Text style={styles.redirectText}>
+                Already have an account?{' '}
+              </Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate(ScreenNameEnum.Login)}
+              >
+                <Text style={styles.loginText}>Login</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-
-          {/* Sign Up Button */}
-          <CustomButton
-            title="Sign up"
-            // onPress={handleSignup}
-            onPress={() => navigation.navigate(ScreenNameEnum.Login)}
-            disabled={isLoading}
-          />
-
-          {/* Login Redirect */}
-          <View style={styles.loginRedirect}>
-            <Text style={styles.redirectText}>
-              Already have an account?{' '}
-            </Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate(ScreenNameEnum.Login)}
-            >
-              <Text style={styles.loginText}>Login</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
-</KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
       {/* Modals */}
       {/* <CountryCodeModal
         visible={countyModal}

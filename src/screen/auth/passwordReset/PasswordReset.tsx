@@ -57,7 +57,7 @@ export default function PasswordReset() {
               textAlign: 'center'
 
             }}>
-              Please put your mobile number to reset your password
+              Please put your email to reset your password
             </Text>
           </View>
           <View
@@ -106,7 +106,7 @@ export default function PasswordReset() {
               </View>
             </View> */}
             <TextInputField
-              placeholder={'Phone Number'}
+              placeholder={'Email address'}
               text={credentials.email}
               img={imageIndex.userLogo}
 
@@ -131,10 +131,10 @@ export default function PasswordReset() {
       }}>
         <CustomButton
           title={'Send'}
-          // onPress={() => handleForgot()
+          onPress={() => handleForgot()
 
-          // }
-          onPress={() => navigation.navigate(ScreenNameEnum.OtpScreen)}
+          }
+          // onPress={() => navigation.navigate(ScreenNameEnum.OtpScreen)}
         />
       </View>
     </SafeAreaView>

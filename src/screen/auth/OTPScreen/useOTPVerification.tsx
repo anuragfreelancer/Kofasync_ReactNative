@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
- import { useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import ScreenNameEnum from '../../../routes/screenName.enum';
-import { Resend_otp, Verifyotp } from '../../../Api/apiRequest';
+import { POST_API, Resend_otp, Verifyotp } from '../../../Api/apiRequest';
+import { ENDPOINT } from '../../../Api/endpoints';
+import { errorToast } from '../../../utils/customToast';
 
 export const useOtpVerification = (cellCount: number = 4) => {
   const navigation = useNavigation();
-  const route :any= useRoute();
-  const { phone ,code } = route.params || {};
-   const [value, setValue] = useState('');
+  const route: any = useRoute();
+  const { identity, code } = route.params || {};
+  const [value, setValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-   const dispatch = useDispatch();
- const [timer, setTimer] = useState(0);
+  const dispatch = useDispatch();
+  const [timer, setTimer] = useState(0);
   // Timer countdown logic
   useEffect(() => {
     let interval;
@@ -23,9 +25,9 @@ export const useOtpVerification = (cellCount: number = 4) => {
     }
     return () => clearInterval(interval);
   }, [timer]);
-  const  data ={
-    mob: phone ,
-    code : code
+  const data = {
+    mob: identity,
+    code: code
   }
   const [errorMessage, setErrorMessage] = useState('');
   const ref = useBlurOnFulfill({ value, cellCount });
@@ -39,7 +41,7 @@ export const useOtpVerification = (cellCount: number = 4) => {
     if (timer > 0) return; // prevent multiple clicks during countdown
     setIsLoading(true);
     try {
-      const params = { phone, code };
+      const params = { identity, code };
       await Resend_otp(params, setIsLoading);
       setTimer(30); // start 30 seconds timer
     } catch (error) {
@@ -50,19 +52,27 @@ export const useOtpVerification = (cellCount: number = 4) => {
   };
 
   const handleVerifyOTP = async () => {
-     if (value.length !== cellCount) {
+    if (value.length !== cellCount) {
       setErrorMessage('Please enter 4 digit otp');
       return;
     }
 
     setIsLoading(true);
     try {
-            setIsLoading(false)
-      const params = { phone, otp: value, navigation, code  };
-       await Verifyotp(params, setIsLoading,dispatch);
+      setIsLoading(false)
+      const params = { identity, otp: value, navigation, code };
+     const res =  await POST_API('', params, ENDPOINT.OtpVerify,setIsLoading);
+    
+    if(res.success){
+       console.log(res)
+        navigation.navigate(ScreenNameEnum.CreateNewPassword, {userId:res?.data?.user_id
+})
+      }else{
+        errorToast(res.message)
+      }
     } catch (error) {
       setIsLoading(false)
-     }
+    }
   };
 
   return {
@@ -76,7 +86,7 @@ export const useOtpVerification = (cellCount: number = 4) => {
     handleChangeText,
     handleVerifyOTP,
     navigation,
-    handleResendOTP ,
+    handleResendOTP,
     data,
     timer
   };

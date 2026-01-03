@@ -35,9 +35,11 @@ const Splash: React.FC = () => {
 
     // Timer for navigation
     const timer = setTimeout(async () => {
+ console.log('storedAuth')
+
       try {
         const storedAuth = await getAuthData();
- 
+ console.log(storedAuth)
         if (storedAuth?.token) {
           dispatch(restoreLogin(storedAuth));
           if (storedAuth.userData?.type == "Delivery") {

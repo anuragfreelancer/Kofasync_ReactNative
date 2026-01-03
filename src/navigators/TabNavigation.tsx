@@ -129,9 +129,9 @@ export default function TabNavigator() {
         };
       }}
     >
-      <Tab.Screen name={ScreenNameEnum.HomeStack} component={role =='user'? HomeStack: ProviderDashboard} />
+      <Tab.Screen name={ScreenNameEnum.HomeStack} component={role =='User'? HomeStack: ProviderDashboard} />
       {/* <Tab.Screen name="MyTrack" component={MyTrack} /> */}
-       <Tab.Screen name={role =='user'?"Booking":"My Calendar"} component={role =='user'? Orders: CalendarTabScreen}  />
+       <Tab.Screen name={role =='User'?"Booking":"My Calendar"} component={role =='User'? Orders: CalendarTabScreen}  />
        <Tab.Screen name="Chat" component={ChatInboxScreen}/>
        <Tab.Screen name="Profile" component={UserProfile} />
      </Tab.Navigator>

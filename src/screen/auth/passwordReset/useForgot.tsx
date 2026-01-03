@@ -1,5 +1,9 @@
 import { useState } from 'react';
  import { useNavigation } from '@react-navigation/native';
+import { POST_API } from '../../../Api/apiRequest';
+import { ENDPOINT } from '../../../Api/endpoints';
+import { errorToast } from '../../../utils/customToast';
+import ScreenNameEnum from '../../../routes/screenName.enum';
   
  const useForgot = () => {
   const [errors, setErrors] = useState <any>({});
@@ -34,8 +38,15 @@ import { useState } from 'react';
       return;
     }
      try {
-      const params = { email:email,navigation:navigation };
-      //  const response = await ForgotPassUserApi(params, setisLoading);
+      const params = { identity:email,navigation:navigation };
+      const res = await POST_API('', params, ENDPOINT.ForgetPassword,setisLoading)
+      if(res.success){
+        console.log(res)
+        navigation.navigate(ScreenNameEnum.OtpScreen, {identity:email})
+      }else{
+        errorToast(res.message)
+      }
+      //  const response = await (params, setisLoading);
     } catch (error) {
      }
    };

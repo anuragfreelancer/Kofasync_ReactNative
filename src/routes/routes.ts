@@ -27,8 +27,7 @@ import ChooseRole from "../screen/auth/ChooseRole/ChooseRole";
 import RequestLoading from "../screen/BottomTab/DashBoard/RequestLoading";
 import DocumentShow from "../screen/auth/DocumentShow/DocumentShow";
 import Login from "../screen/auth/login/Login";
-import SignUp from "../screen/auth/signUp/SignUp";
-import CreateNewPassword from "../screen/auth/login/createNewPassword/CreateNewPassword";
+import SignUp from "../screen/auth/signUp/SignUp"; 
 import PasswordReset from "../screen/auth/passwordReset/PasswordReset";
 import OurServices from "../screen/BottomTab/OurServices/OurServices";
 import BookServies from "../screen/BottomTab/BookServies/BookServies";
@@ -38,6 +37,7 @@ import BookingSuccess from "../screen/BottomTab/DashBoard/BookingSuccess";
 import BookingDetailScreen from "../screen/DeliveryBottomTab/BookingDetail";
 import MyReviews from "../screen/DeliveryBottomTab/MyReviews";
 import MYAvailability from "../screen/DeliveryBottomTab/MYAvailability";
+import CreateNewPassword from "../screen/auth/CreateNewPassword/CreateNewPassword";
   const _routes: any = {
   REGISTRATION_ROUTE: [
        {

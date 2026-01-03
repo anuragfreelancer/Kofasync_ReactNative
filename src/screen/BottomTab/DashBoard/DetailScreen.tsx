@@ -243,11 +243,8 @@ export default function DetailScreen() {
               fontSize:16,
               fontWeight:'bold'
             }}>See All</Text>
-         
           </View>
         </View>
-
-
           <FlatList
             data={services}
             keyExtractor={(item) => item.id}

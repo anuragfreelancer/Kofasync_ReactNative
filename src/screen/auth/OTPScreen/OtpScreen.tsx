@@ -48,7 +48,7 @@ export default function OtpScreen() {
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.headerSection}>
-            <Text style={styles.txtHeading}>Check your SMS</Text>
+            <Text style={styles.txtHeading}>Check your Mail</Text>
             <Text style={styles.txtDes}>Please put the 4 digits sent to you  {data?.code} {data?.mob}
             </Text>
            </View>
@@ -81,14 +81,14 @@ export default function OtpScreen() {
 
         <CustomButton
           title={"Submit"}
-          onPress={() => {
+          // onPress={() => {
             
-              navigation.navigate(ScreenNameEnum.CreateNewPassword)
+          //     navigation.navigate(ScreenNameEnum.CreateNewPassword)
 
            
-          }
-          }
-          // onPress={handleVerifyOTP}
+          // }
+          // }
+          onPress={handleVerifyOTP}
           style={styles.submitButton}
         />
 

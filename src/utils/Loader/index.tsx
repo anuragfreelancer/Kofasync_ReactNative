@@ -18,7 +18,7 @@ const { width, height } = Dimensions.get('window');
 // Your theme color
 const THEME_COLOR = color.primary;
 
-const LoadingModal = ({ visible, message = "Loading..." }:any) => {
+const LoadingModal = ({ visible = true, message = "Loading..." }:any) => {
   // Animation values
   const spinValue = useRef(new Animated.Value(0)).current;
   const fadeValue = useRef(new Animated.Value(0)).current;

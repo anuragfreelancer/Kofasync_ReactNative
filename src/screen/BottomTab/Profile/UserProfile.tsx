@@ -23,7 +23,7 @@
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 // import { TouchableHighlight } from "react-native";
 // import CustomButton from "../../../compoent/CustomButton";
- 
+
 // type Props = {
 //   onEditProfile?: () => void;
 //   onAddress?: () => void;
@@ -82,13 +82,13 @@
 //   const navigation:any = useNavigation()
 //   const [Modal,setModal]= useState(false)
 //       const [isLoading, setLoading] = useState(false);
- 
+
 //   const dispatch = useDispatch();
 //     const isLogin:any = useSelector <any>((state) => state?.auth?.userData);
 //      useEffect(() => {
 //       getProfileApi();
 //     }, []);
-  
+
 //   const getProfileApi = async () => {
 //     try {
 //       const response = await GetProfileApi(setLoading);
@@ -97,7 +97,7 @@
 //        } 
 //     } catch (error) {
 //       setLoading(false)
-  
+
 //      }
 //   };
 //     const handleLogout = () => {
@@ -122,13 +122,13 @@
 //                             <Image source={{ uri: user.avatarUrl }} style={styles.avatar} />
 //             )}
 //             <TouchableHighlight style={styles.statusDot}
-            
+
 //              onPress={()=>{
 //               navigation.navigate(ScreenNameEnum.EditProfile)
 //            }}
 //             >
 //               <Image source={imageIndex.eoditphots} 
-              
+
 //                style={{
 //                 height:22,
 //                 width:22 ,
@@ -178,7 +178,7 @@
 //              onPress={()=>{
 //               navigation.navigate(ScreenNameEnum.changePassword)
 //            }}
-       
+
 //           />
 //           <ItemDivider />
 //           <ListItem
@@ -205,14 +205,14 @@
 //            />
 //            </View>
 //         {/* Logout */}
-       
+
 //        <LogoutModal
 //   visible={Modal}
 //   onLogout={async () => {
 //     setModal(false);
 // handleLogout()
 //     // ✅ Call logout function
-    
+
 //   }}
 //   onCancel={() => setModal(false)}
 // />
@@ -235,7 +235,7 @@
 //     borderRadius: 16,
 //     padding: 14,
 //     marginBottom: 16,
- 
+
 //   },
 //   avatarWrap: { marginRight: 15 },
 //   avatar: { width: 70, height: 70, borderRadius: 10 },
@@ -263,7 +263,7 @@
 //   card: {
 //     backgroundColor: BG,
 //     borderRadius: 16,
-    
+
 //   },
 //   row: {
 //     paddingVertical: 14,
@@ -315,56 +315,55 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfileScreen = () => {
   const navigation = useNavigation()
-  const [role, setRole ] = useState('user')
-  useEffect(()=>{
-    (async()=>{
- const role =  await AsyncStorage.getItem("selectedRole")
- setRole(role ?? 'user')
+  const [role, setRole] = useState('user')
+  useEffect(() => {
+    (async () => {
+      const role = await AsyncStorage.getItem("selectedRole")
+      setRole(role ?? 'user')
 
     })()
-  },[])
+  }, [])
   return (
-    <SafeAreaView style={{flex:1}}>
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={{ paddingBottom: 40 }}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Top Title */}
-      <Text style={styles.screenTitle}>Profile</Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{ paddingBottom: 40 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Top Title */}
+        <Text style={styles.screenTitle}>Profile</Text>
 
-      {/* ACCOUNT SECTION */}
-      <Text style={styles.sectionTitle}>Account</Text>
-      <MenuItem title="Edit Profile" onPress={()=>navigation.navigate(ScreenNameEnum.EditProfile)} />
-    {role != 'user' &&
-    <View>
-      <MenuItem title="My Reviews" onPress={()=>navigation.navigate(ScreenNameEnum.MyReviews)}/>
-    
-      <MenuItem title="Availability"  onPress={()=>navigation.navigate(ScreenNameEnum.MYAvailability)}/>
+        {/* ACCOUNT SECTION */}
+        <Text style={styles.sectionTitle}>Account</Text>
+        <MenuItem title="Edit Profile" onPress={() => navigation.navigate(ScreenNameEnum.EditProfile)} />
+        {role != 'user' &&
+          <View>
+            <MenuItem title="My Reviews" onPress={() => navigation.navigate(ScreenNameEnum.MyReviews)} />
 
-    </View>
-    }
-    
-      <MenuItem title="Payment Method" />
+            <MenuItem title="Availability" onPress={() => navigation.navigate(ScreenNameEnum.MYAvailability)} />
 
-      {/* SETTINGS SECTION */}
-      <Text style={styles.sectionTitle}>Settings</Text>
-      <MenuItem title="Notifications"  onPress={()=>navigation.navigate(ScreenNameEnum.NotificationsSetting)}/>
+          </View>
+        }
 
-      {/* ABOUT SECTION */}
-      <Text style={styles.sectionTitle}>About</Text>
-      <MenuItem title="Privacy Policy"  onPress={()=>navigation.navigate(ScreenNameEnum.PrivacyPolicy)}/>
-      <MenuItem title="Terms And Conditions Of Use"  onPress={()=>navigation.navigate(ScreenNameEnum.TermsCondition)} />
-      <MenuItem title="Support" />
+        <MenuItem title="Payment Method" />
 
-      {/* LOGOUT */}
-      <TouchableOpacity style={{ marginTop: 25 }} onPress={async()=>{
-await AsyncStorage.clear()
-navigation.navigate(ScreenNameEnum.ChooseRole)
-      }}>
-        <Text style={styles.logout}>Log Out</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        {/* SETTINGS SECTION */}
+        <Text style={styles.sectionTitle}>Settings</Text>
+        <MenuItem title="Notifications" onPress={() => navigation.navigate(ScreenNameEnum.NotificationsSetting)} />
+
+        {/* ABOUT SECTION */}
+        <Text style={styles.sectionTitle}>About</Text>
+        <MenuItem title="Privacy Policy" onPress={() => navigation.navigate(ScreenNameEnum.PrivacyPolicy)} />
+        <MenuItem title="Terms And Conditions Of Use" onPress={() => navigation.navigate(ScreenNameEnum.TermsCondition)} />
+        <MenuItem title="Help and Support" onPress={() => navigation.navigate(ScreenNameEnum.HelpSupport)} />
+        {/* LOGOUT */}
+        <TouchableOpacity style={{ marginTop: 25 }} onPress={async () => {
+          await AsyncStorage.clear()
+          navigation.navigate(ScreenNameEnum.ChooseRole)
+        }}>
+          <Text style={styles.logout}>Log Out</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 };

@@ -25,18 +25,15 @@ import { color } from "../../../constant";
 // Types and Constants
 type RoleOption = {
   id: number;
-  type: "user" | "Provider"
+  type: "User" | "Provider"
   label: string;
   image: any;
   description: string;
-};
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
-
+}; 
 const ROLE_OPTIONS: RoleOption[] = [
   { 
     id: 1, 
-    type: "user", 
+    type: "User", 
     label: "User", 
     image: imageIndex.marketplace,
     description: "Send packages and track deliveries"

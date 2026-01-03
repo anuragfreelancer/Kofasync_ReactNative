@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { SignupApi } from '../../../Api/apiRequest';
+import AsyncStorage from '@react-native-async-storage/async-storage';
   
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const mobileRegex = /^[0-9]{10,15}$/;
@@ -11,6 +13,7 @@ interface Credentials {
   fullName?: string;
   city?: string;
   country?: string;
+  confirmPassword?:string;
 }
 
 interface ValidationErrors {
@@ -19,6 +22,7 @@ interface ValidationErrors {
   mobile?: string;
   fullName?: string;
   selectedOption?: string;
+  confirmPassword?:string
 }
 
 const useSignup = () => {
@@ -37,6 +41,7 @@ const useSignup = () => {
     fullName: '',
     city: '',
     country: '',
+    confirmPassword:''
   });
 
   const handleChange = (field: keyof Credentials, value: string) => {
@@ -44,8 +49,12 @@ const useSignup = () => {
     setErrors((prev) => ({ ...prev, [field]: '' }));
   };
 
+  const passwordRegex =
+  /^(?=.*[A-Za-z])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+
+
   const validateFields = (): boolean => {
-    const { email, password, mobile, fullName } = credentials;
+    const { email, password, mobile, fullName,  confirmPassword} = credentials;
     const validationErrors: ValidationErrors = {};
 
     // Full Name validation
@@ -68,11 +77,18 @@ const useSignup = () => {
     }
 
     // Password validation
-    if (!password.trim()) {
-      validationErrors.password = 'Password is required.';
-    } else if (password.length < 6) {
-      validationErrors.password = 'Password must be at least 6 characters.';
-    }
+  if (!password.trim()) {
+  validationErrors.password = 'Password is required.';
+} else if (!passwordRegex.test(password)) {
+  validationErrors.password =
+    'Password must be at least 8 characters long and include 1 alphabet and 1 special character.';
+}
+
+if (!confirmPassword.trim()) {
+  validationErrors.confirmPassword = 'Confirm Password is required.';
+} else if (password.trim() !== confirmPassword.trim()) {
+  validationErrors.confirmPassword = 'Passwords do not match.';
+}
 
     // Option selection validation
     // if (!selectedOption) {
@@ -89,17 +105,18 @@ const useSignup = () => {
 
   const handleSignup = async () => {
     if (!validateFields()) return;
-
+const role = await AsyncStorage.getItem("selectedRole");
     try {
       const params = {
         ...credentials,
         mobile:   credentials.mobile,
         user_name: credentials.fullName,
         navigation: navigation,
-        county : selectedCountryCode
+        county : selectedCountryCode,
+        type:role
       };
        
-    //  const response = await SinupUserApi(params, setIsLoading);
+     const response = await SignupApi(params, setIsLoading);
     } catch (error) {
       console.error("Signup Error:", error);
     }

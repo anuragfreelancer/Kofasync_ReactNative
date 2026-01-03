@@ -1,82 +1,132 @@
-import React, { useState } from 'react';
 import {
   View,
   Text,
   Image,
-  TouchableOpacity,
+   StyleSheet,
   ScrollView,
-  ImageBackground
+  
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React  from 'react';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import StatusBarComponent from './../../../compoent/StatusBarCompoent';
+import CustomHeader from './../../../compoent/CustomHeader';
+import imageIndex from './../../../assets/imageIndex';
+import LoadingModal from './../../../utils/Loader';
+import TextInputField from './../../../compoent/TextInputField';
+import ResponsiveSize from './../../../utils/ResponsiveSize';
+import CustomButton from './../../../compoent/CustomButton';
+import { wp } from './../../../utils/Constant';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import Loading from '../../../utils/Loader';
-import imageIndex from '../../../assets/imageIndex';
-import StatusBarComponent from '../../../compoent/StatusBarCompoent';
-import CustomButton from '../../../compoent/CustomButton';
-import CustomInput from '../../../compoent/CustomInput';
-import Icon from '../../../compoent/Icon';
-import localizationStrings from '../../../localization/LocalizationString';
- import { styles } from './style';
-import { validateConfirmPassword, validatePassword } from '../../../utils/validation';
-import { useCreateNewPassword } from './useCreateNewPassword';
-
-export default function CreatePassword() {
-  const {
-    password,
-    confirmPassword,
-    passwordError,
-    confirmPasswordError,
+import useCreateNewPassword from './useCreateNewPassword';
+ 
+export default function CreateNewPassword() {
+  const { credentials,
+    errors,
     isLoading,
-    handlePassText,
-    handleCPassText,
-    handleSetPassword,
-    navigation
-  } = useCreateNewPassword()
+    handleChange,
+    handleResetPass,
+    navigation, } = useCreateNewPassword();
 
   return (
-    <ImageBackground
-      source={imageIndex.AuthBg}
-      style={styles.background}
-      resizeMode="stretch"
-    >
-      <SafeAreaView style={styles.container}>
-        <StatusBarComponent />
-        {isLoading && <Loading />}
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Image source={imageIndex.leftCircle} style={styles.backIcon} />
-          </TouchableOpacity>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <StatusBarComponent />
+      <View style={{ marginTop: 5 }}>
+        <CustomHeader   label="Back"/>
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false} >
+        {isLoading ? <LoadingModal /> : null}
 
-          <View style={styles.headerContainer}>
-            <Text  allowFontScaling={false}   style={styles.title}>{localizationStrings.createPasTitle}</Text>
-            <Text  allowFontScaling={false}   style={styles.description}>{localizationStrings.createPassDes}</Text>
+        <View
+          style={{
+            backgroundColor: '#FFF',
+            marginHorizontal: 15,
+            flex: 1,
+            marginTop: hp(2)
+          }}>
+       
+          <View style={{ marginTop: 5 }}>
+            <Text style={{
+                  fontWeight: '700',
+                  fontSize: 24,
+                  lineHeight: 36,
+                  color: 'rgba(0, 0, 0, 1)',
+                  textAlign:'center'
+             }}>Create New Password</Text>
+            <Text style={{
+               fontWeight: '400',
+               fontSize: 16,
+                color: '#9DB2BF',
+                marginTop: 4,
+                lineHeight:20,
+                textAlign:'center'
+             }}>
+            Your new password must be different from{"\n"}previous used passwords.
+            </Text>
           </View>
+          <View style={{ marginTop: ResponsiveSize.marginTop(18), paddingVertical: hp(2), }}>
+            <TextInputField
+              lable={"Password"}
+              text={credentials.password}
+              placeholder={'Password'}
+              onChangeText={(value:string) => handleChange('password', value)} // Handles email input dynamically
 
-          <View style={styles.formContainer}>
-            <CustomInput
-              placeholder={localizationStrings.passPlace}
-              leftIcon={<Icon source={imageIndex.lock} size={20} colorIcon="#A59F9F" />}
-              value={password}
-              onChangeText={handlePassText}
-              secureTextEntryToggle
+              firstLogo={true}
+              showEye={true}
+              img={imageIndex.lock}
             />
-            {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
-
-            <CustomInput
-              placeholder={localizationStrings.cPasswordPlac}
-              leftIcon={<Icon source={imageIndex.lock} size={20} colorIcon="#A59F9F" />}
-              value={confirmPassword}
-              onChangeText={handleCPassText}
-              secureTextEntryToggle
-            />
-            {confirmPasswordError ? <Text style={styles.errorText}>{confirmPasswordError}</Text> : null}
+            {errors.password ? <Text style={{ color: 'red', fontSize: 14,marginTop:8 }}>{errors.password}</Text> : null}
+            <View style={{ marginTop: 12 }}>
+              <TextInputField
+                lable={"Confirm Password"}
+                text={credentials.confirmPassword}
+                onChangeText={(value:string) => handleChange('confirmPassword', value)} // Handles email input dynamically
+                placeholder={'Confirm Password'}
+                firstLogo={true}
+                showEye={true}
+                img={imageIndex.lock}
+              />
+            </View>
+            {errors.confirmPassword ? <Text style={{ color: 'red', fontSize: 14 ,marginTop:10}}>{errors.confirmPassword}</Text> : null}
           </View>
-        </ScrollView>
+        </View>
 
-        <CustomButton title={localizationStrings.submit} onPress={handleSetPassword} />
-      </SafeAreaView>
-    </ImageBackground>
+      </ScrollView>
+      <View style={{
+        justifyContent: 'flex-start', marginBottom:10,
+        marginHorizontal: 15,
+      
+      }}>
+        <CustomButton
+          title={'Save'}
+          onPress={handleResetPass}
+ 
+         />
+
+      </View>
+
+    </SafeAreaView>
   );
 }
+
+const Styles = StyleSheet.create({
+  text: {
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: '700',
+    color: 'rgba(255, 77, 76, 1)',
+    bottom: 2
+  },
+  btn: {
+    alignSelf: 'center',
+    backgroundColor: '#E8442E',
+    height: 55,
+
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 30,
+    width: wp(90),
+  },
+});
+
+

@@ -91,6 +91,7 @@ export default function Login() {
               onChangeText={(value: any) => handleChange('password', value)}
 
             />
+            {errors.password ? <Text style={{ color: 'red', fontSize: 12, marginTop: 10 }}>{errors.password}</Text> : null}
 
 
           </View>
