@@ -44,9 +44,9 @@ const useCreateNewPassword = () => {
       return;
     }
     const params = {
-      password: password,
-      c_password: confirmPassword,
-      user_id: userId,
+      newPassword: password,
+      confirmPassword: confirmPassword,
+      userId: userId,
       // navigation: navigation,
     };
 

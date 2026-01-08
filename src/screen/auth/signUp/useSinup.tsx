@@ -109,11 +109,11 @@ const role = await AsyncStorage.getItem("selectedRole");
     try {
       const params = {
         ...credentials,
-        mobile:   credentials.mobile,
-        user_name: credentials.fullName,
+        phoneNumber:   credentials.mobile,
+        username: credentials.fullName,
         navigation: navigation,
-        county : selectedCountryCode,
-        type:role
+        // county : selectedCountryCode,
+        role:role == 'User' ? 'customer' :'provider'
       };
        
      const response = await SignupApi(params, setIsLoading);

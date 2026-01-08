@@ -1,12 +1,13 @@
 
- 
+
 import ScreenNameEnum from '../routes/screenName.enum';
 import { loginSuccess, logout } from '../redux/feature/authSlice';
 import { errorToast, successToast } from '../utils/customToast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Toast } from '../utils/Toast';
-import { BASE_URL, color } from '../constant'; 
+import { BASE_URL, color } from '../constant';
 import { ENDPOINT } from './endpoints';
+import axios from 'axios';
 
 
 const handleLogout = async (dispatch: any) => {
@@ -43,22 +44,27 @@ const LoginApi = async (
 
   try {
     // ✅ Create FormData object
-    const formdata = new FormData();
-    formdata.append('email', param?.email || '');
-    formdata.append('password', param?.password || '');
-    formdata.append('type', param?.type || '');
+    // const formdata = new FormData();
+    // formdata.append('email', param?.email || '');
+    // formdata.append('password', param?.password || '');
+    // formdata.append('type', param?.type || '');
 
-    
+const raw = JSON.stringify({
+  "email":  param?.email,
+  "password": param?.password,
+  "role":param?.type
+});
 
     // ✅ Send FormData instead of JSON
-    const response = await fetch(`${BASE_URL+ENDPOINT.Login}`, {
+    const response = await fetch(`${BASE_URL + ENDPOINT.Login}`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
+        "Content-Type": "application/json" 
         // ❌ Do NOT set Content-Type manually for FormData
         // The browser/react-native will handle the correct boundary automatically
       },
-      body: formdata,
+      body: raw,
     });
 
     const textResponse = await response.text();
@@ -76,11 +82,11 @@ const LoginApi = async (
     if (parsedResponse?.success) {
       console.log(parsedResponse)
       successToast(parsedResponse.message);
-       await AsyncStorage.setItem('token', parsedResponse?.data?.token);
+      await AsyncStorage.setItem('token', parsedResponse?.data?.token);
       param.dispatch(loginSuccess({ userData: parsedResponse?.data?.user_data, token: parsedResponse?.data?.token }));
       await saveAuthData(parsedResponse?.data?.user_data, parsedResponse?.data?.token);
-      
-      param.navigation.navigate(ScreenNameEnum.TabNavigator)
+
+      param.navigation.replace(ScreenNameEnum.TabNavigator)
       //   code: param?.code,
       //   phone: param?.phone,
       // });
@@ -106,11 +112,14 @@ const SignupApi = async (
   try {
     // ✅ Create FormData object
     const formdata = new FormData();
-    formdata.append('user_name', param?.fullName   || '');
-    formdata.append('mobile_number', param?.mobile || '');
-    formdata.append('email', param?.email   || '');
-    formdata.append('password', param?.password || '');
-    formdata.append('type', param?.type || '');
+ 
+    const raw = JSON.stringify({
+      "email": param?.email,
+      "username": param?.username,
+      "phoneNumber": param?.phoneNumber,
+      "password": param?.password,
+      "role": "customer"
+    });
 
     // console.log('FormData:', {
     //   countryCode: param?.code,
@@ -119,29 +128,25 @@ const SignupApi = async (
     // });
 
     // ✅ Send FormData instead of JSON
-    const response = await fetch(`${BASE_URL+ENDPOINT.SignUp}`, {
+    const response = await fetch(`${BASE_URL + ENDPOINT.SignUp}`, {
       method: 'POST',
       headers: {
-        Accept: 'application/json',
-       },
-      body: formdata,
+        // Accept: 'application/json',
+         "Content-Type": "application/json" 
+      },
+      body: raw,
     });
-
+    // console.log(body)
     const textResponse = await response.text();
 
-    // ✅ Try parsing response safely
-    let parsedResponse: any;
-    try {
-      parsedResponse = JSON.parse(textResponse);
-    } catch (error) {
-      errorToast('Invalid server response');
-      return;
-    }
 
+    let parsedResponse = JSON.parse(textResponse);
+
+    console.log(parsedResponse)
     // ✅ Handle API response
     if (parsedResponse?.success) {
       successToast(parsedResponse.message);
-      param.navigation.navigate(ScreenNameEnum.Login)
+      param.navigation.navigate(ScreenNameEnum.OtpScreen, {userId:parsedResponse?.data?.userId, from:'signup'})
       //   {
       //   code: param?.code,
       //   phone: param?.phone,
@@ -163,43 +168,43 @@ const SignupApi = async (
 
 
 
- export const GET_API = async (
-   endpoint: string,
-   token?: string,
-   method: string = "GET",
-   setLoading?: (val: boolean) => void
- ) => {
-   try {
-     setLoading?.(true);
- 
-     const url = endpoint.startsWith("http")
-       ? endpoint
-       : `${BASE_URL}${endpoint}`;
- 
-     const response = await axios({
-       method,
-       url,
-       headers: {
-         "Content-Type": "application/json",
-         ...(token && { Authorization: `Bearer ${token}` }),
-       },
-     });
-      setLoading?.(false);
+export const GET_API = async (
+  endpoint: string,
+  token?: string,
+  method: string = "GET",
+  setLoading?: (val: boolean) => void
+) => {
+  try {
+    setLoading?.(true);
 
-     return response.data;
-   } catch (error: any) {
-     console.error(
-       "API Error:",
-       error?.response?.data || error?.message
-     );
-     return error?.response?.data || {
-       success: false,
-       message: "Something went wrong",
-     };
-   } finally {
-     setLoading?.(false);
-   }
- };
+    const url = endpoint.startsWith("http")
+      ? endpoint
+      : `${BASE_URL}${endpoint}`;
+
+    const response = await axios({
+      method,
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+    });
+    setLoading?.(false);
+
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      "API Error:",
+      error?.response?.data || error?.message
+    );
+    return error?.response?.data || {
+      success: false,
+      message: "Something went wrong",
+    };
+  } finally {
+    setLoading?.(false);
+  }
+};
 
 export const POST_API = async (
   token: string,
@@ -209,23 +214,22 @@ export const POST_API = async (
 ) => {
   try {
     setLoading(true);
-
-    const formData = objectToFormData(body);
-
+ 
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
+        // Accept: 'application/json',
+        "Content-Type": "application/json"
         // ❌ DO NOT set Content-Type for FormData
       },
-      body: formData,
+      body: JSON.stringify(body),
     });
-// console.log(formData, 'formadata')
+    // console.log(formData, 'formadata')
     const text = await response.text();
 
     try {
-        console.log(JSON.parse(text))
+      console.log(JSON.parse(text))
       return JSON.parse(text);
     } catch {
       console.log('Non JSON response:', text);
@@ -239,7 +243,7 @@ export const POST_API = async (
     setLoading(false);
   }
 };
- 
+
 const objectToFormData = (obj: any) => {
   const formData = new FormData();
 
@@ -331,20 +335,18 @@ const Resend_otp = async (param: any, setLoading: any) => {
   try {
     // ✅ Create FormData
     const formdata = new FormData();
-    formdata.append('countryCode', param?.code || '');
-    formdata.append('phoneNumber', param?.phone || '');
+    const raw = JSON.stringify({
+  "userId": param?.userId,
+  "otp": param?.value
+});
 
-    console.log('FormData:', {
-      countryCode: param?.code,
-      phoneNumber: param?.phone,
-    });
+    
 
     // ✅ Send FormData
-    const response = await fetch(`${BASE_URL}/resend-otp`, {
+    const response = await fetch(`${BASE_URL+ENDPOINT.OtpVerify}`, {
       method: 'POST',
       headers: {
-        Accept: 'application/json',
-        // ❌ Do NOT set Content-Type manually for FormData
+        "Content-Type" : "application/json"
       },
       body: formdata,
     });
@@ -365,6 +367,12 @@ const Resend_otp = async (param: any, setLoading: any) => {
     // ✅ Handle response
     if (parsedResponse?.status === 1) {
       successToast(parsedResponse?.message);
+      if(param?.rom == "signup"){
+param.navigation.navigate(ScreenNameEnum.Login)
+      }else{
+param.navigation.navigate(ScreenNameEnum.CreateNewPassword)
+
+      }
     } else {
       errorToast(parsedResponse?.message);
     }

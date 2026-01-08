@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { hp } from "../../../utils/Constant";
-import { color,   } from "../../../constant";
+import { color, } from "../../../constant";
 import font from "../../../theme/font";
 
 
@@ -23,25 +23,25 @@ export const styles = StyleSheet.create({
     height: 32,
     width: 32,
   },
-   txtHeading: {
-     fontSize: 24,
+  txtHeading: {
+    fontSize: 24,
     lineHeight: 36,
     color: 'rgba(0, 0, 0, 1)',
     marginTop: 10,
-    fontWeight:"500",
-    textAlign:'center'
-   },
-   txtDes:{
-        color:'#9DB2BF',
-        fontSize:16,
-          fontFamily:font.MonolithRegular,
-    textAlign:'center'
+    fontWeight: "500",
+    textAlign: 'center'
+  },
+  txtDes: {
+    color: '#9DB2BF',
+    fontSize: 16,
+    fontFamily: font.MonolithRegular,
+    textAlign: 'center'
 
-      },
+  },
   headerSection: {
     height: hp(15),
     marginTop: 5,
-   },
+  },
   title: {
     fontSize: 24,
     fontWeight: '700',
@@ -58,31 +58,32 @@ export const styles = StyleSheet.create({
   },
   otpFieldContainer: {
     height: hp(10),
-      justifyContent: 'center',
-      alignSelf:'center'
+    justifyContent: 'center',
+    alignSelf: 'center'
   },
   cellWrapper: {
-     alignItems: 'center',      // center horizontally
+    alignItems: 'center',      // center horizontally
     justifyContent: 'center',  // center vertically
-  marginHorizontal:8
+    marginHorizontal: 7
   },
   cell: {
-    width: 60,
-  height: 60,
-  fontSize: 24,
-  lineHeight: 60,            // match the height for vertical centering
-  borderWidth: 1.5,
-  borderColor: '#E9E9E9',
-  textAlign: 'center',
-  color: '#000',
-  borderRadius: 11,
-  includeFontPadding: false,  // remove extra padding for Android
+    width: 55,
+    height: 55,
+    fontSize: 24,
+    lineHeight: 50,            // match the height for vertical centering
+    borderWidth: 1.5,
+    borderColor: '#E9E9E9',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    color: '#000',
+    borderRadius: 11,
+    includeFontPadding: false,  // remove extra padding for Android
   },
   focusCell: {
     borderColor: color.primary,
     backgroundColor: 'white',
     textAlignVertical: 'center',
-    justifyContent:"center"
+    justifyContent: "center"
 
   },
   errorText: {
@@ -103,6 +104,6 @@ export const styles = StyleSheet.create({
     width: '100%',
     position: 'absolute',
     bottom: 20,
-    alignSelf:'center'
+    alignSelf: 'center'
   },
 });

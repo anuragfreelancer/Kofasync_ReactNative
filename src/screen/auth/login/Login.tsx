@@ -66,13 +66,13 @@ export default function Login() {
               textAlign: 'center',
               fontSize: 15
             }} >
-              Enter your Number and password
+              Enter your Email and password
             </Text>
 
           </View>
           <View style={{ marginTop: ResponsiveSize.marginTop(25), paddingVertical: hp(2), }}>
             <TextInputField
-              placeholder={'Phone Number'}
+              placeholder={'Email'}
               text={credentials.email}
               img={imageIndex.userLogo}
 

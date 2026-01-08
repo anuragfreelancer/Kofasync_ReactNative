@@ -60,7 +60,7 @@ const handleChange = (field: keyof Credentials, value: string) => {
       const params = {
         email: credentials?.email,
         password: credentials?.password,
-        type:role,
+        type:role == "User" ? "customer" :'provider',
          navigation: navigation,
          dispatch:dispatch
        };

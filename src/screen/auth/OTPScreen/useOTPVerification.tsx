@@ -10,7 +10,8 @@ import { errorToast } from '../../../utils/customToast';
 export const useOtpVerification = (cellCount: number = 4) => {
   const navigation = useNavigation();
   const route: any = useRoute();
-  const { identity, code } = route.params || {};
+  const { userId, from } = route.params || {};
+  console.log(from, 'from')
   const [value, setValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -26,8 +27,8 @@ export const useOtpVerification = (cellCount: number = 4) => {
     return () => clearInterval(interval);
   }, [timer]);
   const data = {
-    mob: identity,
-    code: code
+    userId: userId,
+    code: value
   }
   const [errorMessage, setErrorMessage] = useState('');
   const ref = useBlurOnFulfill({ value, cellCount });
@@ -41,7 +42,7 @@ export const useOtpVerification = (cellCount: number = 4) => {
     if (timer > 0) return; // prevent multiple clicks during countdown
     setIsLoading(true);
     try {
-      const params = { identity, code };
+      const params = { userId, value, from, navigation };
       await Resend_otp(params, setIsLoading);
       setTimer(30); // start 30 seconds timer
     } catch (error) {
@@ -50,7 +51,6 @@ export const useOtpVerification = (cellCount: number = 4) => {
       setIsLoading(false);
     }
   };
-
   const handleVerifyOTP = async () => {
     if (value.length !== cellCount) {
       setErrorMessage('Please enter 4 digit otp');
@@ -60,13 +60,18 @@ export const useOtpVerification = (cellCount: number = 4) => {
     setIsLoading(true);
     try {
       setIsLoading(false)
-      const params = { identity, otp: value, navigation, code };
-     const res =  await POST_API('', params, ENDPOINT.OtpVerify,setIsLoading);
+      const params = { userId, otp: value, navigation };
+      const url = from == 'signup' ? ENDPOINT.OtpVerify : ENDPOINT.OtpVerifyForReset
+     const res =  await POST_API('', params, url,setIsLoading);
     
     if(res.success){
        console.log(res)
-        navigation.navigate(ScreenNameEnum.CreateNewPassword, {userId:res?.data?.user_id
-})
+       if(from == 'signup'){
+         navigation.navigate(ScreenNameEnum.Login)
+       }else{
+
+        navigation.navigate(ScreenNameEnum.CreateNewPassword, {userId:userId})
+      }
       }else{
         errorToast(res.message)
       }

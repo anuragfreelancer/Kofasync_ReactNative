@@ -38,11 +38,12 @@ import ScreenNameEnum from '../../../routes/screenName.enum';
       return;
     }
      try {
-      const params = { identity:email,navigation:navigation };
+      const params = { email:email };
       const res = await POST_API('', params, ENDPOINT.ForgetPassword,setisLoading)
       if(res.success){
         console.log(res)
-        navigation.navigate(ScreenNameEnum.OtpScreen, {identity:email})
+
+        navigation.navigate(ScreenNameEnum.OtpScreen, {userId:res?.data?.userId, from:'forgot'})
       }else{
         errorToast(res.message)
       }
