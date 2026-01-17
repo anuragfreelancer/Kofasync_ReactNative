@@ -76,7 +76,7 @@ export default function SignUp() {
             {/* Form Section */}
             <View style={styles.formContainer}>
               {/* Full Name */}
-           
+
               {/* Email */}
               <TextInputField
                 onChangeText={(value: string) => handleChange('email', value)}
@@ -90,7 +90,7 @@ export default function SignUp() {
               {errors.email && (
                 <Text style={styles.errorText}>{errors.email}</Text>
               )}
-   <TextInputField
+              <TextInputField
                 onChangeText={(value: string) => handleChange('fullName', value)}
                 placeholder="Username"
                 value={credentials.fullName}

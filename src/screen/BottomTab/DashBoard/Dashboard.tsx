@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -14,24 +14,29 @@ import SearchBar from "../../../compoent/SearchBar";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
 import { useNavigation } from "@react-navigation/native";
 import ScreenNameEnum from "../../../routes/screenName.enum";
+import { useSelector } from "react-redux";
+import { image_url } from "../../../constant";
 
 // ---------------------- HEADER -------------------------
-const Header = () => (
+const Header = () => {
+  const navigation = useNavigation();
+ const userData: any = useSelector((state: any) => state.auth.userData);
+  return(
   <View style={styles.header}>
     <View style={{ flexDirection: "row" }}>
-      <Image source={imageIndex.prfile} style={styles.profileImg} />
+      <Image source={userData?.profileImage ? { uri: image_url + userData?.profileImage } : imageIndex.prfile} style={styles.profileImg} />
       <View style={{ marginLeft: 5 }}>
         <Text style={styles.welcome}>Hello, Welcome 🎉</Text>
-        <Text style={styles.name}>Savannah Nguyen</Text>
+        <Text style={styles.name}>{userData?.username}</Text>
       </View>
     </View>
 
-    <TouchableOpacity style={{ flexDirection: "row" }}>
+    <TouchableOpacity style={{ flexDirection: "row" }} onPress={()=>navigation.navigate(ScreenNameEnum.NotificationsScreen)}>
       <Image source={imageIndex.notification} style={styles.profileImg} />
     </TouchableOpacity>
   </View>
 );
-
+}
 // ---------------------- BANNER ------------------------
 const Banner = () => (
   <View style={styles.bannerContainer}>
@@ -67,14 +72,22 @@ const LikeButton = () => {
 };
 
 // -------------------- COMPANY CARD ----------------------
-const CompanyCard = ({ item }) => (
+const CompanyCard = ({ item }:any) => (
   <View style={styles.companyCard}>
     <Image source={item.image} style={styles.companyImg} />
 
 
     <View style={styles.companyContent}>
+      <View style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}>
       <Text style={styles.companyName}>{item.name}</Text>
-
+ <View style={styles.ratingRow}>
+      <Image source={imageIndex.star} style={styles.starIcon} />
+      <Text style={styles.ratingText}>{item.rating}</Text>
+      </View>
+    </View>
       <View style={styles.locationRow}>
         <View style={{
           flexDirection: "row"
@@ -91,10 +104,6 @@ const CompanyCard = ({ item }) => (
       </TouchableOpacity>
     </View>
 
-    <View style={styles.ratingRow}>
-      <Image source={imageIndex.star} style={styles.starIcon} />
-      <Text style={styles.ratingText}>{item.rating}</Text>
-    </View>
   </View>
 );
 
@@ -286,12 +295,12 @@ const styles = StyleSheet.create({
   viewServices: { color: "#09BFCD", fontWeight: "600" },
 
   ratingRow: {
-    position: "absolute",
-    left: 12,
-    top: 12,
+    // position: "absolute",
+    // left: 12,
+    // top: 12,
     flexDirection: "row",
     alignItems: "center",
   },
   starIcon: { width: 16, height: 16, tintColor: "#FFB400" },
-  ratingText: { marginLeft: 4, color: "#fff", fontWeight: "600" },
+  ratingText: { marginLeft: 4, color: "#000", fontWeight: "600" },
 });

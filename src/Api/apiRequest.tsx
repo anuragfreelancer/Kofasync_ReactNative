@@ -49,18 +49,18 @@ const LoginApi = async (
     // formdata.append('password', param?.password || '');
     // formdata.append('type', param?.type || '');
 
-const raw = JSON.stringify({
-  "email":  param?.email,
-  "password": param?.password,
-  "role":param?.type
-});
+    const raw = JSON.stringify({
+      "email": param?.email,
+      "password": param?.password,
+      "role": param?.type
+    });
 
     // ✅ Send FormData instead of JSON
     const response = await fetch(`${BASE_URL + ENDPOINT.Login}`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        "Content-Type": "application/json" 
+        "Content-Type": "application/json"
         // ❌ Do NOT set Content-Type manually for FormData
         // The browser/react-native will handle the correct boundary automatically
       },
@@ -83,8 +83,8 @@ const raw = JSON.stringify({
       console.log(parsedResponse)
       successToast(parsedResponse.message);
       await AsyncStorage.setItem('token', parsedResponse?.data?.token);
-      param.dispatch(loginSuccess({ userData: parsedResponse?.data?.user_data, token: parsedResponse?.data?.token }));
-      await saveAuthData(parsedResponse?.data?.user_data, parsedResponse?.data?.token);
+      param.dispatch(loginSuccess({ userData: parsedResponse?.data?.user, token: parsedResponse?.data?.token }));
+      // await saveAuthData(parsedResponse?.data?.user_data, parsedResponse?.data?.token);
 
       param.navigation.replace(ScreenNameEnum.TabNavigator)
       //   code: param?.code,
@@ -110,29 +110,20 @@ const SignupApi = async (
   setLoading(true);
 
   try {
-    // ✅ Create FormData object
-    const formdata = new FormData();
- 
+
     const raw = JSON.stringify({
       "email": param?.email,
       "username": param?.username,
       "phoneNumber": param?.phoneNumber,
       "password": param?.password,
-      "role": "customer"
+      "role": param?.role
     });
 
-    // console.log('FormData:', {
-    //   countryCode: param?.code,
-    //   phoneNumber: param?.phone,
-    //   Type: param?.type,
-    // });
-
-    // ✅ Send FormData instead of JSON
     const response = await fetch(`${BASE_URL + ENDPOINT.SignUp}`, {
       method: 'POST',
       headers: {
         // Accept: 'application/json',
-         "Content-Type": "application/json" 
+        "Content-Type": "application/json"
       },
       body: raw,
     });
@@ -146,7 +137,7 @@ const SignupApi = async (
     // ✅ Handle API response
     if (parsedResponse?.success) {
       successToast(parsedResponse.message);
-      param.navigation.navigate(ScreenNameEnum.OtpScreen, {userId:parsedResponse?.data?.userId, from:'signup'})
+      param.navigation.navigate(ScreenNameEnum.OtpScreen, { userId: parsedResponse?.data?.userId, from: 'signup' })
       //   {
       //   code: param?.code,
       //   phone: param?.phone,
@@ -210,13 +201,14 @@ export const POST_API = async (
   token: string,
   body: any,
   endpoint,
-  setLoading: (v: boolean) => void
+  setLoading: (v: boolean) => void,
+  method
 ) => {
   try {
     setLoading(true);
- 
+
     const response = await fetch(`${BASE_URL}${endpoint}`, {
-      method: 'POST',
+      method: method || 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
         // Accept: 'application/json',
@@ -336,17 +328,17 @@ const Resend_otp = async (param: any, setLoading: any) => {
     // ✅ Create FormData
     const formdata = new FormData();
     const raw = JSON.stringify({
-  "userId": param?.userId,
-  "otp": param?.value
-});
+      "userId": param?.userId,
+      "otp": param?.value
+    });
 
-    
+
 
     // ✅ Send FormData
-    const response = await fetch(`${BASE_URL+ENDPOINT.OtpVerify}`, {
+    const response = await fetch(`${BASE_URL + ENDPOINT.OtpVerify}`, {
       method: 'POST',
       headers: {
-        "Content-Type" : "application/json"
+        "Content-Type": "application/json"
       },
       body: formdata,
     });
@@ -367,10 +359,10 @@ const Resend_otp = async (param: any, setLoading: any) => {
     // ✅ Handle response
     if (parsedResponse?.status === 1) {
       successToast(parsedResponse?.message);
-      if(param?.rom == "signup"){
-param.navigation.navigate(ScreenNameEnum.Login)
-      }else{
-param.navigation.navigate(ScreenNameEnum.CreateNewPassword)
+      if (param?.rom == "signup") {
+        param.navigation.navigate(ScreenNameEnum.Login)
+      } else {
+        param.navigation.navigate(ScreenNameEnum.CreateNewPassword)
 
       }
     } else {
@@ -396,7 +388,7 @@ const UpdateProfile = async (
 
     const formdata = new FormData();
 
-    if (param.username) formdata.append("firstName", param.username);
+    if (param.username) formdata.append("username", param.username);
     if (param.email) formdata.append("email", param.email);
     if (param.address) formdata.append("address", param.address);
 
@@ -405,7 +397,7 @@ const UpdateProfile = async (
       const fileName = param.imagePrfoile.fileName || "profile.jpg";
       const fileType = param.imagePrfoile.type || "image/jpeg";
 
-      formdata.append("imageFile", {
+      formdata.append("profileImage", {
         uri: param.imagePrfoile.uri,
         name: fileName,
         type: fileType,
@@ -415,16 +407,17 @@ const UpdateProfile = async (
     // ✅ Do NOT manually set 'Content-Type' header
     const headers: any = {
       Accept: "application/json",
-      Authorization: `Bearer ${token}`,
+      // Authorization: `Bearer ${token}`,
     };
 
     // ✅ Use POST (most servers expect POST for FormData upload)
-    const response = await fetch(`${BASE_URL}/setup-profile`, {
-      method: "POST",
+    const response = await fetch(`${BASE_URL}auth/edit-profile/${param?.id}`, {
+      method: "PUT",
       headers,
       body: formdata,
     });
-
+    // console.log(formdata)
+    // console.log(response, 'response')
     const textResponse = await response.text();
     let parsedResponse;
 
@@ -434,7 +427,7 @@ const UpdateProfile = async (
       throw new Error("Invalid server response");
     }
 
-    if (parsedResponse.status == "1") {
+    if (parsedResponse.success) {
       successToast(parsedResponse.message);
       return parsedResponse;
     } else {
@@ -453,16 +446,17 @@ const UpdateProfile = async (
 
 
 const GetProfileApi = async (
-  setLoading: (loading: boolean) => void
+  setLoading: (loading: boolean) => void,
+  dispatch: any
 ): Promise<any | null> => {
   setLoading(true);
   const token = await AsyncStorage.getItem('token');
   console.log("token", token);
   try {
-    const response = await fetch(`${BASE_URL}/setup-profile`, {
+    const response = await fetch(`${BASE_URL}profile/me`, {
       method: 'GET',  // agar get ho toh GET use karna
       headers: {
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
     });
@@ -470,7 +464,9 @@ const GetProfileApi = async (
     const responseData = await response.json();
     console.log("responseData", responseData);
 
-    if (responseData.status === "1" || responseData.status === 1) {
+    if (responseData.success) {
+        dispatch(loginSuccess({ userData: responseData?.data?.user, token: token }));
+     
       return responseData;
     } else {
       Toast(responseData.error || responseData.message || "Something went wrong", color.red, 10);
@@ -489,7 +485,7 @@ const GetProfileApi = async (
 const Privacypolicy = async (setLoading: any) => {
   setLoading(true);
   try {
-    const response = await fetch(`${BASE_URL}/privacy-policy`, {
+    const response = await fetch(`${BASE_URL}legal/privacy-policy`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -502,9 +498,9 @@ const Privacypolicy = async (setLoading: any) => {
 
     console.log("parsedResponse", parsedResponse);
 
-    if (parsedResponse?.status === 1) {
+    if (parsedResponse?.success) {
       successToast(parsedResponse?.message);
-      return parsedResponse; // ✅ Return the data
+      return parsedResponse?.data; // ✅ Return the data
     } else {
       errorToast(parsedResponse?.message);
       return null; // Optional: return null on failure
@@ -523,7 +519,7 @@ const Privacypolicy = async (setLoading: any) => {
 const Termsconditions = async (setLoading: any) => {
   setLoading(true);
   try {
-    const response = await fetch(`${BASE_URL}/terms-and-conditions`, {
+    const response = await fetch(`${BASE_URL}legal/terms-conditions`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -536,9 +532,9 @@ const Termsconditions = async (setLoading: any) => {
 
     console.log("parsedResponse", parsedResponse);
 
-    if (parsedResponse?.status === 1) {
+    if (parsedResponse?.success) {
       successToast(parsedResponse?.message);
-      return parsedResponse; // ✅ Return the data
+      return parsedResponse?.data; // ✅ Return the data
     } else {
       errorToast(parsedResponse?.message);
       return null; // Optional: return null on failure

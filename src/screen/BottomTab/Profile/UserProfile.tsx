@@ -312,10 +312,12 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-nati
 import { SafeAreaView } from "react-native-safe-area-context";
 import ScreenNameEnum from "../../../routes/screenName.enum";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import LogoutModal from "../../../compoent/LogoutModal";
 
 const ProfileScreen = () => {
   const navigation = useNavigation()
   const [role, setRole] = useState('user')
+  const [modalVisible, setModalVisible] = useState(false);
   useEffect(() => {
     (async () => {
       const role = await AsyncStorage.getItem("selectedRole")
@@ -358,19 +360,29 @@ const ProfileScreen = () => {
         <MenuItem title="Help and Support" onPress={() => navigation.navigate(ScreenNameEnum.HelpSupport)} />
         {/* LOGOUT */}
         <TouchableOpacity style={{ marginTop: 25 }} onPress={async () => {
-          await AsyncStorage.clear()
-          navigation.navigate(ScreenNameEnum.ChooseRole)
+          setModalVisible(true)
+          // await AsyncStorage.clear()
+          // navigation.navigate(ScreenNameEnum.ChooseRole)
         }}>
           <Text style={styles.logout}>Log Out</Text>
         </TouchableOpacity>
       </ScrollView>
+      <LogoutModal
+        visible={modalVisible}
+        onLogout={async () => {
+          // ✅ Call logout function
+          await AsyncStorage.clear()
+          navigation.replace(ScreenNameEnum.ChooseRole)
+        }}
+        onCancel={() => setModalVisible(false)}
+      />
     </SafeAreaView>
   );
 };
 
 export default ProfileScreen;
 
-const MenuItem = ({ title, onPress }) => (
+const MenuItem = ({ title, onPress }: { title: string; onPress?: () => void }) => (
   <View>
     <TouchableOpacity style={styles.item} onPress={onPress}>
       <Text style={styles.itemText}>{title}</Text>

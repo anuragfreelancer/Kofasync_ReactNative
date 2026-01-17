@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { use, useEffect, useRef } from 'react';
 import { Animated, ImageBackground, View, Text } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
@@ -8,7 +8,7 @@ import { color } from '../../../constant';
 import imageIndex from '../../../assets/imageIndex';
 import StatusBarComponent from '../../../compoent/StatusBarCompoent';
 import { styles } from './style';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { restoreLogin } from '../../../redux/feature/authSlice';
 import { getAuthData } from '../../../Api/apiRequest';
 import font from '../../../theme/font';
@@ -21,7 +21,8 @@ type RootStackParamList = {
 const Splash: React.FC = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const dispatch = useDispatch();
-
+ const userData: any = useSelector((state: any) => state.auth.userData);
+console.log(userData?.role, 'userdata')
   // Animation reference
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -35,23 +36,22 @@ const Splash: React.FC = () => {
 
     // Timer for navigation
     const timer = setTimeout(async () => {
- console.log('storedAuth')
+      console.log('storedAuth')
 
       try {
-        const storedAuth = await getAuthData();
- console.log(storedAuth)
-        if (storedAuth?.token) {
-          dispatch(restoreLogin(storedAuth));
-          if (storedAuth.userData?.type == "Delivery") {
-            navigation.replace(ScreenNameEnum.DeliveryTabNavigator);
-          } else {
+        // const storedAuth = await getAuthData();
+        // console.log(storedAuth)
+          if (userData) {
+            // alert('customer')
+          //   navigation.replace(ScreenNameEnum.DeliveryTabNavigator);
+          // } else {
             navigation.replace(ScreenNameEnum.TabNavigator);
             // navigation.replace(ScreenNameEnum.RequestLoading);
             // navigation.replace(ScreenNameEnum.RequestLoading);
+          }else{
+             navigation.replace(ScreenNameEnum.OnboardingScreen);
           }
-        } else {
-          navigation.replace(ScreenNameEnum.OnboardingScreen);
-        }
+       
       } catch (error) {
         console.error('Splash check failed:', error);
         navigation.replace(ScreenNameEnum.OnboardingScreen);
@@ -64,11 +64,11 @@ const Splash: React.FC = () => {
   return (
     <SafeAreaView
       style={styles.container}
- 
+
     >
       <StatusBarComponent backgroundColor={color.white} />
 
- 
+
       <View style={styles.centerContent}>
         <Animated.View style={{ opacity: fadeAnim }}>
           <FastImage
@@ -79,7 +79,7 @@ const Splash: React.FC = () => {
         </Animated.View>
       </View>
 
-     
+
     </SafeAreaView>
   );
 };

@@ -6,7 +6,7 @@ export const GoogleKey = "AIzaSyDYAVjajEQU7MG7qb6jhPf5nelAWhijtyo"
 // export const BASE_URL = 'http://server-php-8-3.technorizen.com/kofasync/api/'; 
 // export const image_url = 'http://server-php-8-3.technorizen.com/kofasync/api/';
 export const BASE_URL = 'https://appointment.aitechnotech.in/api/'; 
-export const image_url = 'https://appointment.aitechnotech.in/api/';
+export const image_url = 'https://appointment.aitechnotech.in';
 export const GoogleClientId = '';
  
 

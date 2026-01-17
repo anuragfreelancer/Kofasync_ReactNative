@@ -34,7 +34,7 @@ const  CustomHeader: React.FC<Props> = ({
       <View style={styles.sideContainer}>
       
           <TouchableOpacity
-            onPress={leftPress ? leftPress : () => navigation.goBack()}
+            onPress={() => navigation.goBack()}
             style={styles.iconWrap}
           >
           <Image source={imageIndex.back} style={styles.icon} resizeMode="contain" /> 

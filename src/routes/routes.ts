@@ -80,6 +80,10 @@ import CreateNewPassword from "../screen/auth/CreateNewPassword/CreateNewPasswor
       Component: CreateNewPassword,
     },
     {
+      name: ScreenNameEnum.NotificationsScreen,
+      Component: NotificationsScreen,
+    },
+    {
       name: ScreenNameEnum.Login,
       Component: Login,
     },
@@ -185,11 +189,6 @@ import CreateNewPassword from "../screen/auth/CreateNewPassword/CreateNewPasswor
       Component: ViewDetails,
     },
  
-  
-     {
-      name: ScreenNameEnum.NotificationsScreen,
-      Component: NotificationsScreen,
-    },
   
      {
       name: ScreenNameEnum.MyReviews,

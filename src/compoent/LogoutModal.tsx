@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import font from '../theme/font';
+import { color } from '../constant';
 
 const LogoutModal = ({ visible, onLogout, onCancel }: any) => {
   return (
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     flex: 1,
-    backgroundColor: '#FFCC00',
+    backgroundColor: color.primary,
     paddingVertical: 12,
     marginLeft: 10,
     borderRadius: 25,

@@ -10,24 +10,29 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import imageIndex from "../../../assets/imageIndex";
 import ApointMentCard from "./ApointmentCard";
+import { useSelector } from "react-redux";
+import { image_url } from "../../../constant";
+import ScreenNameEnum from "../../../routes/screenName.enum";
+import { useNavigation } from "@react-navigation/native";
 
 const AppointmentScreen = () => {
     const [selectedTab, setSelectedTab] = useState("Upcoming");
-
+ const userData: any = useSelector((state: any) => state.auth.userData);
+    const navigation = useNavigation();
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <ScrollView style={styles.container} contentContainerStyle={{paddingBottom:100}} showsVerticalScrollIndicator={false}>
                 {/* HEADER */}
                 <View style={styles.headerRow}>
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <Image source={{ uri: "https://i.pravatar.cc/80" }} style={styles.avatar} />
+                        <Image source={userData?.profileImage ? { uri: image_url + userData?.profileImage } : imageIndex.prfile} style={styles.avatar} />
                         <View style={{ marginLeft: 10 }}>
                             <Text style={styles.welcome}>Hello, Welcome 🎉</Text>
-                            <Text style={styles.name}>Charlie Westervelt</Text>
+                            <Text style={styles.name}>{userData?.username}</Text>
                         </View>
                     </View>
 
-                    <TouchableOpacity>
+                    <TouchableOpacity  onPress={()=>navigation.navigate(ScreenNameEnum.NotificationsScreen)}>
                         <Image
                             source={imageIndex.notification2}
                             style={styles.bell}

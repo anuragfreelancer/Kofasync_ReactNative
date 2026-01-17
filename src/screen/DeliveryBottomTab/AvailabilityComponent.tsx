@@ -24,38 +24,38 @@ const WeeklyScheduleItem: React.FC<Props> = ({
   return (
     <View style={styles.row}>
       {/* Day */}
-      <View style={{flex:0.3}}>
-      <Text style={styles.day}>{day}</Text>
-</View>
+      <View style={{ flex: 0.3 }}>
+        <Text style={styles.day}>{day}</Text>
+      </View>
       {/* S witch */}
-      <View style={{flexDirection:'row', justifyContent:'space-between', flex:0.7}}>
-      <Switch
-        value={enabled}
-        onValueChange={onToggle}
-        thumbColor={"#fff"}
-        trackColor={{ false: "#d9d9d9", true: "#00C6CE" }}
-      />
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 0.7 }}>
+        <Switch
+          value={enabled}
+          onValueChange={onToggle}
+          thumbColor={"#fff"}
+          trackColor={{ false: "#d9d9d9", true: "#00C6CE" }}
+        />
 
-      {/* Start Time */}
-      <TouchableOpacity
-        style={styles.timeBox}
-        onPress={enabled ? onSelectStart : undefined}
-        activeOpacity={0.7}
-      >
-        <Text style={styles.timeText}>{start}</Text>
-        <Image source={imageIndex.dounArroww}  style={{height:15, width:15}}/>
-      </TouchableOpacity>
+        {/* Start Time */}
+        <TouchableOpacity
+          style={styles.timeBox}
+          onPress={enabled ? onSelectStart : undefined}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.timeText}>{start}</Text>
+          <Image source={imageIndex.dounArroww} style={{ height: 15, width: 15 }} />
+        </TouchableOpacity>
 
-      {/* End Time */}
-      <TouchableOpacity
-        style={styles.timeBox}
-        onPress={enabled ? onSelectEnd : undefined}
-        activeOpacity={0.7}
-      >
-        <Text style={styles.timeText}>{end}</Text>
-        <Image source={imageIndex.dounArroww} style={{height:15, width:15}}/>
-        
-      </TouchableOpacity>
+        {/* End Time */}
+        <TouchableOpacity
+          style={styles.timeBox}
+          onPress={enabled ? onSelectEnd : undefined}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.timeText}>{end}</Text>
+          <Image source={imageIndex.dounArroww} style={{ height: 15, width: 15 }} />
+
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     // width: 75,
     fontSize: 15,
     color: "#333",
-// flex:0.1
+    // flex:0.1
   },
   timeBox: {
     flexDirection: "row",

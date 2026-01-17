@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Image,
@@ -21,29 +21,34 @@ import ImagePickerModal from "../../../compoent/ImagePickerModal";
 import imageIndex from "../../../assets/imageIndex";
 import { GetProfileApi, UpdateProfile } from "../../../Api/apiRequest";
 import { loginSuccess } from "../../../redux/feature/authSlice";
-import { color } from "../../../constant";
+import { BASE_URL, color, image_url } from "../../../constant";
 
 const EditProfile = () => {
   const navigation = useNavigation();
   const userData: any = useSelector((state: any) => state.auth.userData);
-
-  const [fullName, setFullName] = useState(userData?.firstName || "");
+//  const isLogin:any = useSelector <any>((state) => state?.auth?.userData);
+ console.log(userData, 'userData');
+  const [fullName, setFullName] = useState(userData?.username || "");
   const [email, setEmail] = useState(userData?.email || "");
   const [address, setAddress] = useState(userData?.address || "");
-  const [image, setImage] = useState<any>(userData?.image || null);
+  const [image, setImage] = useState<any>(userData?.profileImage ? image_url + userData?.profileImage : null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");
   const [isLoading, setIsLoading] = useState(false);
 const dispatch = useDispatch();
 const getProfileApi = async () => {
   try {
-    const response = await GetProfileApi(setIsLoading);
-     if (response) {
-      dispatch(loginSuccess({ userData: response}));
-     } 
+    const response = await GetProfileApi(setIsLoading, dispatch);
+    //  if (response) {
+    //   // dispatch(loginSuccess({ userData: response}));
+    //  } 
   } catch (error) {
  
    }
 };
+useEffect(()=>{
+  getProfileApi()
+},[])
   const pickImageFromGallery = () => {
     launchImageLibrary({ mediaType: "photo" }, (response) => {
       if (response.assets && response.assets.length > 0) {
@@ -69,6 +74,7 @@ const getProfileApi = async () => {
         email: email,
         address: address,
         imagePrfoile: image, // full object with uri, type, name
+        id: userData?._id,
       };
        const response = await UpdateProfile(params, setIsLoading);
 
@@ -126,14 +132,15 @@ const getProfileApi = async () => {
 
                <CustomInput
                 placeholder="Contact"
-                // value={fullName}
-                // onChangeText={setFullName}
-                // leftIcon={<Image source={imageIndex.profiel} style={styles.icon} />}
+                value={phoneNumber}
+                onChangeText={setPhoneNumber}
+                // leftIcon={<Image source={imageIndex.Phone1} style={styles.icon} />}
               />
               <CustomInput
                 placeholder="Email"
                 value={email}
                 onChangeText={setEmail}
+                editable={false}
                 // leftIcon={<Image source={imageIndex.mess} style={styles.icon} />}
               />
               <CustomInput
@@ -157,7 +164,7 @@ const getProfileApi = async () => {
 
       <View style={styles.buttonContainer}>
         <CustomButton title="Save" 
-        // onPress={handleSave}
+        onPress={handleSave}
           />
       </View>
     </SafeAreaView>
