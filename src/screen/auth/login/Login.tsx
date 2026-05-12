@@ -26,7 +26,8 @@ export default function Login() {
     isLoading,
     navigation,
     handleChange,
-    handleLogin
+    handleLogin,
+    role
   } = useLogin()
   interface Option {
     team_name: string;
@@ -74,7 +75,7 @@ export default function Login() {
             <TextInputField
               placeholder={'Email'}
               text={credentials.email}
-              img={imageIndex.userLogo}
+              img={imageIndex.email}
 
               firstLogo={true}
               onChangeText={(value: any) => handleChange('email', value)}
@@ -89,6 +90,7 @@ export default function Login() {
               showEye={true}
               img={imageIndex.lock}
               onChangeText={(value: any) => handleChange('password', value)}
+              hide={true}
 
             />
             {errors.password ? <Text style={{ color: 'red', fontSize: 12, marginTop: 10 }}>{errors.password}</Text> : null}
@@ -120,38 +122,43 @@ export default function Login() {
           </View>
         </View>
 
-
-        <Text style={{ marginTop: 20, fontSize: 16, lineHeight: 22, color: 'black', textAlign: "center", fontWeight: "500" }}>
-          OR
-        </Text>
-        <View style={{ alignItems: 'center', marginTop: 25, flexDirection: 'row', alignSelf: 'center', borderWidth: 1, width: '90%', justifyContent: 'center', borderRadius: 10, borderColor: '#EBEBEB' }}>
-
-          <Image
-            source={imageIndex.google}
-            style={{ height: 45, width: 20 }} resizeMode='contain'
-          />
-          <Text style={{ fontSize: 16, lineHeight: 22, color: '#909090', fontWeight: "500" }}>
-            {' '}  Sign In with Google
+        {role == "User" &&
+          <Text style={{ marginTop: 20, fontSize: 16, lineHeight: 22, color: 'black', textAlign: "center", fontWeight: "500" }}>
+            OR
           </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginTop: 40,
-            alignSelf: 'center',
-            justifyContent: 'flex-end', // Change this to flex-end 
-          }}>
-          <Text style={{ fontSize: 16, lineHeight: 22, color: '#909090', fontWeight: "500" }}>
-            Don’t have an account?{' '}
-          </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate(ScreenNameEnum.Sinup)}
+        }
+        {role == "User" &&
+          <View style={{ alignItems: 'center', marginTop: 25, flexDirection: 'row', alignSelf: 'center', borderWidth: 1, width: '90%', justifyContent: 'center', borderRadius: 10, borderColor: '#EBEBEB' }}>
 
-          >
-            <Text style={Styles.text}> Sign Up</Text>
-          </TouchableOpacity>
-        </View>
+            <Image
+              source={imageIndex.google}
+              style={{ height: 45, width: 20 }} resizeMode='contain'
+            />
+            <Text style={{ fontSize: 16, lineHeight: 22, color: '#909090', fontWeight: "500" }}>
+              {' '}  Sign In with Google
+            </Text>
+          </View>
+        }
+        {role == "User" &&
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: 40,
+              alignSelf: 'center',
+              justifyContent: 'flex-end', // Change this to flex-end 
+            }}>
+            <Text style={{ fontSize: 16, lineHeight: 22, color: '#909090', fontWeight: "500" }}>
+              Don’t have an account?{' '}
+            </Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate(ScreenNameEnum.Sinup)}
+
+            >
+              <Text style={Styles.text}> Sign Up</Text>
+            </TouchableOpacity>
+          </View>
+        }
       </ScrollView>
 
     </SafeAreaView>

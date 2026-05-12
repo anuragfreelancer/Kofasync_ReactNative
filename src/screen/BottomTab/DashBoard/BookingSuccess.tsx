@@ -10,43 +10,44 @@ import { useRoute } from '@react-navigation/native';
 import CustomHeader from '../../../compoent/CustomHeader';
 import imageIndex from '../../../assets/imageIndex';
 import CustomButton from '../../../compoent/CustomButton';
-
+import ScreenNameEnum from '../../../routes/screenName.enum';
+import { CommonActions } from '@react-navigation/native';
 
 const BookingSuccess = ({ navigation }) => {
   const route = useRoute()
-//   const item = route?.params?.item
-//   const typeAction = route?.params?.typeAction
-//   const [loading, setLoading] = useState(false)
+  //   const item = route?.params?.item
+  //   const typeAction = route?.params?.typeAction
+  //   const [loading, setLoading] = useState(false)
 
-//   useEffect(() => {
-//     (async () => {
-//       if (typeAction && item?.status == "Departure") {
-//         const param = {
-//           id: item?.user_id,
-//           bookingId: item?.id,
-//           status: "Charging"
-//         }
-//         setLoading(true)
-//         await ChangeTripStatusApi(param, setLoading)
-//       }
-//     })()
-//   })
-//   const Submit = async () => {
-//     if (item?.status == "Departure") {
-//       const param = {
-//         id: item?.user_id,
-//         bookingId: item?.id,
-//         status: "Charging"
-//       }
-//       setLoading(true)
-//       await ChangeTripStatusApi(param, setLoading)
-//     navigation.navigate(ScreenNameEnum.TripMap, { item: item })
+  //   useEffect(() => {
+  //     (async () => {
+  //       if (typeAction && item?.status == "Departure") {
+  //         const param = {
+  //           id: item?.user_id,
+  //           bookingId: item?.id,
+  //           status: "Charging"
+  //         }
+  //         setLoading(true)
+  //         await ChangeTripStatusApi(param, setLoading)
+  //       }
+  //     })()
+  //   })
+  //   const Submit = async () => {
+  //     if (item?.status == "Departure") {
+  //       const param = {
+  //         id: item?.user_id,
+  //         bookingId: item?.id,
+  //         status: "Charging"
+  //       }
+  //       setLoading(true)
+  //       await ChangeTripStatusApi(param, setLoading)
+  //     navigation.navigate(ScreenNameEnum.TripMap, { item: item })
 
-//     }else{
-//     navigation.navigate(ScreenNameEnum.TripMap, { item: item })
+  //     }else{
+  //     navigation.navigate(ScreenNameEnum.TripMap, { item: item })
 
-//     }
-//   }
+  //     }
+  //   }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -54,20 +55,32 @@ const BookingSuccess = ({ navigation }) => {
       {/* {loading && <LoadingModal />} */}
       {/* <StatusBarComponent /> */}
       <CustomHeader
-      
         label={"Back"}
-       
       />
       <View style={styles.centerView}>
         <Image source={imageIndex.bookingSuccess} style={styles.img} />
         <Text style={styles.title}>{'Congratulations!'}</Text>
         <Text style={styles.subTitle}>{'Mentoring session successfully booked. You will receive a notification email shortly conforming this booking'}</Text>
       </View>
-      
-      
-        <CustomButton onPress={() => {}} title={'View Appointment'}  />
-            <View style={{marginBottom:20}}></View>
-        <CustomButton onPress={() => {}} title={'Cancel'} />
+
+
+      <CustomButton onPress={() => {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [
+              {
+                name: ScreenNameEnum.TabNavigator,
+                params: { screen: "Booking" },
+              },
+            ],
+          })
+        );
+      }} title={'View Appointment'} />
+      <View style={{ marginBottom: 20 }}></View>
+      <CustomButton onPress={() => {
+        navigation.navigate(ScreenNameEnum.TabNavigator, { screen: ScreenNameEnum.HomeStack });
+      }} title={'Go to Home'} />
     </SafeAreaView>
   );
 
@@ -100,9 +113,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     // fontWeight: 'bold',
     marginTop: 10,
-    marginHorizontal:15,
-    textAlign:'center',
-    color:'#9E9FA5'
+    marginHorizontal: 15,
+    textAlign: 'center',
+    color: '#9E9FA5'
   },
 
 });

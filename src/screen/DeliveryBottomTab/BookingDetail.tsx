@@ -4,76 +4,128 @@ import imageIndex from '../../assets/imageIndex';
 import Header from '../../compoent/Header';
 import CustomHeader from '../../compoent/CustomHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRoute } from '@react-navigation/native';
+import moment from 'moment';
+import { image_url } from '../../constant';
+
+import { useSelector } from 'react-redux';
+import { updateBookingStatus } from '../../Api/bookingApi';
+import { successToast, errorToast } from '../../utils/customToast';
+import { ActivityIndicator } from 'react-native';
 
 const BookingDetailScreen = () => {
+  const route = useRoute<any>();
+  const [loading, setLoading] = React.useState(false);
+  const { token } = useSelector((state: any) => state.auth);
+  const item = route.params?.item;
+  const onRefresh = route.params?.onRefresh;
+
+  const customer = item?.userId;
+  const customerName = customer?.username || customer?.name || customer?.email?.split('@')[0] || "Customer";
+  const customerImage = customer?.profileImage;
+
+  const handleStatusUpdate = async (status: string) => {
+    try {
+      setLoading(true);
+      const res = await updateBookingStatus(item._id, status, token);
+      if (res?.success) {
+        successToast(`Booking ${status.toLowerCase()}ed successfully`);
+        onRefresh?.();
+        // Optionally go back
+      } else {
+        errorToast(res?.message || "Failed to update status");
+      }
+    } catch (error) {
+      console.error(error);
+      errorToast("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <SafeAreaView style={{flex:1, backgroundColor:'#fff'}}>
-      <CustomHeader label=' Appointments Details'/>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <CustomHeader label=' Appointments Details' />
 
-    <ScrollView style={styles.container}>      
-      {/* Profile Section */}
-      <View style={styles.profileSection}>
-        <Image
-          source={{ uri: 'https://i.pravatar.cc/81' }}
-          style={styles.profileImage}
-        />
-        <Text style={styles.name}>Davis Mango</Text>
-      </View>
+      <ScrollView style={styles.container}>
+        {/* Profile Section */}
+        <View style={styles.profileSection}>
+          <Image
+            source={customerImage ? { uri: image_url + customerImage } : { uri: "https://ui-avatars.com/api/?background=09BFCD&color=fff&name=" + encodeURIComponent(customerName) }}
+            style={styles.profileImage}
+          />
+          <Text style={styles.name}>{customerName}</Text>
+          <Text style={{ fontSize: 16, color: '#09BFCD', fontWeight: '600', marginTop: 5 }}>{item?.status}</Text>
+        </View>
 
-      {/* Date */}
-      <View style={styles.row}>
-        <Image source={imageIndex.calendar} style={styles.icon} />
-        <Text style={styles.rowText}>Sunday, 12 June</Text>
-      </View>
+        {/* Date */}
+        <View style={styles.row}>
+          <Image source={imageIndex.calendar} style={styles.icon} />
+          <Text style={styles.rowText}>{item?.bookingDate ? moment(item.bookingDate).format("dddd, DD MMMM YYYY") : "N/A"}</Text>
+        </View>
 
-      {/* Time */}
-      <View style={styles.row}>
-        <Image source={imageIndex.clock} style={styles.icon} />
-        <Text style={styles.rowText}>11:00 - 12:00 AM</Text>
-      </View>
+        {/* Time */}
+        <View style={styles.row}>
+          <Image source={imageIndex.clock} style={styles.icon} />
+          <Text style={styles.rowText}>{item?.startTime} - {item?.endTime}</Text>
+        </View>
 
-      {/* Note */}
-      <View style={styles.row}>
-        <Image source={imageIndex.info} style={styles.icon} />
-        <Text style={[styles.rowText,]}>Please keep the fade sharp and beard well-lined.</Text>
-      </View>
+        {/* Note */}
+        <View style={styles.row}>
+          <Image source={imageIndex.info} style={styles.icon} />
+          <Text style={styles.rowText}>{item?.notes || item?.description || "No additional notes provided."}</Text>
+        </View>
 
-      {/* Details */}
-      <View style={styles.detailBlock}>
-        <View style={styles.row1}>
-        <Text style={styles.label}>Name</Text>
-        <Text style={styles.value}>Davis Mango</Text>
-</View>
-<View style={styles.row1}>
-        <Text style={styles.label}>Phone Number</Text>
-        <Text style={styles.value}>+91 98765 43210</Text>
-</View>
-        
-<View style={styles.row1}>
-        <Text style={styles.label}>Hair Type</Text>
-        <Text style={styles.value}>Curly</Text>
-</View>
-<View style={styles.row1}>
-        <Text style={styles.label}>Beard Style Preference</Text>
-        <Text style={styles.value}>Short Boxed Beard</Text>
-</View>
-<View style={styles.row1}>
-        <Text style={styles.label}>Includes</Text>
-        <Text style={styles.value}>Haircut, Beard Trim, Head Massage</Text>
-    </View>
-      </View>
+        {/* Details */}
+        <View style={styles.detailBlock}>
+          <View style={styles.row1}>
+            <Text style={styles.label}>Service Name</Text>
+            <Text style={styles.value}>{item?.subServiceId?.name || "N/A"}</Text>
+          </View>
+          <View style={styles.row1}>
+            <Text style={styles.label}>Price</Text>
+            <Text style={styles.value}>${item?.subServiceId?.price || "0"}</Text>
+          </View>
+          <View style={styles.row1}>
+            <Text style={styles.label}>Phone Number</Text>
+            <Text style={styles.value}>{customer?.phoneNumber || "N/A"}</Text>
+          </View>
+          <View style={styles.row1}>
+            <Text style={styles.label}>Email</Text>
+            <Text style={styles.value}>{customer?.email || "N/A"}</Text>
+          </View>
+          <View style={styles.row1}>
+            <Text style={styles.label}>New Customer</Text>
+            <Text style={styles.value}>{item?.isNewCustomerBooking ? "Yes" : "No"}</Text>
+          </View>
+        </View>
 
-      {/* Buttons */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.declineBtn}>
-          <Text style={styles.btnText}>Decline</Text>
-        </TouchableOpacity>
+        {/* Buttons */}
+        <View style={{ marginTop: 40, marginBottom: 50 }}>
+          {loading ? (
+            <ActivityIndicator size="large" color="#09BFCD" />
+          ) : (
+            <>
+              {item?.status === 'PENDING' && (
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity style={styles.declineBtn} onPress={() => handleStatusUpdate('CANCELLED')}>
+                    <Text style={styles.btnText}>Decline</Text>
+                  </TouchableOpacity>
 
-        <TouchableOpacity style={styles.confirmBtn}>
-          <Text style={styles.btnText}>Confirmed</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+                  <TouchableOpacity style={styles.confirmBtn} onPress={() => handleStatusUpdate('CONFIRMED')}>
+                    <Text style={styles.btnText}>Accept</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+              {item?.status === 'CONFIRMED' && (
+                <TouchableOpacity style={[styles.confirmBtn, { width: '100%' }]} onPress={() => handleStatusUpdate('COMPLETED')}>
+                  <Text style={styles.btnText}>Mark as Completed</Text>
+                </TouchableOpacity>
+              )}
+            </>
+          )}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

@@ -36,25 +36,25 @@ const ProfileSetup = () => {
   const [image, setImage] = useState<any>(userData?.image || null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-const dispatch = useDispatch();
-useEffect((()=>{
-  getProfileApi()
-  setFullName(userData?.firstName || "")
+  const dispatch = useDispatch();
+  useEffect((() => {
+    getProfileApi()
+    setFullName(userData?.firstName || "")
     setEmail(userData?.email || "")
     setAddress(userData?.address || "")
-setImage(userData?.image||"")
- }),[userData?.firstName])
+    setImage(userData?.image || "")
+  }), [userData?.firstName])
 
-const getProfileApi = async () => {
-  try {
-    const response = await GetProfileApi(setIsLoading);
-     if (response) {
-      dispatch(loginSuccess({ userData: response}));
-     } 
-  } catch (error) {
- 
-   }
-};
+  const getProfileApi = async () => {
+    try {
+      const response = await GetProfileApi(setIsLoading);
+      if (response) {
+        dispatch(loginSuccess({ userData: response }));
+      }
+    } catch (error) {
+
+    }
+  };
   const pickImageFromGallery = () => {
     launchImageLibrary({ mediaType: "photo" }, (response) => {
       if (response.assets && response.assets.length > 0) {
@@ -73,69 +73,69 @@ const getProfileApi = async () => {
     });
   };
 
-const handleSave = async () => {
-  try {
-    // ✅ Validation checks
-    if (!fullName?.trim()) {
-      errorToast("Please enter your full name.");
-       return;
-    }
-
-    if (!email?.trim()) {
-      errorToast("Please enter your email address.");
-       return;
-    }
-
-    if (!address?.trim()) {
-      errorToast("Please enter your address.");
-       return;
-    }
-
-    if (!image) {
-      errorToast("Please upload your profile image.");
-       return;
-    }
-
-    // ✅ Prepare params for API
-    const params = {
-      username: fullName,
-      email: email,
-      address: address,
-      imagePrfoile: image, // full object with uri, type, name
-    };
-
-    const response = await UpdateProfile(params, setIsLoading);
-    if (response) {
-      await getProfileApi();
-
-      if (userData?.type === "Delivery") {
-        navigation.navigate(ScreenNameEnum.UploadDocumentsScreen);
-      } else {
-        navigation.navigate(ScreenNameEnum.TabNavigator);
+  const handleSave = async () => {
+    try {
+      // ✅ Validation checks
+      if (!fullName?.trim()) {
+        errorToast("Please enter your full name.");
+        return;
       }
+
+      if (!email?.trim()) {
+        errorToast("Please enter your email address.");
+        return;
+      }
+
+      if (!address?.trim()) {
+        errorToast("Please enter your address.");
+        return;
+      }
+
+      if (!image) {
+        errorToast("Please upload your profile image.");
+        return;
+      }
+
+      // ✅ Prepare params for API
+      const params = {
+        username: fullName,
+        email: email,
+        address: address,
+        imagePrfoile: image, // full object with uri, type, name
+      };
+
+      const response = await UpdateProfile(params, setIsLoading);
+      if (response) {
+        await getProfileApi();
+
+        if (userData?.type === "Delivery") {
+          navigation.navigate(ScreenNameEnum.UploadDocumentsScreen);
+        } else {
+          navigation.navigate(ScreenNameEnum.TabNavigator);
+        }
+      }
+    } catch (error) {
+      console.error("Error while saving profile:", error);
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error("Error while saving profile:", error);
-   } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBarComponent />
       <CustomHeader label="Profile Setup" />
-                                              <LoadingModal visible ={isLoading}/>
+      <LoadingModal visible={isLoading} />
 
 
       <KeyboardAvoidingView
-      style={{ flex: 1 }}
+        style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0} // adjust offset if needed
 
-       >
+      >
         <ScrollView contentContainerStyle={styles.container}
-        
+
         >
           <View style={styles.profileContainer}>
             <Image
@@ -218,9 +218,9 @@ const styles = StyleSheet.create({
     position: "relative",
     bottom: 20,
     right: 0,
-     padding: 5,
-     left:16
-  
+    padding: 5,
+    left: 16
+
   },
   editIcon: {
     width: 33,

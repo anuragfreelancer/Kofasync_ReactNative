@@ -1,8 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Image, StyleSheet, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import font from '../theme/font';
-import { color } from '../constant';
 import imageIndex from '../assets/imageIndex';
 
 interface IconProps {
@@ -17,32 +15,43 @@ interface Props {
   leftType?: 'svg' | 'png';
   leftPress?: () => void;
   rightIcons?: IconProps[];
+  backgroundColor?: string;
+  textColor?: string;
 }
 
-const  CustomHeader: React.FC<Props> = ({
+const CustomHeader: React.FC<Props> = ({
   label = '',
   leftIcon,
   leftType = 'png',
   leftPress,
   rightIcons = [],
+  backgroundColor,
+  textColor,
 }) => {
   const navigation = useNavigation();
 
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, backgroundColor ? { backgroundColor } : {}]}>
       {/* Left Icon */}
       <View style={styles.sideContainer}>
-      
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.iconWrap}
-          >
-          <Image source={imageIndex.back} style={styles.icon} resizeMode="contain" /> 
-          </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.iconWrap}
+        >
+          <Image
+            source={leftIcon || imageIndex.back}
+            style={[styles.icon,]}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
       </View>
+
       {/* Title */}
       <View style={styles.centerContainer}>
-        <Text allowFontScaling={false} style={styles.txtHeading}>
+        <Text
+          allowFontScaling={false}
+          style={[styles.txtHeading, textColor ? { color: textColor } : {}]}
+        >
           {label}
         </Text>
       </View>
@@ -50,8 +59,20 @@ const  CustomHeader: React.FC<Props> = ({
       {/* Right Icons */}
       <View style={styles.sideContainerRight}>
         {rightIcons.map((item, index) => (
-          <TouchableOpacity key={index.toString()} onPress={item.onPress} style={styles.rightIconWrap}>
-            {item.type === 'svg' ? <item.icon width={24} height={24} /> : <Image source={item.icon} style={styles.icon} resizeMode="contain" />}
+          <TouchableOpacity
+            key={index.toString()}
+            onPress={item.onPress}
+            style={styles.rightIconWrap}
+          >
+            {item.type === 'svg' ? (
+              <item.icon width={24} height={24} />
+            ) : (
+              <Image
+                source={item.icon}
+                style={[styles.icon, textColor ? { tintColor: textColor } : {}]}
+                resizeMode="contain"
+              />
+            )}
           </TouchableOpacity>
         ))}
       </View>
@@ -64,7 +85,6 @@ const styles = StyleSheet.create({
     height: 55,
     flexDirection: 'row',
     alignItems: 'center',
- 
     paddingHorizontal: 5,
   },
   sideContainer: {
@@ -94,8 +114,8 @@ const styles = StyleSheet.create({
   },
   txtHeading: {
     fontSize: 18,
-     color: '#000',
-     fontWeight:"500"
+    color: '#000',
+    fontWeight: "500",
   },
 });
 

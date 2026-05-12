@@ -19,7 +19,6 @@ LogBox.ignoreAllLogs();
 
 (TextInput as any).defaultProps.underlineColorAndroid = "transparent";
 
- 
 const App: FunctionComponent<any> = () => <AppNavigator />;
 
 export default App;

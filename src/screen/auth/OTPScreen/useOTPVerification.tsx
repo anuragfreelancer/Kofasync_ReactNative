@@ -62,17 +62,17 @@ export const useOtpVerification = (cellCount: number = 4) => {
       setIsLoading(false)
       const params = { userId, otp: value, navigation };
       const url = from == 'signup' ? ENDPOINT.OtpVerify : ENDPOINT.OtpVerifyForReset
-     const res =  await POST_API('', params, url,setIsLoading);
-    
-    if(res.success){
-       console.log(res)
-       if(from == 'signup'){
-         navigation.navigate(ScreenNameEnum.Login)
-       }else{
+      const res = await POST_API('', params, url, setIsLoading);
 
-        navigation.navigate(ScreenNameEnum.CreateNewPassword, {userId:userId})
-      }
-      }else{
+      if (res.success) {
+        console.log(res)
+        if (from == 'signup') {
+          navigation.navigate(ScreenNameEnum.Login)
+        } else {
+
+          navigation.navigate(ScreenNameEnum.CreateNewPassword, { userId: userId })
+        }
+      } else {
         errorToast(res.message)
       }
     } catch (error) {

@@ -1,4 +1,4 @@
-import React, { use, useState } from "react";
+import React, { use, useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -16,26 +16,27 @@ import { useNavigation } from "@react-navigation/native";
 import ScreenNameEnum from "../../../routes/screenName.enum";
 import { useSelector } from "react-redux";
 import { image_url } from "../../../constant";
+import { GET_API } from "../../../Api/apiRequest";
 
 // ---------------------- HEADER -------------------------
 const Header = () => {
-  const navigation = useNavigation();
- const userData: any = useSelector((state: any) => state.auth.userData);
-  return(
-  <View style={styles.header}>
-    <View style={{ flexDirection: "row" }}>
-      <Image source={userData?.profileImage ? { uri: image_url + userData?.profileImage } : imageIndex.prfile} style={styles.profileImg} />
-      <View style={{ marginLeft: 5 }}>
-        <Text style={styles.welcome}>Hello, Welcome 🎉</Text>
-        <Text style={styles.name}>{userData?.username}</Text>
+  const navigation = useNavigation<any>();
+  const userData: any = useSelector((state: any) => state.auth.userData);
+  return (
+    <View style={styles.header}>
+      <View style={{ flexDirection: "row" }}>
+        <Image source={userData?.profileImage ? { uri: image_url + userData?.profileImage } : imageIndex.profile} style={styles.profileImg} />
+        <View style={{ marginLeft: 5 }}>
+          <Text style={styles.welcome}>Hello, Welcome 🎉</Text>
+          <Text style={styles.name}>{userData?.username}</Text>
+        </View>
       </View>
-    </View>
 
-    <TouchableOpacity style={{ flexDirection: "row" }} onPress={()=>navigation.navigate(ScreenNameEnum.NotificationsScreen)}>
-      <Image source={imageIndex.notification} style={styles.profileImg} />
-    </TouchableOpacity>
-  </View>
-);
+      <TouchableOpacity style={{ flexDirection: "row" }} onPress={() => navigation.navigate(ScreenNameEnum.NotificationsScreen)}>
+        <Image source={imageIndex.notification} style={styles.profileImg} />
+      </TouchableOpacity>
+    </View>
+  );
 }
 // ---------------------- BANNER ------------------------
 const Banner = () => (
@@ -72,22 +73,22 @@ const LikeButton = () => {
 };
 
 // -------------------- COMPANY CARD ----------------------
-const CompanyCard = ({ item }:any) => (
+const CompanyCard = ({ item }: any) => (
   <View style={styles.companyCard}>
     <Image source={item.image} style={styles.companyImg} />
 
 
     <View style={styles.companyContent}>
       <View style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}>
-      <Text style={styles.companyName}>{item.name}</Text>
- <View style={styles.ratingRow}>
-      <Image source={imageIndex.star} style={styles.starIcon} />
-      <Text style={styles.ratingText}>{item.rating}</Text>
+        flexDirection: "row",
+        justifyContent: "space-between",
+      }}>
+        <Text style={styles.companyName}>{item.name}</Text>
+        <View style={styles.ratingRow}>
+          <Image source={imageIndex.star} style={styles.starIcon} />
+          <Text style={styles.ratingText}>{item.rating}</Text>
+        </View>
       </View>
-    </View>
       <View style={styles.locationRow}>
         <View style={{
           flexDirection: "row"
@@ -109,13 +110,21 @@ const CompanyCard = ({ item }:any) => (
 
 // ====================== MAIN APP ======================
 export default function App() {
-  const categories = [
-    { id: "1", title: "Wellness", icon: imageIndex.category1 },
-    { id: "2", title: "Beauty", icon: imageIndex.category2 },
-    { id: "3", title: "Health", icon: imageIndex.category3 },
-    { id: "4", title: "Consulting", icon: imageIndex.category4 },
-    { id: "5", title: "Services", icon: imageIndex.category5 },
-  ];
+  const { token } = useSelector((state: any) => state.auth);
+  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    const res = await GET_API("categories", token, "GET", setLoading);
+    console.log("Categories API Response:", res);
+    if (res?.success) {
+      setCategories(res.categories);
+    }
+  };
 
   const companies = [
     {
@@ -134,67 +143,73 @@ export default function App() {
     },
 
   ];
-  const navigation = useNavigation()
+  const navigation = useNavigation<any>()
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <StatusBarComponent backgroundColor="#09BFCD" barStyle="dark-content" />
-      <ScrollView style={{ paddingBottom: 100, }}>
-        <View style={{ backgroundColor: "#09BFCD", paddingBottom: 15 }}>
-          <View style={{ marginHorizontal: 10, marginTop: 15 }}>
-            <Header />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#09BFCD" }}>
+      <View style={{ flex: 1, backgroundColor: "#F7FBFD" }}>
+        <StatusBarComponent backgroundColor="#09BFCD" barStyle="light-content" />
+        <ScrollView style={{ paddingBottom: 100, }}>
+          <View style={{ backgroundColor: "#09BFCD", paddingBottom: 15 }}>
+            <View style={{ marginHorizontal: 10, marginTop: 15 }}>
+              <Header />
+            </View>
+
+            <View style={{ marginHorizontal: 10 }}>
+              <SearchBar placeholder="Search Services or Companies" searchBar1={{}} />
+            </View>
           </View>
 
-          <View style={{ marginHorizontal: 10 }}>
-            <SearchBar placeholder="Search Services or Companies" />
+          {/* Banner */}
+          <Banner />
+
+          {/* Categories Section */}
+          <Text style={styles.sectionTitle}>Categories</Text>
+
+          <FlatList
+            data={categories}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.categoryCard}
+                onPress={() => navigation.navigate(ScreenNameEnum.ProviderList, { categoryTitle: item.name, categoryId: item._id })}
+              >
+                <View style={styles.catCircle}>
+                  <Image source={item.icon ? { uri: image_url + item.icon } : imageIndex.category1} style={styles.catIcon} />
+                </View>
+                <Text style={styles.catTitle} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>
+              </TouchableOpacity>
+            )}
+            contentContainerStyle={styles.categoryList}
+          />
+
+          {/* Popular Companies */}
+          <View style={styles.sectionRow}>
+            <Text style={styles.sectionTitle}>Popular Companies</Text>
+            <Text style={styles.seeAll}>See all</Text>
           </View>
-        </View>
 
-        {/* Banner */}
-        <Banner />
-
-        {/* Categories Section */}
-        <Text style={styles.sectionTitle}>Categories</Text>
-
-        <FlatList
-          data={categories}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity style={styles.categoryCard}>
-              <View style={styles.catCircle}>
-                <Image source={item.icon} style={styles.catIcon} />
-              </View>
-              <Text style={styles.catTitle}>{item.title}</Text>
+          <FlatList
+            data={companies}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            horizontal
+            ListHeaderComponent={
+              <>
+              </>
+            }
+            renderItem={({ item }) => <TouchableOpacity
+            // onPress={() => navigation.navigate(ScreenNameEnum.DetailScreen, { providerData: item })}
+            >
+              <CompanyCard item={item} />
             </TouchableOpacity>
-          )}
-          contentContainerStyle={styles.categoryList}
-        />
-
-        {/* Popular Companies */}
-        <View style={styles.sectionRow}>
-          <Text style={styles.sectionTitle}>Popular Companies</Text>
-          <Text style={styles.seeAll}>See all</Text>
-        </View>
-
-        <FlatList
-          data={companies}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-          horizontal
-          ListHeaderComponent={
-            <>
-              {/* HEADER BG */}
-            </>
-          }
-          renderItem={({ item }) => <TouchableOpacity  onPress={()=>navigation.navigate(ScreenNameEnum.DetailScreen)}>
-          <CompanyCard item={item} />
-          </TouchableOpacity>
-          }
-          contentContainerStyle={{ paddingBottom: 50 }}
-        />
-      </ScrollView>
+            }
+            contentContainerStyle={{ paddingBottom: 50 }}
+          />
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -245,12 +260,19 @@ const styles = StyleSheet.create({
   categoryList: { paddingLeft: 20, paddingTop: 10 },
   categoryCard: { alignItems: "center", marginRight: 25 },
   catCircle: {
-
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#E8F8FA",
     justifyContent: "center",
     alignItems: "center",
+    overflow: "hidden",
   },
-  catIcon: { width: 70, height: 70 },
-  catTitle: { marginTop: 6, fontSize: 13, fontWeight: "700", color: "black" },
+  catIcon: {
+    width: "100%",
+    height: "100%"
+  },
+  catTitle: { marginTop: 6, fontSize: 13, fontWeight: "700", color: "black", textAlign: "center", width: 70 },
 
   sectionRow: {
     marginTop: 25,

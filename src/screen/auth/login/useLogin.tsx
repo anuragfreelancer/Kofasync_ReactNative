@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
  import { RootStackParamList } from './LoginTypes';
-import { useDispatch } from 'react-redux';
-import ScreenNameEnum from '../../../routes/screenName.enum';
+import { useDispatch } from 'react-redux'; 
 import { LoginApi } from '../../../Api/apiRequest';
 import AsyncStorage from '@react-native-async-storage/async-storage';
  
@@ -13,12 +12,14 @@ const passwordRegex =
 const useLogin = () => {
   const [errors, setErrors] = useState<any>({});
   const navigation = useNavigation<RootStackParamList>();
+      // const role = await AsyncStorage.getItem("selectedRole");
+  
   const [isLoading, setisLoading] = useState(false)
 interface Credentials {
   email: string;
   password: string;
 }
-
+const [role, setRole] = useState<string | null>(null);
 const [credentials, setCredentials] = useState<Credentials>({
   email: '',
   password: '',
@@ -28,6 +29,14 @@ const handleChange = (field: keyof Credentials, value: string) => {
   setCredentials((prev) => ({ ...prev, [field]: value }));
   setErrors((prev) => ({ ...prev, [field]: '' }));
 };
+
+useEffect(() => {
+  const getRole = async () => {
+    const storedRole = await AsyncStorage.getItem("selectedRole");
+    setRole(storedRole);
+  };
+  getRole();
+}, []);
   const validateFields = () => {
     const { email, password } = credentials;
     let validationErrors: any = {};
@@ -77,7 +86,7 @@ const handleChange = (field: keyof Credentials, value: string) => {
     handleChange,
     handleLogin,
     navigation, 
-    
+    role
   };
 };
 

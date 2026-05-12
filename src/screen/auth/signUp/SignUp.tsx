@@ -83,7 +83,7 @@ export default function SignUp() {
                 placeholder="Email"
                 value={credentials.email}
                 firstLogo={true}
-                img={imageIndex.mess}
+                img={imageIndex.email}
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
@@ -107,7 +107,7 @@ export default function SignUp() {
                 placeholder="Phone Number"
                 value={credentials.mobile}
                 firstLogo={true}
-                img={imageIndex.Textphone}
+                img={imageIndex.userLogo}
                 keyboardType="phone-pad"
                 maxLength={15}
               // autoCapitalize="none"
@@ -123,8 +123,9 @@ export default function SignUp() {
                 value={credentials.password}
                 firstLogo={true}
                 showEye={true}
-                img={imageIndex.textLock}
+                img={imageIndex.lock}
                 secureTextEntry
+                hide={true}
               />
               {errors.password && (
                 <Text style={styles.errorText}>{errors.password}</Text>
@@ -136,9 +137,9 @@ export default function SignUp() {
                 value={credentials.confirmPassword}
                 firstLogo={true}
                 showEye={true}
-                img={imageIndex.textLock}
+                img={imageIndex.lock}
                 secureTextEntry
-
+                hide={true}
               />
               {errors.confirmPassword && (
                 <Text style={styles.errorText}>{errors.confirmPassword}</Text>

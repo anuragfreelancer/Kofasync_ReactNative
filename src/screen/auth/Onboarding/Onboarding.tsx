@@ -16,7 +16,6 @@ import StatusBarComponent from '../../../compoent/StatusBarCompoent';
 import { styles } from './style';
 import CustomButton from '../../../compoent/CustomButton';
 import { color } from '../../../constant';
-import SlideButton from '../../../compoent/SlideRightButton/SlideRightButton';
 import ScreenNameEnum from '../../../routes/screenName.enum';
 
 const { width, height } = Dimensions.get('window');
@@ -136,11 +135,11 @@ const OnboardingScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         )}
         scrollEventThrottle={16}
       />
-   <View style={{marginHorizontal:15, marginBottom:15}}>
-       
-          <CustomButton title={"Next"} onPress={handleNextPress} />
+      <View style={{ marginHorizontal: 15, marginBottom: 15 }}>
 
-</View>
+        <CustomButton title={"Next"} onPress={handleNextPress} />
+
+      </View>
 
     </SafeAreaView>
   );

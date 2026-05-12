@@ -8,14 +8,14 @@ import React, { useState } from 'react';
 import {
   CodeField,
   Cursor,
-  
+
 } from 'react-native-confirmation-code-field';
- import CustomButton from '../../../compoent/CustomButton';
+import CustomButton from '../../../compoent/CustomButton';
 import StatusBarComponent from '../../../compoent/StatusBarCompoent';
- import { SafeAreaView } from 'react-native-safe-area-context';
- import { styles } from './style';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { styles } from './style';
 import { useOtpVerification } from './useOTPVerification';
-   import { color } from '../../../constant';
+import { color } from '../../../constant';
 import CustomHeader from '../../../compoent/CustomHeader';
 import LoadingModal from '../../../utils/Loader';
 import imageIndex from '../../../assets/imageIndex';
@@ -34,25 +34,25 @@ export default function OtpScreen() {
     handleChangeText,
     handleVerifyOTP,
     handleResendOTP,
-    navigation, 
+    navigation,
     data
   } = useOtpVerification()
-   return (
+  return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "#fff" }}
 
     >
-               <StatusBarComponent />
-               <CustomHeader label={"Back"}/>
-        <LoadingModal visible ={isLoading}/>
+      <StatusBarComponent />
+      <CustomHeader label={"Back"} />
+      <LoadingModal visible={isLoading} />
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.headerSection}>
             <Text style={styles.txtHeading}>Check your Mail</Text>
-            <Text style={styles.txtDes}>Please put the 4 digits sent to you  
+            <Text style={styles.txtDes}>Please put the 4 digits sent to you
               {/* {data?.code} {data?.mob} */}
             </Text>
-           </View>
+          </View>
 
           <View style={styles.otpFieldContainer}>
             <CodeField
@@ -76,19 +76,12 @@ export default function OtpScreen() {
             />
             {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
           </View>
- 
+          <Image resizeMode='contain' source={imageIndex.bag} style={{ width: '70%', height: hp(30), alignSelf: 'center', marginTop: 50 }} />
+
         </ScrollView>
-      <Image resizeMode='contain' source={imageIndex.bag} style={{ width: '70%', height: hp(30), alignSelf: 'center', marginBottom: 30 }} />  
 
         <CustomButton
           title={"Submit"}
-          // onPress={() => {
-            
-          //     navigation.navigate(ScreenNameEnum.CreateNewPassword)
-
-           
-          // }
-          // }
           onPress={handleVerifyOTP}
           style={styles.submitButton}
         />

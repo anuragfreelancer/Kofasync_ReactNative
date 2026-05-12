@@ -6,60 +6,52 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
- } from 'react-native';
+} from 'react-native';
 import imageIndex from '../../../assets/imageIndex';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StatusBarComponent from '../../../compoent/StatusBarCompoent';
 import CustomButton from '../../../compoent/CustomButton';
 import CustomHeader from '../../../compoent/CustomHeader';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import ScreenNameEnum from '../../../routes/screenName.enum';
-
-
- 
+import { image_url } from '../../../constant';
 
 export default function BookServies() {
-  const MEN_DATA = [
-  { id: '1', name: 'Hair Cut', img: imageIndex.man1 },
-  { id: '2', name: 'Hair Coloring', img:imageIndex.man1  },
-  { id: '3', name: 'Shaving', img:imageIndex.man1   },
-  { id: '4', name: 'Hair Wash', img:imageIndex.man1 },
-    { id: '5', name: 'Skin Care', img:imageIndex.man1 },
-
-];
-
- 
- const navigation = useNavigation()
-  const renderCard = ({ item }) => {
- 
+  const route = useRoute<any>();
+  const servicesData = route.params?.servicesData || [];
+  const navigation = useNavigation<any>()
+  const renderCard = ({ item }: any) => {
     return (
       <TouchableOpacity
-        style={[styles.card,{
-          padding:17 ,
-          justifyContent:"space-between"
+        style={[styles.card, {
+          padding: 17,
+          justifyContent: "space-between"
         }]}
-       onPress={()=>navigation.navigate(ScreenNameEnum.OurServices)}
+        onPress={() => navigation.navigate(ScreenNameEnum.OurServices, { serviceId: item._id })}
       >
-       <Text>{item.name}</Text>
-     
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Image source={item.image ? { uri: image_url + item.image } : imageIndex.category1} style={{ width: 40, height: 40, borderRadius: 20, marginRight: 10 }} />
+          <Text>{item.name}</Text>
+        </View>
+
 
         {/* Radio button */}
-        <View style={  {
-          flexDirection:"row" ,
-          alignItems:"center"
-        } }>
-         
+        <View style={{
+          flexDirection: "row",
+          alignItems: "center"
+        }}>
+
           <Text style={{
-            color:"#09BFCD",
-            fontSize:16
-          }}>22 types</Text>
-           <Image 
-          
-          style={{
-            height:22,
-            width:22
-          }}
-          source={imageIndex.arrowright1}/>
+            color: "#09BFCD",
+            fontSize: 16
+          }}>${item.price}</Text>
+          <Image
+
+            style={{
+              height: 22,
+              width: 22
+            }}
+            source={imageIndex.arrowright1} />
         </View>
       </TouchableOpacity>
     );
@@ -67,31 +59,31 @@ export default function BookServies() {
 
   return (
     <SafeAreaView style={styles.container}>
-        <StatusBarComponent/>
-        <CustomHeader label='Our Services'/>
- 
+      <StatusBarComponent />
+      <CustomHeader label='Our Services' />
+
       {/* Tabs */}
       <View style={{
-        marginHorizontal:15
-      }}> 
-    
-
-      {/* List */} 
-      <View style={{
-        marginTop:20
+        marginHorizontal: 15
       }}>
-      <FlatList
-        data={MEN_DATA}
-        renderItem={renderCard}
-        keyExtractor={item => item.id}
-        contentContainerStyle={{ paddingBottom: 120 }}
-      />
 
-</View>
-      {/* Bottom Apply Button */}
-      <View style={styles.bottomArea}>
-        <CustomButton title='Apply'/>
-      </View>
+
+        {/* List */}
+        <View style={{
+          marginTop: 20
+        }}>
+          <FlatList
+            data={servicesData}
+            renderItem={renderCard}
+            keyExtractor={item => item._id}
+            contentContainerStyle={{ paddingBottom: 120 }}
+          />
+
+        </View>
+        {/* Bottom Apply Button */}
+        <View style={styles.bottomArea}>
+          {/* <CustomButton title='Apply' /> */}
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -101,7 +93,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-   },
+  },
 
   heading: {
     fontSize: 20,
@@ -115,7 +107,7 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 40,
     marginBottom: 15,
-    marginTop:15
+    marginTop: 15
   },
 
   tabBtn: {
@@ -146,9 +138,9 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     borderRadius: 14,
     alignItems: 'center',
-     shadowColor: '#000',
-     borderWidth:0.2,
-     borderColor:"#181C2E",
+    shadowColor: '#000',
+    borderWidth: 0.2,
+    borderColor: "#181C2E",
     shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
@@ -167,8 +159,8 @@ const styles = StyleSheet.create({
   },
 
   radioOuter: {
- 
-      justifyContent: 'center',
+
+    justifyContent: 'center',
     alignItems: 'center',
   },
 

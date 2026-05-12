@@ -29,19 +29,19 @@ type RoleOption = {
   label: string;
   image: any;
   description: string;
-}; 
+};
 const ROLE_OPTIONS: RoleOption[] = [
-  { 
-    id: 1, 
-    type: "User", 
-    label: "User", 
+  {
+    id: 1,
+    type: "User",
+    label: "User",
     image: imageIndex.marketplace,
     description: "Send packages and track deliveries"
   },
-  { 
-    id: 2, 
-    type: "Provider", 
-    label: "Provider", 
+  {
+    id: 2,
+    type: "Provider",
+    label: "Provider",
     image: imageIndex.CourierBoy,
     description: "Deliver packages and earn money"
   },
@@ -101,7 +101,7 @@ const ChooseRole = () => {
   };
 
   const handleContinue = async () => {
-     navigation.navigate(ScreenNameEnum.Login);
+    navigation.navigate(ScreenNameEnum.Login);
     if (!selectedRole) {
       errorToast("Please select your role before proceeding.");
       return;
@@ -122,7 +122,7 @@ const ChooseRole = () => {
       style={styles.cardWrapper}
       onPress={() => handleRoleSelect(role)}
     >
-      <Animated.View 
+      <Animated.View
         style={[
           styles.cardContainer,
           { transform: [{ scale: isSelected ? pulseAnim : 1 }] }
@@ -130,8 +130,8 @@ const ChooseRole = () => {
       >
         <LinearGradient
           colors={
-           
-               ["#FFFFFF", "#F8F8F8"]
+
+            ["#FFFFFF", "#F8F8F8"]
           }
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -143,24 +143,24 @@ const ChooseRole = () => {
           <View style={styles.cardContent}>
             <View style={[
               styles.iconContainer,
-              
+
             ]}>
               <Image
                 source={role.image}
                 style={[
                   styles.icon,
-                 ]}
+                ]}
                 resizeMode="contain"
                 tintColor={color.primary}
               />
             </View>
-            <Text style={[styles.label, ]}>
+            <Text style={[styles.label,]}>
               {role.label}
             </Text>
-            
+
           </View>
-          
-          
+
+
         </LinearGradient>
       </Animated.View>
     </TouchableOpacity>
@@ -258,24 +258,24 @@ const styles = StyleSheet.create({
   cardWrapper: {
     width: "100%",
     alignItems: "center",
-   },
+  },
   cardContainer: {
     width: "100%",
     maxWidth: 500,
   },
   card: {
-  borderRadius: 20,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: "#e5e5e5",
     // elevation: 10, // shadow for Android
-     backgroundColor: "white", // make sure content is visible 
-    margin:5,
-   
-    },
+    backgroundColor: "white", // make sure content is visible 
+    margin: 5,
+
+  },
   cardSelected: {
- 
- borderColor:color.primary
-   },
+
+    borderColor: color.primary
+  },
   cardContent: {
     alignItems: "center",
     justifyContent: "center",
@@ -284,10 +284,10 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 70,
     height: 70,
-     alignItems: "center",
+    alignItems: "center",
     justifyContent: "center",
-   
-   },
+
+  },
   iconContainerSelected: {
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderColor: "rgba(255, 255, 255, 0.3)",
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 15,
-     fontWeight: "600",
+    fontWeight: "600",
     textAlign: "center",
     marginBottom: 30,
 

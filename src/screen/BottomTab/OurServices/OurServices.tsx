@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,59 +6,88 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
- } from 'react-native';
+  Alert,
+} from 'react-native';
 import imageIndex from '../../../assets/imageIndex';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StatusBarComponent from '../../../compoent/StatusBarCompoent';
 import CustomButton from '../../../compoent/CustomButton';
 import ScreenNameEnum from '../../../routes/screenName.enum';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { GET_API } from '../../../Api/apiRequest';
+import LoadingModal from '../../../utils/Loader';
+import { image_url } from '../../../constant';
 
 const MEN_DATA = [
   { id: '1', name: 'Undercut', img: imageIndex.man1 },
-  { id: '2', name: 'Quiff', img:imageIndex.man1  },
-  { id: '3', name: 'Crew Cut', img:imageIndex.man1   },
-  { id: '4', name: 'Regular Cut', img:imageIndex.man1 },
+  { id: '2', name: 'Quiff', img: imageIndex.man1 },
+  { id: '3', name: 'Crew Cut', img: imageIndex.man1 },
+  { id: '4', name: 'Regular Cut', img: imageIndex.man1 },
 ];
 
 const WOMEN_DATA = [
-  { id: '1', name: 'Layer Cut', img: imageIndex.man1},
+  { id: '1', name: 'Layer Cut', img: imageIndex.man1 },
   { id: '2', name: 'Feather Cut', img: imageIndex.man1 },
-  { id: '3', name: 'Straight Cut', img:imageIndex.man1 },
+  { id: '3', name: 'Straight Cut', img: imageIndex.man1 },
 ];
 
 export default function OurServices() {
+  const route = useRoute<any>();
+  const { serviceId, providerId, shopId } = route.params || {};
+  const { token } = useSelector((state: any) => state.auth);
+
   const [gender, setGender] = useState('Men');
   const [selected, setSelected] = useState(null);
+  const [subServices, setSubServices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const finalData = gender === 'Men' ? MEN_DATA : WOMEN_DATA;
+  useEffect(() => {
+    if (serviceId) {
+      fetchSubServices();
+    }
+  }, [serviceId]);
 
-  const renderCard = ({ item }) => {
-    const isSelected = selected === item.id;
+  const fetchSubServices = async () => {
+    const res = await GET_API(`sub-services/public/${serviceId}`, token, "GET", setLoading);
+    console.log("Sub-Services API Response:", res);
+    if (res?.success) {
+      setSubServices(res.data);
+    }
+  };
+
+  const filteredData = subServices.filter((item: any) => 
+    item.gender?.toLowerCase() === gender.toLowerCase()
+  );
+
+  const renderCard = ({ item }: any) => {
+    const isSelected = selected === item._id;
 
     return (
       <TouchableOpacity
         style={styles.card}
-        onPress={() => setSelected(item.id)}
+        onPress={() => setSelected(item._id)}
       >
-        <Image source={item.img} style={styles.cardImg} />
+        <Image
+          source={item.image ? { uri: image_url + item.image } : imageIndex.man1}
+          style={styles.cardImg}
+        />
 
         <View style={{ flex: 1 }}>
           <Text style={styles.cardTitle}>{item.name}</Text>
-                    <Text 
-                   style={[styles.cardTitle,{
-            color:"#9E9E9E" ,
-            fontSize:14 ,
-            marginTop:5
-          }]}
-                    >728 booked</Text>
+          <Text
+            style={[styles.cardTitle, {
+              color: "#9E9E9E",
+              fontSize: 14,
+              marginTop: 5
+            }]}
+          >{item.bookedCount || 0} booked</Text>
 
-          <Text style={[styles.cardTitle,{
-            color:"#09BFCD" ,
-            fontSize:15 ,
-                        marginTop:5
-
-          }]}>$6.50</Text>
+          <Text style={[styles.cardTitle, {
+            color: "#09BFCD",
+            fontSize: 15,
+            marginTop: 5
+          }]}>${item.price}</Text>
 
         </View>
 
@@ -74,7 +103,8 @@ export default function OurServices() {
 
   return (
     <SafeAreaView style={styles.container}>
-        <StatusBarComponent/>
+      <StatusBarComponent />
+      <LoadingModal visible={loading} />
       <Text style={styles.heading}>Our Services</Text>
 
       {/* Tabs */}
@@ -102,15 +132,35 @@ export default function OurServices() {
 
       {/* List */}
       <FlatList
-        data={finalData}
+        data={filteredData}
         renderItem={renderCard}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item._id}
         contentContainerStyle={{ paddingBottom: 120 }}
+        ListEmptyComponent={
+          !loading ? (
+            <View style={{ alignItems: 'center', marginTop: 50 }}>
+              <Text style={{ color: '#666' }}>No sub-services found for {gender}</Text>
+            </View>
+          ) : null
+        }
       />
 
       {/* Bottom Apply Button */}
       <View style={styles.bottomArea}>
-        <CustomButton onPress={()=>navigation.navigate(ScreenNameEnum.AppointmentScreen)} title='Apply'/>
+        <CustomButton 
+          onPress={() => {
+            if (selected) {
+              navigation.navigate(ScreenNameEnum.AppointmentScreen, { 
+                providerId, 
+                subServiceId: selected,
+                shopId 
+              });
+            } else {
+              Alert.alert("Error", "Please select a sub-service first");
+            }
+          }} 
+          title='Apply' 
+        />
       </View>
     </SafeAreaView>
   );
@@ -165,9 +215,9 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     borderRadius: 14,
     alignItems: 'center',
-     shadowColor: '#000',
-     borderWidth:0.2,
-     borderColor:"#181C2E",
+    shadowColor: '#000',
+    borderWidth: 0.2,
+    borderColor: "#181C2E",
     shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },

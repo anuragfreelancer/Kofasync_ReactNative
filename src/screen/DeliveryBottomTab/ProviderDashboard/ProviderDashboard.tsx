@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     Text,
@@ -6,6 +6,8 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
+    ActivityIndicator,
+    RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import imageIndex from "../../../assets/imageIndex";
@@ -14,25 +16,66 @@ import { useSelector } from "react-redux";
 import { image_url } from "../../../constant";
 import ScreenNameEnum from "../../../routes/screenName.enum";
 import { useNavigation } from "@react-navigation/native";
+import { GET_API } from "../../../Api/apiRequest";
 
 const AppointmentScreen = () => {
-    const [selectedTab, setSelectedTab] = useState("Upcoming");
- const userData: any = useSelector((state: any) => state.auth.userData);
-    const navigation = useNavigation();
+    const [selectedTab, setSelectedTab] = useState("Pending");
+    const [bookings, setBookings] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const { userData, token } = useSelector((state: any) => state.auth);
+    const navigation = useNavigation<any>();
+
+    useEffect(() => {
+        fetchBookings();
+    }, []);
+
+    const fetchBookings = async () => {
+        try {
+            setLoading(true);
+            const res = await GET_API("providers/getAllBookings", token);
+            console.log("res", res);
+            if (res?.success || Array.isArray(res)) {
+                const data = Array.isArray(res) ? res : res.data || res.bookings || [];
+                setBookings(data);
+            }
+        } catch (error) {
+            console.error("Fetch bookings error:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const filteredBookings = bookings.filter((item: any) => {
+        if (selectedTab === "Pending") return item.status === "PENDING";
+        if (selectedTab === "Confirmed") return item.status === "CONFIRMED" || item.status === "UPCOMING";
+        if (selectedTab === "Completed") return item.status === "COMPLETED";
+        if (selectedTab === "Cancelled") return item.status === "CANCELLED";
+        return true;
+    });
+
+    const tabs = ["Pending", "Confirmed", "Completed", "Cancelled"];
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <ScrollView style={styles.container} contentContainerStyle={{paddingBottom:100}} showsVerticalScrollIndicator={false}>
+            <ScrollView 
+                style={styles.container} 
+                contentContainerStyle={{ paddingBottom: 100 }} 
+                showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl refreshing={loading} onRefresh={fetchBookings} colors={["#00C5D7"]} />
+                }
+            >
                 {/* HEADER */}
                 <View style={styles.headerRow}>
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <Image source={userData?.profileImage ? { uri: image_url + userData?.profileImage } : imageIndex.prfile} style={styles.avatar} />
+                        <Image source={userData?.profileImage ? { uri: image_url + userData?.profileImage } : imageIndex.profile} style={styles.avatar} />
                         <View style={{ marginLeft: 10 }}>
                             <Text style={styles.welcome}>Hello, Welcome 🎉</Text>
-                            <Text style={styles.name}>{userData?.username}</Text>
+                            <Text style={styles.name}>{userData?.name || userData?.username}</Text>
                         </View>
                     </View>
 
-                    <TouchableOpacity  onPress={()=>navigation.navigate(ScreenNameEnum.NotificationsScreen)}>
+                    <TouchableOpacity onPress={() => navigation.navigate(ScreenNameEnum.NotificationsScreen)}>
                         <Image
                             source={imageIndex.notification2}
                             style={styles.bell}
@@ -44,7 +87,7 @@ const AppointmentScreen = () => {
                 <View style={styles.statsRow}>
                     <View style={styles.statsCard}>
                         <Text style={styles.statsTitle}>Appointments{"\n"}Today</Text>
-                        <Text style={styles.statsValue}>60</Text>
+                        <Text style={styles.statsValue}>{bookings.length}</Text>
                     </View>
 
                     <View style={styles.statsCard}>
@@ -55,85 +98,46 @@ const AppointmentScreen = () => {
 
                 {/* TABS */}
                 <View style={styles.tabRow}>
-                    <TouchableOpacity
-                        style={[
-                            styles.tabBtn,
-                            selectedTab === "Upcoming" && styles.activeTab,
-                        ]}
-                        onPress={() => setSelectedTab("Upcoming")}
-                    >
-                        <Text
-                            style={[
-                                styles.tabText,
-                                selectedTab === "Upcoming" && styles.activeTabText,
-                            ]}
-                        >
-                            Upcoming
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={[
-                            styles.tabBtn,
-                            selectedTab === "Pending" && styles.activeTab,
-                        ]}
-                        onPress={() => setSelectedTab("Pending")}
-                    >
-                        <Text
-                            style={[
-                                styles.tabText,
-                                selectedTab === "Pending" && styles.activeTabText,
-                            ]}
-                        >
-                            Pending
-                        </Text>
-                    </TouchableOpacity>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                        {tabs.map((tab) => (
+                            <TouchableOpacity
+                                key={tab}
+                                style={[
+                                    styles.tabBtn,
+                                    selectedTab === tab && styles.activeTab,
+                                    { width: 100 }
+                                ]}
+                                onPress={() => setSelectedTab(tab)}
+                            >
+                                <Text
+                                    style={[
+                                        styles.tabText,
+                                        selectedTab === tab && styles.activeTabText,
+                                    ]}
+                                >
+                                    {tab}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
                 </View>
 
                 {/* ONGOING TITLE */}
                 <View style={styles.sectionHeader}>
-                    <Text style={styles.sectionTitle}>Ongoing Appointments</Text>
-                    <Text style={styles.seeAll}>See All</Text>
+                    <Text style={styles.sectionTitle}>{selectedTab} Appointments</Text>
                 </View>
-                {[{ uri: 'https://i.pravatar.cc/81' }, { uri: 'https://i.pravatar.cc/82' }].map((item) =>
-                    <ApointMentCard item={item} />
+
+                {loading && bookings.length === 0 ? (
+                    <ActivityIndicator size="large" color="#00C5D7" style={{ marginTop: 20 }} />
+                ) : filteredBookings.length === 0 ? (
+                    <View style={{ alignItems: 'center', marginTop: 40 }}>
+                        <Text style={{ color: '#666' }}>No {selectedTab.toLowerCase()} bookings found</Text>
+                    </View>
+                ) : (
+                    filteredBookings.map((item: any, index: number) => (
+                        <ApointMentCard key={item._id || index} item={item} onRefresh={fetchBookings} />
+                    ))
                 )}
-                {/* APPOINTMENT CARD */}
-                {/* <View style={styles.appointmentCard}>
-        <View style={styles.cardHeader}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Image
-              source={{ uri: "https://i.pravatar.cc/150?img=12" }}
-              style={styles.userImg}
-            />
-            <Text style={styles.cardName}>Talan Rhiel Madsen</Text>
-          </View>
-
-          <View style={styles.dot} />
-        </View>
-
-        <View style={styles.dateRow}>
-          <Image
-            source={{ uri: "https://cdn-icons-png.flaticon.com/512/747/747310.png" }}
-            style={styles.icon}
-          />
-          <Text style={styles.dateText}>Sunday, 12 June</Text>
-
-          <Image
-            source={{ uri: "https://cdn-icons-png.flaticon.com/512/1827/1827272.png" }}
-            style={[styles.icon, { marginLeft: 15 }]}
-          />
-          <Text style={styles.dateText}>11:00 - 12:00 AM</Text>
-        </View>
-
-        <Text style={styles.description}>
-          I have a very high fever and a severe cold.
-        </Text>
-
-        <TouchableOpacity style={styles.detailBtn}>
-          <Text style={styles.detailText}>Detail</Text>
-        </TouchableOpacity>
-      </View> */}
             </ScrollView>
         </SafeAreaView>
     );
@@ -146,70 +150,55 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#F8FBFF",
         padding: 20,
-        // marginBottom:70
     },
-
-    /** HEADER **/
     headerRow: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
     },
-
     avatar: {
         width: 55,
         height: 55,
         borderRadius: 30,
     },
-
     welcome: {
         fontSize: 14,
         color: "#555",
     },
-
     name: {
         fontSize: 20,
         fontWeight: "700",
     },
-
     bell: {
         width: 40,
         height: 40,
     },
-
-    /** STATS **/
     statsRow: {
         flexDirection: "row",
         justifyContent: "space-between",
         marginTop: 25,
     },
-
     statsCard: {
         width: "48%",
         backgroundColor: "#fff",
         borderRadius: 16,
         paddingVertical: 22,
         paddingHorizontal: 15,
-        // elevation: 4,
         borderWidth: 0.4,
         borderColor: '#e5e5e5',
         alignItems: 'center'
     },
-
     statsTitle: {
         fontSize: 14,
         color: "#777",
         textAlign: 'center'
     },
-
     statsValue: {
         marginTop: 10,
         fontSize: 24,
         fontWeight: "700",
         color: "#000",
     },
-
-    /** TABS **/
     tabRow: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -218,7 +207,6 @@ const styles = StyleSheet.create({
         padding: 5,
         borderRadius: 30,
     },
-
     tabBtn: {
         flex: 1,
         paddingVertical: 10,
@@ -227,109 +215,30 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F5F5',
         marginHorizontal: 5
     },
-
     tabText: {
         fontSize: 16,
         color: "#666",
         fontWeight: "600",
     },
-
     activeTab: {
         backgroundColor: "#00C5D7",
     },
-
     activeTabText: {
         color: "#fff",
         fontWeight: "700",
     },
-
-    /** SECTION HEADER **/
     sectionHeader: {
         marginTop: 25,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
     },
-
     sectionTitle: {
         fontSize: 18,
         fontWeight: "700",
     },
-
     seeAll: {
         color: "#00C5D7",
         fontWeight: "600",
-    },
-
-    /** CARD **/
-    appointmentCard: {
-        marginTop: 15,
-        backgroundColor: "#fff",
-        padding: 18,
-        borderRadius: 18,
-        elevation: 4,
-    },
-
-    cardHeader: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-
-    userImg: {
-        width: 50,
-        height: 50,
-        borderRadius: 30,
-        marginRight: 10,
-    },
-
-    cardName: {
-        fontSize: 17,
-        fontWeight: "700",
-    },
-
-    dot: {
-        width: 12,
-        height: 12,
-        borderRadius: 6,
-        backgroundColor: "#3FA9F5",
-    },
-
-    dateRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        marginTop: 15,
-    },
-
-    icon: {
-        width: 20,
-        height: 20,
-        tintColor: "#00C5D7",
-    },
-
-    dateText: {
-        fontSize: 14,
-        marginLeft: 6,
-        color: "#555",
-    },
-
-    description: {
-        marginTop: 15,
-        fontSize: 14,
-        color: "#666",
-    },
-
-    detailBtn: {
-        marginTop: 18,
-        backgroundColor: "#E6FCFF",
-        borderRadius: 30,
-        paddingVertical: 10,
-        alignItems: "center",
-    },
-
-    detailText: {
-        fontSize: 16,
-        color: "#00C5D7",
-        fontWeight: "700",
     },
 });

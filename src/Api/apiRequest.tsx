@@ -206,6 +206,7 @@ export const POST_API = async (
 ) => {
   try {
     setLoading(true);
+    const role = await AsyncStorage.getItem("selectedRole");
 
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       method: method || 'POST',
@@ -215,8 +216,9 @@ export const POST_API = async (
         "Content-Type": "application/json"
         // ❌ DO NOT set Content-Type for FormData
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ ...body, role: role == "User" ? "customer" : 'provider' }),
     });
+    console.log(body, 'this is body')
     // console.log(formData, 'formadata')
     const text = await response.text();
 
@@ -234,39 +236,6 @@ export const POST_API = async (
   } finally {
     setLoading(false);
   }
-};
-
-const objectToFormData = (obj: any) => {
-  const formData = new FormData();
-
-  Object.keys(obj).forEach(key => {
-    const value = obj[key];
-
-    if (value === null || value === undefined) return;
-
-    // Image / File handling
-    if (typeof value === 'object' && value?.path) {
-      formData.append(key, {
-        uri: value.path,
-        type: value.mime || 'image/jpeg',
-        name: value.filename || `${key}.jpg`,
-      } as any);
-    }
-
-    // Array handling
-    else if (Array.isArray(value)) {
-      value.forEach((item, index) => {
-        formData.append(`${key}[${index}]`, String(item));
-      });
-    }
-
-    // Normal fields
-    else {
-      formData.append(key, String(value));
-    }
-  });
-
-  return formData;
 };
 
 
@@ -385,12 +354,16 @@ const UpdateProfile = async (
     setLoading(true);
 
     const token = await AsyncStorage.getItem("token");
+    const role = param.role || await AsyncStorage.getItem("selectedRole");
 
     const formdata = new FormData();
 
-    if (param.username) formdata.append("username", param.username);
+    if (param.username || param.name) formdata.append("name", param.username || param.name);
     if (param.email) formdata.append("email", param.email);
     if (param.address) formdata.append("address", param.address);
+    if (param.phone || param.phoneNumber) formdata.append("phone", param.phone || param.phoneNumber);
+    if (param.specialization) formdata.append("specialization", param.specialization);
+    if (param.experience) formdata.append("experience", param.experience);
 
     // ✅ Append image only if exists
     if (param.imagePrfoile && param.imagePrfoile.uri) {
@@ -401,49 +374,54 @@ const UpdateProfile = async (
         uri: param.imagePrfoile.uri,
         name: fileName,
         type: fileType,
-      });
+      } as any);
     }
 
-    // ✅ Do NOT manually set 'Content-Type' header
     const headers: any = {
       Accept: "application/json",
-      // Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     };
 
-    // ✅ Use POST (most servers expect POST for FormData upload)
-    const response = await fetch(`${BASE_URL}auth/edit-profile/${param?.id}`, {
+    // Use specific endpoint for providers
+    const endpoint = `profile/me`
+    // : `auth/edit-profile/${param?.id}`;
+
+    const fullUrl = `${BASE_URL}${endpoint}`;
+    console.log("Calling UpdateProfile URL:", fullUrl);
+
+    const response = await fetch(fullUrl, {
       method: "PUT",
       headers,
       body: formdata,
     });
-    // console.log(formdata)
-    // console.log(response, 'response')
-    const textResponse = await response.text();
-    let parsedResponse;
 
+    const textResponse = await response.text();
+    console.log("Raw textResponse from UpdateProfile:", textResponse);
+
+    let parsedResponse;
     try {
       parsedResponse = JSON.parse(textResponse);
-    } catch {
+    } catch (e) {
+      console.error("JSON Parse Error in UpdateProfile. Raw text:", textResponse);
       throw new Error("Invalid server response");
     }
 
     if (parsedResponse.success) {
-      successToast(parsedResponse.message);
+      successToast(parsedResponse.message || "Profile updated successfully");
       return parsedResponse;
     } else {
-      errorToast(parsedResponse.message);
+      console.log("UpdateProfile Error Response:", parsedResponse);
+      errorToast(parsedResponse.message || "Failed to update profile");
       return parsedResponse;
     }
-  } catch (error) {
-    console.error("UpdateProfile error:", error);
+  } catch (error: any) {
+    console.error("UpdateProfile Catch Error:", error);
     errorToast("Something went wrong. Please try again.");
     return null;
   } finally {
     setLoading(false);
   }
 };
-
-
 
 const GetProfileApi = async (
   setLoading: (loading: boolean) => void,
@@ -465,8 +443,8 @@ const GetProfileApi = async (
     console.log("responseData", responseData);
 
     if (responseData.success) {
-        dispatch(loginSuccess({ userData: responseData?.data?.user, token: token }));
-     
+      dispatch(loginSuccess({ userData: responseData?.data, token: token }));
+
       return responseData;
     } else {
       Toast(responseData.error || responseData.message || "Something went wrong", color.red, 10);
@@ -550,290 +528,6 @@ const Termsconditions = async (setLoading: any) => {
 };
 
 
-const DeliveryUploadDocument = async (
-  param: any,
-  setLoading: (loading: boolean) => void
-) => {
-  try {
-    setLoading(true);
-    const token = await AsyncStorage.getItem("token");
-
-    const formdata = new FormData();
-
-    if (param.drivingLicense?.uri) {
-      formdata.append("drivingLicense", {
-        uri: param.drivingLicense.uri,
-        name: param.drivingLicense.name || "license.jpg",
-        type: param.drivingLicense.type || "image/jpeg",
-      });
-    }
-
-    if (param.idDocument?.uri) {
-      formdata.append("idDocument", {
-        uri: param.idDocument.uri,
-        name: param.idDocument.name || "id.jpg",
-        type: param.idDocument.type || "image/jpeg",
-      });
-    }
-
-    if (param.vehiclePapers?.uri) {
-      formdata.append("vehiclePapers", {
-        uri: param.vehiclePapers.uri,
-        name: "profile.jpg",
-        type: "image/jpeg",
-      });
-    }
-
-    const headers = {
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
-    const response = await fetch(`${BASE_URL}/upload-document`, {
-      method: "POST",
-      headers,
-      body: formdata,
-    });
-
-    const textResponse = await response.text();
-    let parsedResponse;
-
-    try {
-      parsedResponse = JSON.parse(textResponse);
-    } catch {
-      throw new Error("Invalid server response");
-    }
-    console.log("parsedResponse", parsedResponse);
-    if (parsedResponse.status == "1") {
-      successToast(parsedResponse.message);
-    }
-
-    return parsedResponse;
-  } catch (error) {
-    console.error("DeliveryUploadDocument error:", error);
-    errorToast("Something went wrong. Please try again.");
-    return null;
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-const DeliveryVehicleDocument = async (
-  param: any,
-  setLoading: (loading: boolean) => void
-) => {
-  try {
-    setLoading(true);
-    const token = await AsyncStorage.getItem("token");
-
-    const formdata = new FormData();
-
-    if (param.vehicleType) {
-      formdata.append("vehicleType", param.vehicleType);
-    }
-
-    if (param.vehicleNumber) {
-      formdata.append("vehicleNumber", param.vehicleNumber);
-    }
-
-    if (param.vehicleRegistration?.uri) {
-      formdata.append("vehicleRegistration", {
-        uri: param.vehicleRegistration.uri,
-        name: param.vehicleRegistration.name || "vehicle_registration.jpg",
-        type: param.vehicleRegistration.type || "image/jpeg",
-      });
-    }
-    const headers = {
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
-    const response = await fetch(`${BASE_URL}/vehicle-setup`, {
-      method: "POST",
-      headers,
-      body: formdata,
-    });
-
-    const textResponse = await response.text();
-    let parsedResponse;
-
-    try {
-      parsedResponse = JSON.parse(textResponse);
-    } catch {
-      throw new Error("Invalid server response");
-    }
-
-    console.log("Vehicle Upload Response:", parsedResponse);
-
-    if (parsedResponse.status == "1") {
-      successToast(parsedResponse.message || "Document uploaded successfully!");
-    } else {
-      errorToast(parsedResponse.message || "Upload failed.");
-    }
-
-    return parsedResponse;
-  } catch (error) {
-    console.error("DeliveryVehicleDocument error:", error);
-    errorToast("Something went wrong. Please try again.");
-    return null;
-  } finally {
-    setLoading(false);
-  }
-};
-
-const GetuploadDocument = async (
-  setLoading: (loading: boolean) => void
-): Promise<any | null> => {
-  setLoading(true);
-  const token = await AsyncStorage.getItem('token');
-  console.log("token", token);
-  try {
-    const response = await fetch(`${BASE_URL}/upload-document`, {
-      method: 'GET',  // agar get ho toh GET use karna
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    const responseData = await response.json();
-    console.log("responseData", responseData);
-
-    if (responseData.status === "1" || responseData.status === 1) {
-      return responseData;
-    } else {
-      Toast(responseData.error || responseData.message || "Something went wrong", color.red, 10);
-      return null;
-    }
-  } catch (error) {
-    console.error("API call error:", error);
-    errorToast("Network error");
-    return null;
-  } finally {
-    setLoading(false);
-  }
-};
-const AddParcelApi = async (param: any, setLoading: (loading: boolean) => void) => {
-  try {
-    setLoading(true);
-    const token = await AsyncStorage.getItem("token");
-    const formdata = new FormData();
-    if (param?.image && param?.image?.uri) {
-      const fileName = param.image.fileName || "profile.jpg";
-      const fileType = param.image.type || "image/jpeg";
-      formdata.append("imageFile", {
-        uri: param.image.uri,
-        name: fileName,
-        type: fileType,
-      });
-    }
-    if (param?.pickupLocation) formdata.append("pickupLocation", param.pickupLocation);
-    if (param?.dropLocation) formdata.append("dropLocation", param.dropLocation);
-    // image
-    if (param?.pickupLat?.latitude) formdata.append("pickupLocationLat", param.pickupLat.latitude);
-    if (param?.pickupLat?.longitude) formdata.append("pickupLocationLon", param.pickupLat.longitude);
-    if (param?.droplat?.latitude) formdata.append("dropLocationLat", param.droplat.latitude);
-    if (param?.droplat.longitude) formdata.append("dropLocationLon", param.droplat.longitude);
-    if (param.shipmentType) formdata.append("shipmentType", param.shipmentType);
-    if (param.senderName) formdata.append("senderName", param.senderName);
-    if (param.senderMobile) formdata.append("senderMobile", param.senderMobile);
-    if (param.senderAddress) formdata.append("senderAddress", param.senderAddress);
-    if (param.pickupDate) {
-      formdata.append("pickupDate", param.pickupDate instanceof Date ? param.pickupDate.toISOString() : param.pickupDate);
-    }
-    if (param.pickupTime) {
-      formdata.append("pickupTime", param.pickupTime instanceof Date ? param.pickupTime.toISOString() : param.pickupTime);
-    }
-    if (param.consignmentType) formdata.append("consignmentType", param.consignmentType);
-    if (param.packageSize) formdata.append("packageSize", param.packageSize);
-    if (param.deliveryType) formdata.append("deliveryType", param.deliveryType);
-    if (param.price) formdata.append("price", param.price);
-
-    if (param.receiverName) formdata.append("receiverName", param.receiverName);
-    if (param.receiverMobile) formdata.append("receiverMobileNumber", param.receiverMobile);
-    if (param.receiverAddress) formdata.append("receiverAddress", param.receiverAddress);
-    if (param.extraMessage) formdata.append("message", param.extraMessage);
-
-    if (param.pickupLat) formdata.append("pickupLat", param.pickupLat.toString());
-    if (param.droplat) formdata.append("droplat", param.droplat.toString());
-
-    const headers: any = {
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
-    const response = await fetch(`${BASE_URL}/parcel-details`, {
-      method: "POST",
-      headers,
-      body: formdata,
-    });
-
-    const textResponse = await response.text();
-    let parsedResponse;
-
-    try {
-      parsedResponse = JSON.parse(textResponse);
-    } catch {
-      throw new Error("Invalid server response");
-    }
-    if (parsedResponse.status == "1") {
-      successToast(parsedResponse.message);
-      return parsedResponse;
-    } else {
-      errorToast(parsedResponse.message);
-      return parsedResponse;
-    }
-  } catch (error) {
-    console.error("AddParcelApi error:", error);
-    errorToast("Something went wrong. Please try again.");
-    return null;
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-
-
-
-const Parceldetails = async (
-  setLoading: (loading: boolean) => void
-): Promise<any | null> => {
-  setLoading(true);
-  const token = await AsyncStorage.getItem('token');
-  try {
-    const response = await fetch(`${BASE_URL}/parcel-details`, {
-      method: 'GET',  // agar get ho toh GET use karna
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    const responseData = await response.json();
-    console.log("responseData", responseData);
-
-    if (responseData.status == "1" || responseData.status == 1) {
-      return responseData;
-    } else {
-      Toast(responseData.error || responseData.message || "Something went wrong", color.red, 10);
-      return null;
-    }
-  } catch (error) {
-    console.error("API call error:", error);
-    errorToast("Network error");
-    return null;
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-
-
-
-
 const DeliveryAvailableRequests = async (
   setLoading: (loading: boolean) => void
 ): Promise<any | null> => {
@@ -841,7 +535,7 @@ const DeliveryAvailableRequests = async (
   const token = await AsyncStorage.getItem('token');
   try {
     const response = await fetch(`${BASE_URL}/delivery/available-requests`, {
-      method: 'GET',  // agar get ho toh GET use karna
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -877,10 +571,5 @@ export {
   GetProfileApi,
   Privacypolicy,
   UpdateProfile,
-  DeliveryUploadDocument,
-  DeliveryVehicleDocument,
-  GetuploadDocument,
-  AddParcelApi,
-  Parceldetails,
   DeliveryAvailableRequests
 }  
