@@ -10,17 +10,17 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  Keyboard,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
 import imageIndex from "../../../assets/imageIndex";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import ScreenNameEnum from "../../../routes/screenName.enum";
 import font from "../../../theme/font";
 import { color, image_url } from "../../../constant";
 import { useSelector } from "react-redux";
 import { socketService } from "../../../socket/socketService";
-import { getChatMessages } from "../../../Api/chatApi";
+import { getMessages } from "../../../Api/chatApi";
 import moment from "moment";
 
 interface Message {
@@ -35,8 +35,8 @@ const ChatScreen = () => {
   const route = useRoute<any>();
   const { providerData } = route.params || {};
   const recipientId = providerData?.providerId?._id || providerData?._id;
-  const recipientName = providerData?.providerId?.name || providerData?.shopName || "User";
-  const recipientImage = providerData?.providerId?.profileImage || providerData?.shopImage;
+  const recipientName = providerData?.providerId?.name || providerData?.shopName || providerData?.name || "User";
+  const recipientImage = providerData?.providerId?.profileImage || providerData?.shopImage || providerData?.profileImage;
 
   const { token, userData } = useSelector((state: any) => state.auth);
   const currentUserId = userData?._id;
@@ -44,51 +44,23 @@ const ChatScreen = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const flatListRef = useRef<FlatList>(null);
-
-  useEffect(() => {
-    if (recipientId) {
-      loadMessages();
-      socketService.connect(token);
-      socketService.joinChat(recipientId);
-
-      const handleReceiveMessage = (msg: any) => {
-        // Only append if the message is from/to the current recipient
-        if (
-          String(msg.senderId) === String(recipientId) ||
-          String(msg.receiverId) === String(recipientId)
-        ) {
-          const newMsg: Message = {
-            id: msg._id || Date.now().toString(),
-            text: msg.message,
-            sender: String(msg.senderId) === String(currentUserId) ? "me" : "other",
-            time: moment(msg.timestamp).format("HH:mm"),
-          };
-          setMessages((prev) => [...prev, newMsg]);
-        }
-      };
-
-      socketService.onReceiveMessage(handleReceiveMessage);
-
-      return () => {
-        socketService.removeListener("receive-message");
-      };
-    }
-  }, [recipientId]);
+  const typingTimeoutRef = useRef<any>(null);
 
   const loadMessages = async () => {
     try {
       setLoading(true);
-      const res = await getChatMessages(currentUserId, recipientId, token);
-      if (res?.success) {
-        const formattedMessages: Message[] = (res.data || []).map((msg: any) => ({
-          id: msg._id,
-          text: msg.message,
-          sender: String(msg.senderId) === String(currentUserId) ? "me" : "other",
-          time: moment(msg.timestamp).format("HH:mm"),
-        }));
-        setMessages(formattedMessages);
-      }
+      const chatRoomId = [currentUserId, recipientId].sort().join("_");
+      const res = await getMessages(chatRoomId, token, setLoading);
+      const msgs = Array.isArray(res) ? res : res.data || [];
+      const formattedMessages: Message[] = msgs.map((msg: any) => ({
+        id: msg._id,
+        text: msg.message,
+        sender: String(msg.senderId) === String(currentUserId) ? "me" : "other",
+        time: moment(msg.timestamp || msg.createdAt).format("HH:mm"),
+      }));
+      setMessages(formattedMessages);
     } catch (err) {
       console.error("Load messages error:", err);
     } finally {
@@ -105,16 +77,77 @@ const ChatScreen = () => {
     };
 
     socketService.sendMessage(messageData);
-
-    // Optimistically add message to UI
-    const newMsg: Message = {
-      id: Date.now().toString(),
-      text: inputText.trim(),
-      sender: "me",
-      time: moment().format("HH:mm"),
-    };
-    setMessages((prev) => [...prev, newMsg]);
     setInputText("");
+  };
+
+  useEffect(() => {
+    // Keyboard listener: scroll to bottom when keyboard appears
+    const keyboardShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      flatListRef.current?.scrollToEnd({ animated: true });
+    });
+    // Cleanup on unmount
+    return () => {
+      keyboardShowListener.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (recipientId && currentUserId) {
+      loadMessages();
+      socketService.connect(token);
+      socketService.joinChat(recipientId);
+
+      const handleReceiveMessage = (msg: any) => {
+        // Only append if the message is from/to the current recipient and not already present
+        if (
+          (String(msg.senderId) === String(recipientId) ||
+            String(msg.receiverId) === String(recipientId)) &&
+          !messages.some((m) => m.id === msg._id)
+        ) {
+          const newMsg: Message = {
+            id: msg._id || Date.now().toString(),
+            text: msg.message,
+            sender: String(msg.senderId) === String(currentUserId) ? "me" : "other",
+            time: moment(msg.timestamp || msg.createdAt).format("HH:mm"),
+          };
+          setMessages((prev) => [...prev, newMsg]);
+          // Emit mark-read event
+          socketService.markRead(msg._id);
+        }
+      };
+
+      socketService.onReceiveMessage(handleReceiveMessage);
+
+      // Typing status listeners
+      socketService.onTyping(() => {
+        setIsTyping(true);
+      });
+      socketService.onStopTyping(() => {
+        setIsTyping(false);
+      });
+
+      return () => {
+        socketService.removeListener("receive-message");
+        socketService.removeListener("user-typing");
+        socketService.removeListener("user-stop-typing");
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+        }
+      };
+    }
+  }, [recipientId, currentUserId]);
+
+  const handleTextChange = (text: string) => {
+    setInputText(text);
+    if (recipientId) {
+      socketService.sendTyping(recipientId);
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+      typingTimeoutRef.current = setTimeout(() => {
+        socketService.stopTyping();
+      }, 1500);
+    }
   };
 
   const renderMessage = ({ item }: { item: Message }) => (
@@ -148,41 +181,44 @@ const ChatScreen = () => {
         />
         <View>
           <Text style={styles.name}>{recipientName}</Text>
-          <Text style={styles.status}>Online</Text>
+          <Text style={[styles.status, isTyping ? { color: "#09BFCD" } : null]}>
+            {isTyping ? "Typing..." : "Online"}
+          </Text>
         </View>
       </View>
 
-      {loading ? (
-        <View style={{ flex: 1, justifyContent: "center" }}>
-          <ActivityIndicator size="large" color={color.primary} />
-        </View>
-      ) : (
-        <FlatList
-          ref={flatListRef}
-          data={messages}
-          renderItem={renderMessage}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.chatContainer}
-          onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
-        />
-      )}
-
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
       >
+        {loading ? (
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <ActivityIndicator size="large" color={color.primary} />
+          </View>
+        ) : (
+          <FlatList
+            ref={flatListRef}
+            data={messages}
+            renderItem={renderMessage}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.chatContainer}
+            onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+          />
+        )}
+
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
             placeholder="Type a message..."
             value={inputText}
-            onChangeText={setInputText}
+            onChangeText={handleTextChange}
             placeholderTextColor={"#999"}
           />
           <TouchableOpacity onPress={handleSendMessage} style={styles.sendButton}>
             <Image
-              source={imageIndex.voice}
+              source={imageIndex.share}
               style={{
                 height: 55,
                 width: 55,
@@ -194,7 +230,6 @@ const ChatScreen = () => {
     </SafeAreaView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
@@ -249,14 +284,11 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: "center",
     marginTop: 15
-
-
   },
   sendButton: {
     justifyContent: "center",
     alignItems: "center",
     marginTop: 30
-
   },
 });
 

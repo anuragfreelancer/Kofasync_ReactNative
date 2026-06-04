@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
+  Modal,
+  TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import imageIndex from "../../../assets/imageIndex";
@@ -15,8 +17,9 @@ import StatusBarComponent from "../../../compoent/StatusBarCompoent";
 import { useNavigation } from "@react-navigation/native";
 import ScreenNameEnum from "../../../routes/screenName.enum";
 import { useSelector } from "react-redux";
-import { image_url } from "../../../constant";
+import { image_url, BASE_URL } from "../../../constant";
 import { GET_API } from "../../../Api/apiRequest";
+import { errorToast, successToast } from "../../../utils/customToast";
 
 // ---------------------- HEADER -------------------------
 const Header = () => {
@@ -114,8 +117,15 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
 
+  // Popup states
+  const [reviewModalVisible, setReviewModalVisible] = useState(false);
+  const [bookingToReview, setBookingToReview] = useState<any>(null);
+  const [rating, setRating] = useState(5);
+  const [reviewText, setReviewText] = useState("");
+
   useEffect(() => {
     fetchCategories();
+    fetchUserBookings();
   }, []);
 
   const fetchCategories = async () => {
@@ -123,6 +133,93 @@ export default function App() {
     console.log("Categories API Response:", res);
     if (res?.success) {
       setCategories(res.categories);
+    }
+  };
+
+  const fetchUserBookings = async () => {
+    const res = await GET_API("customer/userBookings", token, "GET", setLoading);
+    console.log("User Bookings API Response:", res);
+    
+    let bookings = [];
+    if (res?.data && Array.isArray(res.data)) bookings = res.data;
+    else if (res?.bookings && Array.isArray(res.bookings)) bookings = res.bookings;
+    else if (Array.isArray(res)) bookings = res;
+
+    if (bookings.length > 0) {
+      const firstBooking = bookings[0];
+      if (firstBooking.isReviewed === false && firstBooking.isSkipped === false) {
+        setBookingToReview(firstBooking);
+        setReviewModalVisible(true);
+      }
+    }
+  };
+
+  const submitReview = async () => {
+    if (!bookingToReview) return;
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      "bookingId": bookingToReview._id,
+      "rating": rating,
+      "review": reviewText
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow" as RequestRedirect
+    };
+
+    try {
+      const url = BASE_URL ? `${BASE_URL}customer/createReview` : "http://localhost:5000/api/customer/createReview";
+      const response = await fetch(url, requestOptions);
+      const text = await response.text();
+      console.log("Review Submit Result:", text);
+      
+      let result;
+      try { result = JSON.parse(text); } catch (e) { result = {}; }
+
+      setReviewModalVisible(false);
+
+      if (result?.success) {
+        successToast(result.message || "Review added successfully!");
+        fetchUserBookings();
+      } else {
+        errorToast(result?.message || "Failed to add review");
+      }
+    } catch (error) {
+      console.error("Review Submit Error:", error);
+      errorToast("Failed to add review");
+    }
+  };
+
+  const skipReview = async () => {
+    if (!bookingToReview) {
+      setReviewModalVisible(false);
+      return;
+    }
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", `Bearer ${token}`);
+
+      const requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        redirect: "follow" as RequestRedirect
+      };
+
+      const url = BASE_URL ? `${BASE_URL}customer/skipReview/${bookingToReview._id}` : `http://localhost:5000/api/customer/skipReview/${bookingToReview._id}`;
+      const response = await fetch(url, requestOptions);
+      const text = await response.text();
+      console.log("Skip Review Result:", text);
+    } catch (error) {
+      console.error("Skip Review Error:", error);
+    } finally {
+      setReviewModalVisible(false);
+      fetchUserBookings();
     }
   };
 
@@ -209,6 +306,53 @@ export default function App() {
             contentContainerStyle={{ paddingBottom: 50 }}
           />
         </ScrollView>
+
+        {/* Review Modal */}
+        <Modal visible={reviewModalVisible} transparent animationType="slide">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>How was your service?</Text>
+              <Text style={styles.modalSubtitle}>Please rate and review the service you recently received.</Text>
+
+              {bookingToReview && (
+                <View style={styles.bookingDetailsContainer}>
+                  <Text style={styles.serviceName}>{bookingToReview?.subServiceId?.name}</Text>
+                  <Text style={styles.providerName}>Provider: {bookingToReview?.providerId?.name}</Text>
+                  <Text style={styles.companyName}>{bookingToReview?.partnerId?.companyName}</Text>
+                </View>
+              )}
+              
+              <View style={styles.starsRow}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <TouchableOpacity key={star} onPress={() => setRating(star)}>
+                    <Image 
+                      source={imageIndex.star} 
+                      style={[styles.starIconBig, { tintColor: star <= rating ? "#FFB400" : "#D3D3D3" }]} 
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <TextInput
+                style={styles.reviewInput}
+                placeholder="Write your review here..."
+                multiline
+                value={reviewText}
+                onChangeText={setReviewText}
+              />
+
+              <View style={styles.modalActions}>
+                <TouchableOpacity style={styles.skipButton} onPress={skipReview}>
+                  <Text style={styles.skipButtonText}>Skip</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.submitButton} onPress={submitReview}>
+                  <Text style={styles.submitButtonText}>Submit</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
       </View>
     </SafeAreaView>
   );
@@ -325,4 +469,23 @@ const styles = StyleSheet.create({
   },
   starIcon: { width: 16, height: 16, tintColor: "#FFB400" },
   ratingText: { marginLeft: 4, color: "#000", fontWeight: "600" },
+
+  modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" },
+  modalContent: { width: "85%", backgroundColor: "#FFF", borderRadius: 12, padding: 20, alignItems: "center" },
+  modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 5, color: "#000" },
+  modalSubtitle: { fontSize: 13, color: "#666", textAlign: "center", marginBottom: 15 },
+  
+  bookingDetailsContainer: { width: "100%", alignItems: "center", marginBottom: 15 },
+  serviceName: { fontSize: 16, fontWeight: "bold", color: "#333" },
+  providerName: { fontSize: 14, color: "#666", marginTop: 2 },
+  companyName: { fontSize: 12, color: "#999", marginTop: 2 },
+
+  starsRow: { flexDirection: "row", marginBottom: 20 },
+  starIconBig: { width: 32, height: 32, marginHorizontal: 5 },
+  reviewInput: { width: "100%", height: 100, borderWidth: 1, borderColor: "#DDD", borderRadius: 8, padding: 10, textAlignVertical: "top", marginBottom: 20 },
+  modalActions: { flexDirection: "row", justifyContent: "space-between", width: "100%" },
+  skipButton: { flex: 1, padding: 12, alignItems: "center", backgroundColor: "#F5F5F5", borderRadius: 8, marginRight: 10 },
+  skipButtonText: { color: "#666", fontWeight: "bold" },
+  submitButton: { flex: 1, padding: 12, alignItems: "center", backgroundColor: "#09BFCD", borderRadius: 8 },
+  submitButtonText: { color: "#FFF", fontWeight: "bold" },
 });

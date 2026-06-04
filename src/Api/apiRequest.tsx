@@ -200,9 +200,9 @@ export const GET_API = async (
 export const POST_API = async (
   token: string,
   body: any,
-  endpoint,
+  endpoint: string,
   setLoading: (v: boolean) => void,
-  method
+  method?: string
 ) => {
   try {
     setLoading(true);
@@ -444,7 +444,6 @@ const GetProfileApi = async (
 
     if (responseData.success) {
       dispatch(loginSuccess({ userData: responseData?.data, token: token }));
-
       return responseData;
     } else {
       Toast(responseData.error || responseData.message || "Something went wrong", color.red, 10);

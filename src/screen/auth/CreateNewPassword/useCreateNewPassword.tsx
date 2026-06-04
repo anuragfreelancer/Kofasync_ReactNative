@@ -50,7 +50,7 @@ const useCreateNewPassword = () => {
       // navigation: navigation,
     };
 
-      const res =  await POST_API('', params, ENDPOINT.NEW_PASSWORD,setisLoading);
+      const res =  await POST_API('', params, ENDPOINT.NEW_PASSWORD,setisLoading, 'POST');
     
     if(res.success){
        console.log(res)

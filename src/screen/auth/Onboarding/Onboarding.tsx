@@ -121,7 +121,6 @@ const OnboardingScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
       </TouchableOpacity>
 
       <Animated.FlatList
-
         data={slides}
         horizontal
         pagingEnabled

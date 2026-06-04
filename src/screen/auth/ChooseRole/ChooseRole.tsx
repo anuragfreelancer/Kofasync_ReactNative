@@ -101,7 +101,7 @@ const ChooseRole = () => {
   };
 
   const handleContinue = async () => {
-    navigation.navigate(ScreenNameEnum.Login);
+    navigation.navigate(ScreenNameEnum.Login, {type: selectedRole?.type});
     if (!selectedRole) {
       errorToast("Please select your role before proceeding.");
       return;
@@ -109,7 +109,7 @@ const ChooseRole = () => {
 
     try {
       await AsyncStorage.setItem("selectedRole", selectedRole.type);
-      navigation.navigate(ScreenNameEnum.Login);
+      navigation.navigate(ScreenNameEnum.Login, {type: selectedRole.type});
     } catch (error) {
       console.error("Error saving role:", error);
       errorToast("Failed to save selection. Please try again.");

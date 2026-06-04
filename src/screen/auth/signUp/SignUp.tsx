@@ -40,8 +40,6 @@ export default function SignUp() {
     handleCountryCodeSelect,
   } = useSignup();
 
-
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarCompoent />

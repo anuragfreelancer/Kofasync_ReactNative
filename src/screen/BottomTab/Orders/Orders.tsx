@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import imageIndex from '../../../assets/imageIndex';
-import { color, image_url } from '../../../constant';
+import { color, image_url, BASE_URL } from '../../../constant';
 import { useSelector } from 'react-redux';
 import { GET_API, POST_API } from '../../../Api/apiRequest';
 import LoadingModal from '../../../utils/Loader';
@@ -38,35 +38,64 @@ const BookingsScreen = () => {
 
   const fetchBookings = async () => {
     const res = await GET_API("customer/userBookings", token, "GET", setLoading);
-    console.log("User Bookings Response:", res);
+
     if (res?.success) {
       setBookings(res.data || []);
     }
   };
 
   const handleReviewSubmit = async (rating: number, review: string) => {
-    const body = {
-      bookingId: selectedBooking?._id,
-      rating,
-      review
-    };
+    try {
+      setLoading(true);
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", `Bearer ${token}`);
+      myHeaders.append("Content-Type", "application/json");
+      console.log(selectedBooking)
+      const raw = JSON.stringify({
+        "bookingId": selectedBooking?._id,
+        "rating": rating,
+        "review": review
+      });
 
-    const res = await POST_API(token, body, "customer/createReview", setLoading, "POST");
-    if (res?.success) {
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow" as RequestRedirect
+      };
+      console.log(raw)
+      const url = BASE_URL ? `${BASE_URL}customer/createReview` : "http://localhost:5000/api/customer/createReview";
+      const response = await fetch(url, requestOptions);
+      const text = await response.text();
+      console.log("Orders Review Submit Result:", text);
+
+      let result;
+      try { result = JSON.parse(text); } catch (e) { result = {}; }
+
       setReviewModalVisible(false);
-      successToast("Review added successfully!");
-      fetchBookings();
-    } else {
-      errorToast(res?.message || "Failed to add review");
+
+      if (result?.success) {
+        successToast(result.message || "Review added successfully!");
+        fetchBookings();
+      } else {
+        errorToast(result?.message || "Failed to add review");
+      }
+    } catch (error) {
+      console.error("Orders Review Submit Error:", error);
+      errorToast("Failed to add review");
+    } finally {
+      setLoading(false);
     }
   };
 
   const filteredData = bookings.filter(item => {
     // Map API status to tabs
     const status = item.status?.toUpperCase();
+
     if (activeTab === 'Upcoming') {
       return status === 'UPCOMING' || status === 'PENDING' || status === 'CONFIRMED';
     } else if (activeTab === 'Completed') {
+
       return status === 'COMPLETED';
     } else if (activeTab === 'Cancelled') {
       return status === 'CANCELLED';
@@ -126,9 +155,6 @@ const BookingsScreen = () => {
           </TouchableOpacity>
         ))}
       </View>
-
-      {/* Filters */}
-
 
       {/* List */}
       <FlatList
@@ -242,7 +268,6 @@ const BookingCard = ({ item, activeTab, onCancel, onAddReview }) => {
             />
             <Text style={styles.meta}>{date}</Text>
           </View>
-
           <View style={styles.row}>
             <Image style={{
               height: 18,
@@ -284,13 +309,13 @@ const BookingCard = ({ item, activeTab, onCancel, onAddReview }) => {
             (activeTab === 'Cancelled' || status === 'CANCELLED') && { color: '#FF5252' },
             (activeTab === 'Upcoming' || isPending || isConfirmed) && { color: '#2196F3' }
           ]}>
-            {status === 'COMPLETED' ? "✔ Hey, you have completed it!" :
+            {status === 'COMPLETED' ? (item?.isReviewed ? "✔ Completed & Reviewed" : "✔ Hey, you have completed it!") :
               (activeTab === 'Cancelled' || status === 'CANCELLED') ? "✘ This booking was cancelled" :
                 isPending ? "⏳ Your appointment is pending" :
                   isConfirmed ? "✅ Your appointment is confirmed" :
                     "⏰ Your appointment is upcoming"}
           </Text>
-          {status === 'COMPLETED' && (
+          {status === 'COMPLETED' && !item?.isReviewed && (
             <TouchableOpacity
               onPress={onAddReview}
               style={{

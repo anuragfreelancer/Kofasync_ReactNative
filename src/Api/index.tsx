@@ -1,14 +1,14 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { PermissionsAndroid, Platform } from 'react-native';
 import { BASE_URL } from '../constant';
- 
+
 export interface ApiRequest {
   endpoint: string;
   method?: 'GET' | 'POST' | 'PUT';
   data?: any;
   headers?: Record<string, string>;
   token?: string;
-  redirect?:any
+  redirect?: any
 }
 
 
@@ -16,7 +16,7 @@ export const callMultipleApis = async (requests: ApiRequest[]) => {
   try {
     const responses: AxiosResponse[] = await Promise.all(
       requests.map((req) => {
- 
+
         const config: AxiosRequestConfig = {
           method: req.method || 'GET',
           url: `${BASE_URL}${req.endpoint}`,
@@ -37,8 +37,6 @@ export const callMultipleApis = async (requests: ApiRequest[]) => {
 
   } catch (error) {
     console.error('API Error:', error);
-
-    // Optional: You can customize how you want to handle the error (log, rethrow, etc.)
     throw error;
   }
 };
@@ -77,8 +75,6 @@ export const callApi = async (
   }
 };
 
-
-
 export const requestCameraPermissions = async () => {
   if (Platform.OS === 'android') {
     try {
@@ -100,4 +96,4 @@ export const requestCameraPermissions = async () => {
   return true; // iOS handles permissions automatically
 };
 
- 
+

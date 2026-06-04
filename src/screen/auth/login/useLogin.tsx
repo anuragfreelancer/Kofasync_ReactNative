@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
- import { RootStackParamList } from './LoginTypes';
-import { useDispatch } from 'react-redux'; 
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { RootStackParamList } from './LoginTypes';
+import { useDispatch } from 'react-redux';
 import { LoginApi } from '../../../Api/apiRequest';
 import AsyncStorage from '@react-native-async-storage/async-storage';
- 
+
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex =
   /^(?=.*[A-Za-z])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
@@ -12,31 +12,37 @@ const passwordRegex =
 const useLogin = () => {
   const [errors, setErrors] = useState<any>({});
   const navigation = useNavigation<RootStackParamList>();
-      // const role = await AsyncStorage.getItem("selectedRole");
-  
+  // const role = await AsyncStorage.getItem("selectedRole");
+const route = useRoute<any>();
+const type = route.params?.type;
+console.log("route", type)
   const [isLoading, setisLoading] = useState(false)
-interface Credentials {
-  email: string;
-  password: string;
-}
-const [role, setRole] = useState<string | null>(null);
-const [credentials, setCredentials] = useState<Credentials>({
-  email: '',
-  password: '',
-});
-const dispatch = useDispatch()
-const handleChange = (field: keyof Credentials, value: string) => {
-  setCredentials((prev) => ({ ...prev, [field]: value }));
-  setErrors((prev) => ({ ...prev, [field]: '' }));
-};
-
-useEffect(() => {
-  const getRole = async () => {
-    const storedRole = await AsyncStorage.getItem("selectedRole");
-    setRole(storedRole);
+  interface Credentials {
+    email: string;
+    password: string;
+  }
+  const [role, setRole] = useState<string | null>(null);
+  const [credentials, setCredentials] = useState<Credentials>(__DEV__ ? {
+    email: type == "User" ? "customer@yopmail.com" : 'newprovider@yopmail.com',
+    password: type == "User" ? 'Prakash@123' : 'Provider@123',
+  } : {
+    email: "",
+    password: "",
+  });
+  const dispatch = useDispatch()
+  const handleChange = (field: keyof Credentials, value: string) => {
+    setCredentials((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: '' }));
   };
-  getRole();
-}, []);
+
+  useEffect(() => {
+    const getRole = async () => {
+      const storedRole = await AsyncStorage.getItem("selectedRole");
+      console.log("selectedRole", storedRole)
+      setRole(storedRole);
+    };
+    getRole();
+  }, []);
   const validateFields = () => {
     const { email, password } = credentials;
     let validationErrors: any = {};
@@ -45,14 +51,14 @@ useEffect(() => {
     } else if (!emailRegex.test(email)) {
       validationErrors.email = 'Enter a valid email address.';
     }
-  
-   if (!password.trim()) {
-  validationErrors.password = 'Password is required.';
-} else if (!passwordRegex.test(password)) {
-  validationErrors.password =
-    'Password must be at least 8 characters long and include 1 alphabet and 1 special character.';
-}
-     
+
+    if (!password.trim()) {
+      validationErrors.password = 'Password is required.';
+    } else if (!passwordRegex.test(password)) {
+      validationErrors.password =
+        'Password must be at least 8 characters long and include 1 alphabet and 1 special character.';
+    }
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return false;
@@ -65,16 +71,16 @@ useEffect(() => {
     if (!validateFields()) return; // Stop execution if validation fails
     try {
       const role = await AsyncStorage.getItem("selectedRole");
-  
+
       const params = {
         email: credentials?.email,
         password: credentials?.password,
-        type:role == "User" ? "customer" :'provider',
-         navigation: navigation,
-         dispatch:dispatch
-       };
-       console.log(params)
-       const response = await LoginApi(params, setisLoading);
+        type: role == "User" ? "customer" : 'provider',
+        navigation: navigation,
+        dispatch: dispatch
+      };
+      console.log(params)
+      const response = await LoginApi(params, setisLoading);
     } catch (error) {
       console.error("Signup Error:", error);
     }
@@ -85,7 +91,7 @@ useEffect(() => {
     isLoading,
     handleChange,
     handleLogin,
-    navigation, 
+    navigation,
     role
   };
 };

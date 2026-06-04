@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import imageIndex from '../../assets/imageIndex';
-import Header from '../../compoent/Header';
 import CustomHeader from '../../compoent/CustomHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';

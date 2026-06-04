@@ -61,8 +61,8 @@ class SocketService {
   }
 
   // ⌨️ TYPING
-  sendTyping() {
-    socket.emit("typing");
+  sendTyping(recipientId) {
+    socket.emit("typing", { recipientId });
   }
 
   stopTyping() {
@@ -75,6 +75,11 @@ class SocketService {
 
   onStopTyping(callback) {
     socket.on("user-stop-typing", callback);
+  }
+
+  // 📖 MARK AS READ
+  markRead(messageId) {
+    socket.emit("mark-read", { messageId });
   }
 
   // 🧹 REMOVE LISTENER

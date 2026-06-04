@@ -1,14 +1,18 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
+import { BASE_URL } from '../constant';
+
 const apiClient = axios.create({
-  baseURL: 'https://api.example.com',
+  baseURL: BASE_URL,
   timeout: 15000,
 });
 
 // 🔐 Request Interceptor
 apiClient.interceptors.request.use(
   async (config) => {
-    const token = await getAuthToken(); // AsyncStorage / SecureStore
+    const jsonValue = await AsyncStorage.getItem('authData');
+    const token = jsonValue != null ? JSON.parse(jsonValue).token : null;
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

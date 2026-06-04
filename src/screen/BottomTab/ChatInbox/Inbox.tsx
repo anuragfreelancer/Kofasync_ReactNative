@@ -25,7 +25,7 @@ type ChatItem = {
   name: string;
   lastMessage: string;
   time: string;
-  avatar: string;
+  profileImage: string;
   isOnline?: boolean;
   unreadCount?: number;
   rawItem?: any;
@@ -34,29 +34,33 @@ type ChatItem = {
 export default function ChatInboxScreen() {
   const [query, setQuery] = useState("");
   const [chats, setChats] = useState<ChatItem[]>([]);
+  const [onlineUsers, setOnlineUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const { token, userData } = useSelector((state: any) => state.auth);
   const navigation = useNavigation<any>();
   const isFocused = useIsFocused();
+  useEffect(() => {
+    console.log("token", token)
 
+  }, [])
   const loadChats = async () => {
     try {
       if (!isFocused && chats.length > 0) return;
       setLoading(true);
-      const res = await getConversations(token);
-      if (res?.success || Array.isArray(res)) {
-        const data = Array.isArray(res) ? res : res.data || [];
-        const formattedChats: ChatItem[] = data.map((item: any) => ({
-          id: item._id,
-          name: item.name || item.senderName || "User",
-          lastMessage: item.lastMessage || "No messages yet",
-          time: item.timestamp ? moment(item.timestamp).fromNow() : "",
-          avatar: item.avatar || "",
-          unreadCount: item.unreadCount || 0,
-          rawItem: item,
-        }));
-        setChats(formattedChats);
-      }
+
+      const res = await getConversations(token, setLoading);
+      console.log('res', res)
+      const data = Array.isArray(res) ? res : res.data || [];
+      const formattedChats: ChatItem[] = data.map((item: any) => ({
+        id: item._id,
+        name: item.name || item.senderName || "User",
+        lastMessage: item.lastMessage || "No messages yet",
+        time: item.timestamp ? moment(item.timestamp).fromNow() : "",
+        profileImage: item.profileImage || "",
+        unreadCount: item.unreadCount || 0,
+        rawItem: item,
+      }));
+      setChats(formattedChats);
     } catch (err) {
       console.error("Load chats error:", err);
     } finally {
@@ -80,33 +84,60 @@ export default function ChatInboxScreen() {
 
       socketService.onReceiveMessage(handleReceiveMessage);
 
+      // Online status tracking
+      socketService.onUserOnline((data: any) => {
+        setOnlineUsers(data.activeUsers || []);
+      });
+
+      socketService.onUserOffline((data: any) => {
+        setOnlineUsers((prev) => prev.filter((u) => u.userId !== data.userId));
+      });
+
       return () => {
         socketService.removeListener("receive-message");
+        socketService.removeListener("user-online");
+        socketService.removeListener("user-offline");
       };
     }
   }, [token]);
 
+  // Join all chat rooms to receive messages in real time
+  useEffect(() => {
+    if (!userData?._id || chats.length === 0) return;
+    chats.forEach((chat) => {
+      socketService.joinChat(chat.id);
+    });
+  }, [chats, userData?._id]);
+
   const filteredData = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return chats;
-    return chats.filter(
+    const list = chats.map(chat => ({
+      ...chat,
+      isOnline: onlineUsers.some(u => String(u.userId) === String(chat.id))
+    }));
+    if (!q) return list;
+    return list.filter(
       (i) =>
         i.name.toLowerCase().includes(q) ||
         i.lastMessage.toLowerCase().includes(q)
     );
-  }, [query, chats]);
+  }, [query, chats, onlineUsers]);
 
   const renderItem = ({ item }: { item: ChatItem }) => (
     <TouchableOpacity
       style={styles.row}
       activeOpacity={0.7}
-      onPress={() => navigation.navigate(ScreenNameEnum.ChatScreen, { providerData: item.rawItem })}
+      onPress={() => {
+        // Reset unread count locally when clicked
+        setChats(prev => prev.map(c => c.id === item.id ? { ...c, unreadCount: 0 } : c));
+        navigation.navigate(ScreenNameEnum.ChatScreen, { providerData: item.rawItem });
+      }}
     >
       <View style={styles.avatarWrap}>
         <Image
           source={
-            item.avatar
-              ? { uri: image_url + item.avatar }
+            item?.profileImage
+              ? { uri: image_url + item?.profileImage }
               : { uri: "https://ui-avatars.com/api/?background=09BFCD&color=fff&name=" + encodeURIComponent(item.name) }
           }
           style={styles.avatar}
@@ -177,7 +208,6 @@ export default function ChatInboxScreen() {
   );
 }
 
-
 const AVATAR_SIZE = 48;
 
 const styles = StyleSheet.create({
@@ -191,39 +221,32 @@ const styles = StyleSheet.create({
     fontSize: 28,
     marginBottom: 12,
     color: "#0f172a",
-    // fontFamily:font.MonolithRegular
     fontWeight: 'bold'
   },
   searchBox: {
     backgroundColor: "white",
     borderRadius: 10,
     paddingHorizontal: 14,
-    paddingVertical: 0,  // better alignment with TextInput
+    paddingVertical: 0,
     marginBottom: 8,
     height: 48,
     justifyContent: "center",
-
-    // iOS shadow
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-
     borderWidth: 1,
     borderColor: "#eee",
-
   },
   input: {
     fontSize: 16,
     color: "black",
     fontFamily: font.MonolithRegular,
-    paddingVertical: 0,   // remove extra padding in Android
-
+    paddingVertical: 0,
   },
   separator: {
     height: 3,
-    // backgroundColor: "#eef2f7",
-    marginLeft: AVATAR_SIZE + 16, // align with text column
+    marginLeft: AVATAR_SIZE + 16,
   },
   row: {
     flexDirection: "row",
@@ -270,7 +293,6 @@ const styles = StyleSheet.create({
     color: "black",
     marginLeft: 8,
     fontFamily: font.MonolithRegular
-
   },
   messageRow: {
     flexDirection: "row",
@@ -283,13 +305,11 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#1E1E1E",
     fontFamily: font.MonolithRegular
-
   },
   unread: {
     color: "#09BFCD",
     fontFamily: font.MonolithRegular,
     fontSize: 12
-
   },
   badge: {
     backgroundColor: "#09BFCD",

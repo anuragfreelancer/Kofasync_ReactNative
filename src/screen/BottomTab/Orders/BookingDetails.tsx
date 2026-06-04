@@ -120,7 +120,7 @@ const BookingDetails = () => {
           </Text>
         </View>
 
-        {status === 'COMPLETED' && (
+        {status === 'COMPLETED' && !item?.isReviewed && (
           <TouchableOpacity 
             style={styles.reviewBtn}
             onPress={() => setReviewModalVisible(true)}
