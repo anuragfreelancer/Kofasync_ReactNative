@@ -3,7 +3,6 @@ import { GET_API } from "./apiRequest";
 
 // 🔹 Get all conversations
 export const getConversations = async (token: string, setLoading: any) => {
-  console.log('go here')
   const response = await GET_API("chat/conversations", token, "GET", setLoading);
   return response.data;
 };

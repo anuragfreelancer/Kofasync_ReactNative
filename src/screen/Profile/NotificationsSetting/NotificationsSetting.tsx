@@ -1,78 +1,3 @@
-// import React, { useState } from 'react';
-// import { View, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
-// import { SafeAreaView } from 'react-native-safe-area-context';
-// import StatusBarComponent from '../../../compoent/StatusBarCompoent';
-// import CustomHeader from '../../../compoent/CustomHeader';
-// import { color } from '../../../constant';
-// import font from '../../../theme/font';
- 
-// // If you want icons, install react-native-vector-icons, or use any icon library you prefer
-// // import Icon from 'react-native-vector-icons/Ionicons';
-
-// const NotificationsSetting = () => {
-//   // State for toggles
-//   const [generalNotification, setGeneralNotification] = useState(true);
-//   const [sound, setSound] = useState(false);
-//   const [vibrate, setVibrate] = useState(false);
-//   const [appUpdates, setAppUpdates] = useState(true);
-
-//   return (
-//     <SafeAreaView style={styles.container}>
-//       <StatusBarComponent />
-//       <View   >
-//         <CustomHeader
-        
-//           label="Notifications" />
-
-//         {/* Body */}
-//         <View style={{ marginTop: 40,marginHorizontal:15 }}>
-
-//           <View style={styles.notificationOption}>
-//             <View>
-//             <Text style={[styles.optionText, {fontWeight:'bold'}]}>Booking updates</Text>
-//             <Text style={styles.optionText}>We'll remind you about all upcoming trips, payments, and cancellations.</Text>
-//            </View>
-//             <Switch
-//               value={generalNotification}
-//               onValueChange={val => setGeneralNotification(val)}
-//               trackColor={{ false: '#767577', true: color.primary }}
-//               thumbColor={generalNotification ? '#fff' : '#fff'}
-//             />
-//           </View>
-//           <View style={styles.notificationOption}>
-//             <View>
-//             <Text style={[styles.optionText, {fontWeight:'bold'}]}>Reviews</Text>
-//             <Text style={styles.optionText}>Receive reminders to leave a review to help other travellers</Text>
-//            </View>  <Switch
-//               value={sound}
-//               onValueChange={val => setSound(val)}
-//               trackColor={{ false: '#767577', true: color.primary }}
-//               thumbColor={sound ? '#fff' : '#fff'}
-//             />
-//           </View>
-
-//           <View style={styles.notificationOption}>
-//             <View>
-//             <Text style={[styles.optionText, {fontWeight:'bold'}]}>Activities & Attractions</Text>
-//             <Text style={styles.optionText}>Receive important messages and updates from your tour operator</Text>
-//            </View>
-//              <Switch
-//               value={vibrate}
-//               onValueChange={val => setVibrate(val)}
-//               trackColor={{ false: '#767577', true: color.primary }}
-//               thumbColor={vibrate ? '#fff' : '#fff'}
-//             />
-//           </View>
-
-//         </View>
-//       </View>
-//     </SafeAreaView>
-//   );
-// };
-
-// export default NotificationsSetting;
-
-
 
 import React, { useEffect, useState } from 'react';
 import { View, Text, Switch, StyleSheet, ActivityIndicator } from 'react-native';
@@ -85,15 +10,19 @@ import { useSelector } from 'react-redux'; // If using Redux
 import { GET_API, POST_API } from '../../../Api/apiRequest';
 
 const NotificationsSetting = () => {
-  // Replace these with your actual auth selectors
   const { token, userData } = useSelector((state: any) => state.auth);
-  const userId = userData?._id || "user_object_id_here";
-console.log(userData,'userData')
+  console.log(userData,'userData')
+
   // State for toggles
   const [loading, setLoading] = useState(false);
   const [bookingUpdates, setBookingUpdates] = useState(false);
   const [reviews, setReviews] = useState(false);
   const [activitiesAttractions, setActivitiesAttractions] = useState(false);
+  const [inApp, setInApp] = useState(true);
+  const [bookingUpdatesLoading, setBookingUpdatesLoading] = useState(false);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [activitiesLoading, setActivitiesLoading] = useState(false);
+  const [inAppLoading, setInAppLoading] = useState(false);
 
   // Fetch initial preferences
   useEffect(() => {
@@ -101,38 +30,72 @@ console.log(userData,'userData')
   }, []);
 
   const fetchPreferences = async () => {
-    const endpoint = `notifications/preferences/${userId}`;
+    const endpoint = `notifications/preferences`;
     const result = await GET_API(endpoint, token, "GET", setLoading);
-    
-    if (result && result.success) {
-      console.log(result.data)
-      // Mapping API response to state (ensure keys match your backend response)
-      setBookingUpdates(result.data?.preferences.bookingUpdates);
-      setReviews(result.data?.preferences.reviews);
-      setActivitiesAttractions(result.data?.preferences.activitiesAttractions);
+
+    const preferences = result?.data?.preferences || result?.preferences;
+    const notificationChannels = result?.data?.notificationChannels || result?.notificationChannels;
+
+    if (preferences) {
+      setBookingUpdates(!!preferences.bookingUpdates);
+      setReviews(!!preferences.reviews);
+      setActivitiesAttractions(!!preferences.activitiesAttractions);
+    }
+
+    if (notificationChannels) {
+      setInApp(!!notificationChannels.inApp);
     }
   };
 
-  const togglePreference = async (type: string, currentValue: boolean, setter: (val: boolean) => void) => {
+  const togglePreference = async (
+    type: string,
+    currentValue: boolean,
+    setter: (val: boolean) => void,
+    loadingSetter: (val: boolean) => void,
+  ) => {
     const newValue = !currentValue;
-    
-    // Optimistically update UI
-    setter(newValue);
+    loadingSetter(true);
 
     const body = {
       preferenceType: type,
-      value: newValue
+      value: newValue,
     };
 
-    // Using "PUT" as per your fetch example logic
-    // Note: If POST_API only does POST, you might need a PUT_API helper
     const result = await POST_API(token, body, "notifications/toggle", setLoading, 'PUT');
-console.log(body)
+    loadingSetter(false);
+
     if (!result || result.success === false) {
-      // Revert UI if API fails
-      setter(currentValue);
       console.error("Failed to update preference");
+      return;
     }
+
+    await fetchPreferences();
+  };
+
+  const toggleInAppChannel = async () => {
+    const newValue = !inApp;
+    setInAppLoading(true);
+
+    const body = {
+      preferences: {
+        bookingUpdates,
+        reviews,
+        activitiesAttractions,
+      },
+      notificationChannels: {
+        inApp: newValue,
+      },
+    };
+
+    const result = await POST_API(token, body, "notifications/preferences", setLoading, 'PUT');
+    setInAppLoading(false);
+
+    if (!result || result.success === false) {
+      console.error("Failed to update notification channel");
+      return;
+    }
+
+    await fetchPreferences();
   };
 
   return (
@@ -151,12 +114,16 @@ console.log(body)
               <Text style={[styles.optionText, { fontWeight: 'bold' }]}>Booking updates</Text>
               <Text style={styles.optionText}>We'll remind you about all upcoming trips, payments, and cancellations.</Text>
             </View>
-            <Switch
-              value={bookingUpdates}
-              onValueChange={() => togglePreference("bookingUpdates", bookingUpdates, setBookingUpdates)}
-              trackColor={{ false: '#767577', true: color.primary }}
-              thumbColor={'#fff'}
-            />
+            {bookingUpdatesLoading ? (
+              <ActivityIndicator color={color.primary} />
+            ) : (
+              <Switch
+                value={bookingUpdates}
+                onValueChange={() => togglePreference("bookingUpdates", bookingUpdates, setBookingUpdates, setBookingUpdatesLoading)}
+                trackColor={{ false: '#767577', true: color.primary }}
+                thumbColor={'#fff'}
+              />
+            )}
           </View>
 
           {/* Reviews */}
@@ -165,12 +132,16 @@ console.log(body)
               <Text style={[styles.optionText, { fontWeight: 'bold' }]}>Reviews</Text>
               <Text style={styles.optionText}>Receive reminders to leave a review to help other travellers</Text>
             </View>
-            <Switch
-              value={reviews}
-              onValueChange={() => togglePreference("reviews", reviews, setReviews)}
-              trackColor={{ false: '#767577', true: color.primary }}
-              thumbColor={'#fff'}
-            />
+            {reviewsLoading ? (
+              <ActivityIndicator color={color.primary} />
+            ) : (
+              <Switch
+                value={reviews}
+                onValueChange={() => togglePreference("reviews", reviews, setReviews, setReviewsLoading)}
+                trackColor={{ false: '#767577', true: color.primary }}
+                thumbColor={'#fff'}
+              />
+            )}
           </View>
 
           {/* Activities & Attractions */}
@@ -179,12 +150,34 @@ console.log(body)
               <Text style={[styles.optionText, { fontWeight: 'bold' }]}>Activities & Attractions</Text>
               <Text style={styles.optionText}>Receive important messages and updates from your tour operator</Text>
             </View>
-            <Switch
-              value={activitiesAttractions}
-              onValueChange={() => togglePreference("activitiesAttractions", activitiesAttractions, setActivitiesAttractions)}
-              trackColor={{ false: '#767577', true: color.primary }}
-              thumbColor={'#fff'}
-            />
+            {activitiesLoading ? (
+              <ActivityIndicator color={color.primary} />
+            ) : (
+              <Switch
+                value={activitiesAttractions}
+                onValueChange={() => togglePreference("activitiesAttractions", activitiesAttractions, setActivitiesAttractions, setActivitiesLoading)}
+                trackColor={{ false: '#767577', true: color.primary }}
+                thumbColor={'#fff'}
+              />
+            )}
+          </View>
+
+          {/* In-App Notifications */}
+          <View style={styles.notificationOption}>
+            <View>
+              <Text style={[styles.optionText, { fontWeight: 'bold' }]}>In-App Notifications</Text>
+              <Text style={styles.optionText}>Enable or disable in-app notification delivery.</Text>
+            </View>
+            {inAppLoading ? (
+              <ActivityIndicator color={color.primary} />
+            ) : (
+              <Switch
+                value={inApp}
+                onValueChange={toggleInAppChannel}
+                trackColor={{ false: '#767577', true: color.primary }}
+                thumbColor={'#fff'}
+              />
+            )}
           </View>
 
         </View>

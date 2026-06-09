@@ -4,18 +4,20 @@ import { RootStackParamList } from './LoginTypes';
 import { useDispatch } from 'react-redux';
 import { LoginApi } from '../../../Api/apiRequest';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
+import { Platform } from 'react-native';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex =
   /^(?=.*[A-Za-z])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
 
 const useLogin = () => {
-  const [errors, setErrors] = useState<any>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const navigation = useNavigation<RootStackParamList>();
   // const role = await AsyncStorage.getItem("selectedRole");
-const route = useRoute<any>();
-const type = route.params?.type;
-console.log("route", type)
+  const route = useRoute<any>();
+  const type = route.params?.type;
+  console.log("route", type)
   const [isLoading, setisLoading] = useState(false)
   interface Credentials {
     email: string;
@@ -66,23 +68,55 @@ console.log("route", type)
     return true;
   };
 
+  const getFcmToken = async () => {
+    try {
+      await messaging().registerDeviceForRemoteMessages();
+      const token = await messaging().getToken();
+      if (token) {
+        await AsyncStorage.setItem('fcmToken', token);
+      }
+      return token;
+    } catch (error) {
+      console.error('FCM token error:', error);
+      return undefined;
+    }
+  };
+
+  const getDeviceId = async () => {
+    try {
+      let storedId = await AsyncStorage.getItem('deviceId');
+      if (!storedId) {
+        storedId = `${Platform.OS}-${Math.random().toString(36).slice(2)}-${Date.now()}`;
+        await AsyncStorage.setItem('deviceId', storedId);
+      }
+      return storedId;
+    } catch (error) {
+      console.error('Device ID error:', error);
+      return `unknown-device-${Platform.OS}`;
+    }
+  };
+
   const handleLogin = async () => {
-    // navigation.navigate(ScreenNameEnum.TabNavigator)
     if (!validateFields()) return; // Stop execution if validation fails
     try {
-      const role = await AsyncStorage.getItem("selectedRole");
+      const role = await AsyncStorage.getItem('selectedRole');
+      const deviceToken = await getFcmToken();
+      const deviceId = await getDeviceId();
 
       const params = {
         email: credentials?.email,
         password: credentials?.password,
-        type: role == "User" ? "customer" : 'provider',
+        type: role == 'User' ? 'customer' : 'provider',
         navigation: navigation,
-        dispatch: dispatch
+        dispatch: dispatch,
+        deviceId,
+        deviceToken,
+        platform: Platform.OS,
       };
-      console.log(params)
+      console.log(params);
       const response = await LoginApi(params, setisLoading);
     } catch (error) {
-      console.error("Signup Error:", error);
+      console.error('Signup Error:', error);
     }
   };
   return {

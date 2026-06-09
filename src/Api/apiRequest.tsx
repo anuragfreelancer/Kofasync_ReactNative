@@ -1,20 +1,59 @@
-
-
 import ScreenNameEnum from '../routes/screenName.enum';
 import { loginSuccess, logout } from '../redux/feature/authSlice';
 import { errorToast, successToast } from '../utils/customToast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 import { Toast } from '../utils/Toast';
 import { BASE_URL, color } from '../constant';
 import { ENDPOINT } from './endpoints';
 import axios from 'axios';
 
-
 const handleLogout = async (dispatch: any) => {
   try {
+    const token = await AsyncStorage.getItem('token');
+    const deviceId = (await AsyncStorage.getItem('deviceId')) || `${Platform.OS}-${Math.random().toString(36).slice(2)}-${Date.now()}`;
+    const deviceToken = await AsyncStorage.getItem('fcmToken');
+
+    const raw = JSON.stringify({
+      deviceId,
+      deviceToken,
+    });
+
+    const response = await fetch(`${BASE_URL}auth/logout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: raw,
+    });
+
+    const textResponse = await response.text();
+    let parsedResponse: any;
+    try {
+      parsedResponse = JSON.parse(textResponse);
+    } catch {
+      parsedResponse = null;
+    }
+
+    if (response.ok && (parsedResponse?.success ?? true)) {
+      successToast(parsedResponse?.message || 'Logged out successfully');
+    } else {
+      console.warn('Logout request failed', parsedResponse || textResponse);
+    }
+
+    await AsyncStorage.removeItem('token');
+    await AsyncStorage.removeItem('authData');
     dispatch(logout());    // reset Redux state
   } catch (error) {
     console.error('Error during logout:', error);
+    try {
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('authData');
+      dispatch(logout());
+    } catch (cleanupError) {
+      console.error('Logout cleanup error:', cleanupError);
+    }
   }
 };
 
@@ -50,9 +89,12 @@ const LoginApi = async (
     // formdata.append('type', param?.type || '');
 
     const raw = JSON.stringify({
-      "email": param?.email,
-      "password": param?.password,
-      "role": param?.type
+      email: param?.email,
+      password: param?.password,
+      role: param?.type,
+      deviceId: param?.deviceId,
+      deviceToken: param?.deviceToken,
+      platform: param?.platform,
     });
 
     // ✅ Send FormData instead of JSON
@@ -129,8 +171,7 @@ const SignupApi = async (
     });
     // console.log(body)
     const textResponse = await response.text();
-
-
+    
     let parsedResponse = JSON.parse(textResponse);
 
     console.log(parsedResponse)
@@ -155,10 +196,6 @@ const SignupApi = async (
     setLoading(false);
   }
 };
-
-
-
-
 export const GET_API = async (
   endpoint: string,
   token?: string,

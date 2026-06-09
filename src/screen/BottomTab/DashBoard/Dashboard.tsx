@@ -94,13 +94,15 @@ const CompanyCard = ({ item }: any) => (
       </View>
       <View style={styles.locationRow}>
         <View style={{
-          flexDirection: "row"
+          flexDirection: "row",
+          flex: 1,
+          marginRight: 10,
+          alignItems: "flex-start"
         }}>
-          <Image source={imageIndex.location} style={styles.locationIcon} />
-          <Text style={styles.locationText}>{item.location}</Text>
+          <Image source={imageIndex.location} style={[styles.locationIcon, { marginTop: 2 }]} />
+          <Text style={[styles.locationText, { flex: 1 }]} numberOfLines={2}>{item.location}</Text>
         </View>
         <LikeButton />
-
       </View>
 
       <TouchableOpacity>
@@ -116,6 +118,7 @@ export default function App() {
   const { token } = useSelector((state: any) => state.auth);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
+  const [topShops, setTopShops] = useState<any[]>([]);
 
   // Popup states
   const [reviewModalVisible, setReviewModalVisible] = useState(false);
@@ -126,7 +129,24 @@ export default function App() {
   useEffect(() => {
     fetchCategories();
     fetchUserBookings();
+    fetchTopShops();
   }, []);
+
+  const fetchTopShops = async () => {
+    const res = await GET_API("shops/top-rated", token, "GET", setLoading);
+    console.log("Top Shops API Response:", res);
+    if (res?.success) {
+      const formattedShops = res.shops.map((shop: any) => ({
+        id: shop._id,
+        name: shop.shopName,
+        location: shop.address || "N/A",
+        rating: shop.providerId?.averageRating?.toString() || "0.0",
+        image: shop.shopImage ? { uri: image_url + shop.shopImage } : imageIndex.officeImg,
+        originalData: shop
+      }));
+      setTopShops(formattedShops);
+    }
+  };
 
   const fetchCategories = async () => {
     const res = await GET_API("categories", token, "GET", setLoading);
@@ -139,7 +159,7 @@ export default function App() {
   const fetchUserBookings = async () => {
     const res = await GET_API("customer/userBookings", token, "GET", setLoading);
     console.log("User Bookings API Response:", res);
-    
+
     let bookings = [];
     if (res?.data && Array.isArray(res.data)) bookings = res.data;
     else if (res?.bookings && Array.isArray(res.bookings)) bookings = res.bookings;
@@ -178,7 +198,7 @@ export default function App() {
       const response = await fetch(url, requestOptions);
       const text = await response.text();
       console.log("Review Submit Result:", text);
-      
+
       let result;
       try { result = JSON.parse(text); } catch (e) { result = {}; }
 
@@ -223,23 +243,6 @@ export default function App() {
     }
   };
 
-  const companies = [
-    {
-      id: "1",
-      name: "Glow Spa & Beauty",
-      location: "Grand Park, New York",
-      rating: "5.0",
-      image: imageIndex.girlImg,
-    },
-    {
-      id: "2",
-      name: "Glow Spa & Beauty",
-      location: "Grand Park, New York",
-      rating: "5.0",
-      image: imageIndex.officeImg,
-    },
-
-  ];
   const navigation = useNavigation<any>()
 
   return (
@@ -284,12 +287,12 @@ export default function App() {
 
           {/* Popular Companies */}
           <View style={styles.sectionRow}>
-            <Text style={styles.sectionTitle}>Popular Companies</Text>
+            <Text style={styles.sectionTitle}>Popular Shops</Text>
             <Text style={styles.seeAll}>See all</Text>
           </View>
 
           <FlatList
-            data={companies}
+            data={topShops}
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
             horizontal
@@ -298,7 +301,7 @@ export default function App() {
               </>
             }
             renderItem={({ item }) => <TouchableOpacity
-            // onPress={() => navigation.navigate(ScreenNameEnum.DetailScreen, { providerData: item })}
+              onPress={() => navigation.navigate(ScreenNameEnum.DetailScreen, { providerData: item.originalData })}
             >
               <CompanyCard item={item} />
             </TouchableOpacity>
@@ -321,13 +324,13 @@ export default function App() {
                   <Text style={styles.companyName}>{bookingToReview?.partnerId?.companyName}</Text>
                 </View>
               )}
-              
+
               <View style={styles.starsRow}>
                 {[1, 2, 3, 4, 5].map((star) => (
                   <TouchableOpacity key={star} onPress={() => setRating(star)}>
-                    <Image 
-                      source={imageIndex.star} 
-                      style={[styles.starIconBig, { tintColor: star <= rating ? "#FFB400" : "#D3D3D3" }]} 
+                    <Image
+                      source={imageIndex.star}
+                      style={[styles.starIconBig, { tintColor: star <= rating ? "#FFB400" : "#D3D3D3" }]}
                     />
                   </TouchableOpacity>
                 ))}
@@ -451,7 +454,7 @@ const styles = StyleSheet.create({
   companyName: { fontSize: 16, fontWeight: "700", color: "#1A1A1A" },
 
   locationRow: {
-    flexDirection: "row", alignItems: "center",
+    flexDirection: "row", alignItems: "flex-start",
     justifyContent: "space-between",
     marginTop: 4
   },
@@ -474,7 +477,7 @@ const styles = StyleSheet.create({
   modalContent: { width: "85%", backgroundColor: "#FFF", borderRadius: 12, padding: 20, alignItems: "center" },
   modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 5, color: "#000" },
   modalSubtitle: { fontSize: 13, color: "#666", textAlign: "center", marginBottom: 15 },
-  
+
   bookingDetailsContainer: { width: "100%", alignItems: "center", marginBottom: 15 },
   serviceName: { fontSize: 16, fontWeight: "bold", color: "#333" },
   providerName: { fontSize: 14, color: "#666", marginTop: 2 },

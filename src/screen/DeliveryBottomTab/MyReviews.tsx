@@ -1,9 +1,12 @@
 import { View, Text, ScrollView, StyleSheet, Image } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ReviewCard from '../BottomTab/DashBoard/ReviewCard'
 import CustomHeader from '../../compoent/CustomHeader';
 import imageIndex from '../../assets/imageIndex';
+import { GET_API } from '../../Api/apiRequest';
+import { useSelector } from 'react-redux';
+import LoadingModal from '../../utils/Loader';
 
 const reviews = [
   {
@@ -32,11 +35,24 @@ const reviews = [
   },
 ];
 const MyReviews = () => {
+  const [reviews, setReviews] = React.useState<any>([]);
+  const [loading, setLoading] = React.useState(false);
+   const { token, userData } = useSelector((state: any) => state.auth);
+useEffect(()=>{
+  // fetch reviews from api and set to state
+
+  GET_API('providers/myReviews', token, 'GET', setLoading).then((res)=>{
+    console.log(res);
+    setReviews(res?.data || []);
+  }).catch((err)=>{
+    console.log(err);
+  })
+},[])
   return (
     <SafeAreaView style={{flex:1}}>
         <CustomHeader label='My Reviews'/>
-        <Image source={imageIndex.ratting} resizeMode='contain' style={{height:100, width:'90%', alignSelf:'center'}}/>
-
+        {/* <Image source={imageIndex.ratting} resizeMode='contain' style={{height:100, width:'90%', alignSelf:'center'}}/> */}
+{loading && <LoadingModal/>}
         <ScrollView contentContainerStyle={{padding:15}}>
       <Text style={styles.title}>Reviews</Text>
      {reviews?.map((item)=> <ReviewCard item={item}/>

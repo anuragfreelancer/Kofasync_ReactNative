@@ -15,22 +15,23 @@ import { ActivityIndicator } from 'react-native';
 const BookingDetailScreen = () => {
   const route = useRoute<any>();
   const [loading, setLoading] = React.useState(false);
+  const [bookingItem, setBookingItem] = React.useState(route.params?.item);
   const { token } = useSelector((state: any) => state.auth);
-  const item = route.params?.item;
   const onRefresh = route.params?.onRefresh;
 
-  const customer = item?.userId;
+  const customer = bookingItem?.userId;
   const customerName = customer?.username || customer?.name || customer?.email?.split('@')[0] || "Customer";
   const customerImage = customer?.profileImage;
 
   const handleStatusUpdate = async (status: string) => {
     try {
       setLoading(true);
-      const res = await updateBookingStatus(item._id, status, token);
+      const res = await updateBookingStatus(bookingItem._id, status, token);
       if (res?.success) {
+        const updatedBooking = res.data || { ...bookingItem, status };
+        setBookingItem(updatedBooking);
         successToast(`Booking ${status.toLowerCase()}ed successfully`);
         onRefresh?.();
-        // Optionally go back
       } else {
         errorToast(res?.message || "Failed to update status");
       }
@@ -54,36 +55,36 @@ const BookingDetailScreen = () => {
             style={styles.profileImage}
           />
           <Text style={styles.name}>{customerName}</Text>
-          <Text style={{ fontSize: 16, color: '#09BFCD', fontWeight: '600', marginTop: 5 }}>{item?.status}</Text>
+          <Text style={{ fontSize: 16, color: '#09BFCD', fontWeight: '600', marginTop: 5 }}>{bookingItem?.status}</Text>
         </View>
 
         {/* Date */}
         <View style={styles.row}>
           <Image source={imageIndex.calendar} style={styles.icon} />
-          <Text style={styles.rowText}>{item?.bookingDate ? moment(item.bookingDate).format("dddd, DD MMMM YYYY") : "N/A"}</Text>
+          <Text style={styles.rowText}>{bookingItem?.bookingDate ? moment(bookingItem.bookingDate).format("dddd, DD MMMM YYYY") : "N/A"}</Text>
         </View>
 
         {/* Time */}
         <View style={styles.row}>
           <Image source={imageIndex.clock} style={styles.icon} />
-          <Text style={styles.rowText}>{item?.startTime} - {item?.endTime}</Text>
+          <Text style={styles.rowText}>{bookingItem?.startTime} - {bookingItem?.endTime}</Text>
         </View>
 
         {/* Note */}
         <View style={styles.row}>
           <Image source={imageIndex.info} style={styles.icon} />
-          <Text style={styles.rowText}>{item?.notes || item?.description || "No additional notes provided."}</Text>
+          <Text style={styles.rowText}>{bookingItem?.notes || bookingItem?.description || "No additional notes provided."}</Text>
         </View>
 
         {/* Details */}
         <View style={styles.detailBlock}>
           <View style={styles.row1}>
             <Text style={styles.label}>Service Name</Text>
-            <Text style={styles.value}>{item?.subServiceId?.name || "N/A"}</Text>
+            <Text style={styles.value}>{bookingItem?.subServiceId?.name || "N/A"}</Text>
           </View>
           <View style={styles.row1}>
             <Text style={styles.label}>Price</Text>
-            <Text style={styles.value}>${item?.subServiceId?.price || "0"}</Text>
+            <Text style={styles.value}>${bookingItem?.subServiceId?.price || "0"}</Text>
           </View>
           <View style={styles.row1}>
             <Text style={styles.label}>Phone Number</Text>
@@ -95,7 +96,7 @@ const BookingDetailScreen = () => {
           </View>
           <View style={styles.row1}>
             <Text style={styles.label}>New Customer</Text>
-            <Text style={styles.value}>{item?.isNewCustomerBooking ? "Yes" : "No"}</Text>
+            <Text style={styles.value}>{bookingItem?.isNewCustomerBooking ? "Yes" : "No"}</Text>
           </View>
         </View>
 
@@ -105,7 +106,7 @@ const BookingDetailScreen = () => {
             <ActivityIndicator size="large" color="#09BFCD" />
           ) : (
             <>
-              {item?.status === 'PENDING' && (
+              {bookingItem?.status === 'PENDING' && (
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity style={styles.declineBtn} onPress={() => handleStatusUpdate('CANCELLED')}>
                     <Text style={styles.btnText}>Decline</Text>
@@ -116,7 +117,7 @@ const BookingDetailScreen = () => {
                   </TouchableOpacity>
                 </View>
               )}
-              {item?.status === 'CONFIRMED' && (
+              {bookingItem?.status === 'CONFIRMED' && (
                 <TouchableOpacity style={[styles.confirmBtn, { width: '100%' }]} onPress={() => handleStatusUpdate('COMPLETED')}>
                   <Text style={styles.btnText}>Mark as Completed</Text>
                 </TouchableOpacity>

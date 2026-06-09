@@ -1,16 +1,17 @@
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import imageIndex from "../../../assets/imageIndex";
+import { image_url } from "../../../constant";
 
 const ReviewCard = ({ item }) => {
   return (
     <View style={styles.card}>
       {/* Top Row */}
       <View style={styles.row}>
-        <Image source={{ uri: item.image }} style={styles.avatar} />
+        <Image source={ item?.user?.profileImage ?{ uri: image_url + item?.user?.profileImage } : imageIndex.profile } style={styles.avatar} />
 
         <View style={{ flex: 1 }}>
-          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.name}>{item?.user?.username}</Text>
 
           {/* Stars */}
           <View style={styles.starRow}>

@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  FlatList,
   ScrollView,
   SafeAreaView,
   Linking,
@@ -79,12 +78,33 @@ export default function DetailScreen() {
   const [loading, setLoading] = useState(false);
   const [servicesData, setServicesData] = useState<any[]>([]);
   const [shopData, setShopData] = useState<any>(null);
+  const [reviewsData, setReviewsData] = useState<any[]>([]);
 
   useEffect(() => {
     if (providerData?._id) {
       fetchShopDetails();
+      fetchReviews();
     }
   }, [providerData?._id]);
+
+  const fetchReviews = async () => {
+    const res = await GET_API(`shops/${providerData._id}/reviews`, token, "GET", setLoading);
+    console.log("Reviews API Response:", res);
+    
+    if (res?.success) {
+       const reviewList = res.reviews || res.data;
+       if (Array.isArray(reviewList)) {
+          const formattedReviews = reviewList.map((r: any) => ({
+            id: r._id || Math.random().toString(),
+            name: r.user?.username || r.user?.name || "User",
+            image: r.user?.profileImage ? image_url + r.user.profileImage : "https://randomuser.me/api/portraits/men/11.jpg",
+            rating: r.rating || 5,
+            review: r.review || r.comment || "No review text provided"
+          }));
+          setReviewsData(formattedReviews);
+       }
+    }
+  };
 
   const fetchShopDetails = async () => {
     const res = await GET_API(`shops/${providerData._id}`, token, "GET", setLoading);
@@ -311,9 +331,9 @@ export default function DetailScreen() {
           </View>
 
           <View style={{ display: activeTab === "Review" ? "flex" : "none", paddingHorizontal: 18, paddingTop: 10 }}>
-            {reviews?.map((item) => (
+            {reviewsData.length > 0 ? reviewsData.map((item) => (
               <ReviewCard key={`review-${item.id}`} item={item} />
-            ))}
+            )) : <Text style={{ textAlign: 'center', marginTop: 20 }}>No reviews yet.</Text>}
           </View>
         </View>
         <View style={{ width: '90%', alignSelf: 'center', marginTop: 20 }}>

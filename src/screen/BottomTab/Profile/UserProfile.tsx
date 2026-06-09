@@ -1,13 +1,16 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ScreenNameEnum from "../../../routes/screenName.enum";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LogoutModal from "../../../compoent/LogoutModal";
+import { handleLogout } from "../../../Api/apiRequest";
 
 const ProfileScreen = () => {
   const navigation = useNavigation()
+  const dispatch = useDispatch();
   const [role, setRole] = useState('user')
   const [modalVisible, setModalVisible] = useState(false);
   useEffect(() => {
@@ -62,8 +65,8 @@ const ProfileScreen = () => {
       <LogoutModal
         visible={modalVisible}
         onLogout={async () => {
-          // ✅ Call logout function
-          await AsyncStorage.clear()
+          await handleLogout(dispatch);
+          setModalVisible(false);
           navigation.replace(ScreenNameEnum.ChooseRole)
         }}
         onCancel={() => setModalVisible(false)}
