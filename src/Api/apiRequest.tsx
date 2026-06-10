@@ -82,12 +82,6 @@ const LoginApi = async (
   setLoading(true);
 
   try {
-    // ✅ Create FormData object
-    // const formdata = new FormData();
-    // formdata.append('email', param?.email || '');
-    // formdata.append('password', param?.password || '');
-    // formdata.append('type', param?.type || '');
-
     const raw = JSON.stringify({
       email: param?.email,
       password: param?.password,
@@ -171,7 +165,7 @@ const SignupApi = async (
     });
     // console.log(body)
     const textResponse = await response.text();
-    
+
     let parsedResponse = JSON.parse(textResponse);
 
     console.log(parsedResponse)
@@ -247,6 +241,48 @@ export const POST_API = async (
 
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       method: method || 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // Accept: 'application/json',
+        "Content-Type": "application/json"
+        // ❌ DO NOT set Content-Type for FormData
+      },
+      body: JSON.stringify({ ...body, role: role == "User" ? "customer" : 'provider' }),
+    });
+    console.log(body, 'this is body')
+    // console.log(formData, 'formadata')
+    const text = await response.text();
+
+    try {
+      console.log(JSON.parse(text))
+      return JSON.parse(text);
+    } catch {
+      console.log('Non JSON response:', text);
+      return null;
+    }
+
+  } catch (error) {
+    console.log('Add Invoice Error:', error);
+    return null;
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+export const PUT_API = async (
+  token: string,
+  body: any,
+  endpoint: string,
+  setLoading: (v: boolean) => void,
+  method?: string
+) => {
+  try {
+    setLoading(true);
+    const role = await AsyncStorage.getItem("selectedRole");
+
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+      method: method || 'PUT',
       headers: {
         Authorization: `Bearer ${token}`,
         // Accept: 'application/json',

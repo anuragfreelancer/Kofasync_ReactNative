@@ -32,6 +32,7 @@ import NotificationsSetting from "../screen/Profile/NotificationsSetting/Notific
 import HelpSupport from "../screen/Profile/HelpSupport/HelpSupport";
 import AppointmentScreen from "../screen/BottomTab/AppointmentScreen/AppointmentScreen";
 import BookingDetails from "../screen/BottomTab/Orders/BookingDetails";
+import WishlistScreen from "../screen/BottomTab/DashBoard/WishlistScreen";
 const _routes: any = {
   REGISTRATION_ROUTE: [
     {
@@ -185,6 +186,10 @@ const _routes: any = {
     {
       name: ScreenNameEnum.BookingDetails,
       Component: BookingDetails,
+    },
+    {
+      name: ScreenNameEnum.WishlistScreen,
+      Component: WishlistScreen,
     },
   ],
 

@@ -6,7 +6,6 @@ import ScreenNameEnum from '../routes/screenName.enum';
 export type RegistrationStackParamList = {
   [ScreenNameEnum.SPLASH_SCREEN]: undefined;
   [ScreenNameEnum.OnboardingScreen]: undefined;
-  [ScreenNameEnum.ChooseRoleScreen]: undefined;
   [ScreenNameEnum.ReadyScreen]: undefined;
   [ScreenNameEnum.LoginScreen]: undefined;
   [ScreenNameEnum.OtpScreen]: undefined;

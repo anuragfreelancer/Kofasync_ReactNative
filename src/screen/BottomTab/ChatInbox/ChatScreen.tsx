@@ -40,7 +40,6 @@ const ChatScreen = () => {
 
   const { token, userData } = useSelector((state: any) => state.auth);
   const currentUserId = userData?._id;
-
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -51,6 +50,8 @@ const ChatScreen = () => {
   const loadMessages = async () => {
     try {
       setLoading(true);
+      console.log("currentUserId", currentUserId);
+      console.log("recipientId", recipientId);
       const chatRoomId = [currentUserId, recipientId].sort().join("_");
       const res = await getMessages(chatRoomId, token, setLoading);
       const msgs = Array.isArray(res) ? res : res.data || [];
@@ -157,7 +158,9 @@ const ChatScreen = () => {
         item.sender === "me" ? styles.myMessage : styles.otherMessage,
       ]}
     >
-      <Text style={item.sender === "me" ? styles.myMessageText : styles.otherMessageText}>
+      <Text
+        // onPress={() => deleteMessageApi(item?.id)}
+        style={item.sender === "me" ? styles.myMessageText : styles.otherMessageText}>
         {item.text}
       </Text>
       <Text style={styles.timeText}>{item.time}</Text>

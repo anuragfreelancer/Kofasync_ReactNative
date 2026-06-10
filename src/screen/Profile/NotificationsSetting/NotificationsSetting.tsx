@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { View, Text, Switch, StyleSheet, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,7 +5,7 @@ import StatusBarComponent from '../../../compoent/StatusBarCompoent';
 import CustomHeader from '../../../compoent/CustomHeader';
 import { color } from '../../../constant';
 import font from '../../../theme/font'; 
-import { useSelector } from 'react-redux'; // If using Redux
+import { useSelector } from 'react-redux';
 import { GET_API, POST_API } from '../../../Api/apiRequest';
 
 const NotificationsSetting = () => {

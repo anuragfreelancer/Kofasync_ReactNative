@@ -1,15 +1,15 @@
 import apiClient from "./apiClient";
-import { GET_API } from "./apiRequest";
 
 // 🔹 Get all conversations
-export const getConversations = async (token: string, setLoading: any) => {
-  const response = await GET_API("chat/conversations", token, "GET", setLoading);
+export const getConversations = async () => {
+  const response = await apiClient.get("chat/conversations");
+  console.log("getConversations", response.data);
   return response.data;
 };
 
 // 🔹 Get messages
-export const getMessages = async (chatRoomId: string, token: string, setLoading: any) => {
-  const response = await GET_API(`/chat/messages/${chatRoomId}`, token, "GET", setLoading);
+export const getMessages = async (chatRoomId: string) => {
+  const response = await apiClient.get(`/chat/messages/${chatRoomId}`);
   return response.data;
 };
 

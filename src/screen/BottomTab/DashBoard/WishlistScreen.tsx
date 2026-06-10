@@ -11,7 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import imageIndex from "../../../assets/imageIndex";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
 import CustomHeader from "../../../compoent/CustomHeader";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import ScreenNameEnum from "../../../routes/screenName.enum";
 import { useSelector } from "react-redux";
 import { GET_API, POST_API } from "../../../Api/apiRequest";
@@ -20,7 +20,7 @@ import { wp, hp } from "../../../utils/Constant";
 import LoadingModal from "../../../utils/Loader";
 
 // ---------------------- LIKE BUTTON -------------------
-const LikeButton = ({ shopId, isWishlisted = false }: { shopId: string, isWishlisted?: boolean }) => {
+const LikeButton = ({ shopId, isWishlisted = false, onToggle }: { shopId: string, isWishlisted?: boolean, onToggle?: () => void }) => {
   const [liked, setLiked] = useState(isWishlisted);
   const { token } = useSelector((state: any) => state.auth);
 
@@ -31,12 +31,11 @@ const LikeButton = ({ shopId, isWishlisted = false }: { shopId: string, isWishli
   const handleLike = async () => {
     setLiked(!liked);
     try {
-      const result = await POST_API(token, { shopId }, "customer/wishlist", () => { });
-
+      const result = await POST_API(token, { shopId }, "customer/wishlist", () => {});
+      
       if (result?.success) {
-        // optionally handle success
+        if (onToggle) onToggle();
       } else {
-        // revert optimistic update on failure
         setLiked((prev) => !prev);
       }
     } catch (error) {
@@ -59,9 +58,8 @@ const LikeButton = ({ shopId, isWishlisted = false }: { shopId: string, isWishli
   );
 };
 
-
 // -------------------- COMPANY CARD ----------------------
-const CompanyCard = ({ item }: any) => {
+const CompanyCard = ({ item, onToggle }: any) => {
   return (
     <View style={styles.companyCard}>
       <Image
@@ -83,7 +81,7 @@ const CompanyCard = ({ item }: any) => {
             <Image source={imageIndex.location} style={styles.locationIcon} />
             <Text style={[styles.locationText, { flex: 1 }]} numberOfLines={1}>{item.address}</Text>
           </View>
-          <LikeButton shopId={item._id} isWishlisted={item.isWishlisted} />
+          <LikeButton shopId={item._id} isWishlisted={true} onToggle={onToggle} />
         </View>
 
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
@@ -95,37 +93,32 @@ const CompanyCard = ({ item }: any) => {
   );
 };
 
-export default function ProviderList() {
+export default function WishlistScreen() {
   const navigation = useNavigation<any>();
-  const route = useRoute<any>();
-  const categoryTitle = route.params?.categoryTitle || "Providers";
-  const categoryId = route.params?.categoryId;
   const { token } = useSelector((state: any) => state.auth);
 
   const [loading, setLoading] = useState(false);
-  const [providers, setProviders] = useState<any[]>([]);
+  const [wishlist, setWishlist] = useState<any[]>([]);
+
   useEffect(() => {
-    if (categoryId) {
-      fetchProviders();
-      // fetchSubCategories();
-    }
-  }, [categoryId]);
+    fetchWishlist();
+  }, []);
 
-  // const fetchSubCategories = async () => {
-  //   const res = await GET_API(`categories/${categoryId}/services`, token, "GET", setLoading);
-  //   console.log("SubCategories response:", res);
-  //   if (res?.success) {
-  //     setSubCatData([{ _id: "0", name: "All" }, ...res.services]);
-  //   }
-  // };
-
-  const fetchProviders = async () => {
-    const res = await GET_API(`shops/category/${categoryId}`, token, "GET", setLoading);
+  const fetchWishlist = async () => {
+    const res = await GET_API(`customer/wishlist`, token, "GET", setLoading);
+    console.log("Wishlist API Response:", res);
     if (res?.success) {
-      setProviders(res.shops);
+      let shopsData = [];
+      if (res.wishlist && Array.isArray(res.wishlist)) {
+        shopsData = res.wishlist.map((item: any) => item.shopId);
+      } else if (res.data && Array.isArray(res.data)) {
+        shopsData = res.data.map((item: any) => item.shopId);
+      } else if (res.shops && Array.isArray(res.shops)) {
+        shopsData = res.shops;
+      }
+      setWishlist(shopsData);
     }
   };
-
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#09BFCD" }}>
@@ -133,48 +126,28 @@ export default function ProviderList() {
         <StatusBarComponent backgroundColor="#09BFCD" barStyle="light-content" />
         <LoadingModal visible={loading} />
         <CustomHeader
-          label={categoryTitle}
+          label={"My Wishlist"}
           backgroundColor="#09BFCD"
           textColor="white"
         />
 
-        {/* <View style={styles.subCatContainer}>
+        {wishlist.length === 0 && !loading ? (
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <Text style={{ fontSize: 16, color: "#666" }}>Your wishlist is empty.</Text>
+          </View>
+        ) : (
           <FlatList
-            data={subCatData}
-            horizontal
-            showsHorizontalScrollIndicator={false}
+            data={wishlist}
             keyExtractor={(item) => item._id}
             renderItem={({ item }) => (
-              <TouchableOpacity
-                style={[
-                  styles.subCatItem,
-                  selectedSubCat === item._id && styles.subCatSelected
-                ]}
-                onPress={() => setSelectedSubCat(item._id)}
-              >
-                <Text style={[
-                  styles.subCatText,
-                  selectedSubCat === item._id && styles.subCatTextSelected
-                ]}>
-                  {item.name}
-                </Text>
+              <TouchableOpacity onPress={() => navigation.navigate(ScreenNameEnum.DetailScreen, { providerData: item })}>
+                <CompanyCard item={item} onToggle={fetchWishlist} />
               </TouchableOpacity>
             )}
-            contentContainerStyle={styles.subCatList}
+            contentContainerStyle={styles.listContainer}
+            showsVerticalScrollIndicator={false}
           />
-        </View> */}
-
-        <FlatList
-          data={providers}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate(ScreenNameEnum.DetailScreen, { providerData: item })}>
-              <CompanyCard item={item} />
-            </TouchableOpacity>
-          )}
-          contentContainerStyle={styles.listContainer}
-          showsVerticalScrollIndicator={false}
-        />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -285,36 +258,5 @@ const styles = StyleSheet.create({
     color: "#888",
     fontStyle: "italic",
     flex: 1,
-  },
-  subCatContainer: {
-    backgroundColor: "#fff",
-    paddingVertical: hp(1.5),
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-  subCatList: {
-    paddingHorizontal: wp(4),
-  },
-  subCatItem: {
-    paddingHorizontal: wp(5),
-    paddingVertical: hp(1),
-    borderRadius: wp(10),
-    backgroundColor: "#f0f0f0",
-    marginRight: wp(3),
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-  },
-  subCatSelected: {
-    backgroundColor: "#09BFCD",
-    borderColor: "#09BFCD",
-  },
-  subCatText: {
-    fontSize: wp(3.5),
-    color: "#666",
-    fontWeight: "500",
-  },
-  subCatTextSelected: {
-    color: "#fff",
-    fontWeight: "bold",
   },
 });

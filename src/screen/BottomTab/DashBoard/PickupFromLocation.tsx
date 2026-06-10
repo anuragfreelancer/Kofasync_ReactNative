@@ -6,7 +6,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Alert,
   Image,
   Platform,
 } from "react-native";
@@ -18,15 +17,12 @@ import CustomHeader from "../../../compoent/CustomHeader";
 import font from "../../../theme/font";
 import CustomButton from "../../../compoent/CustomButton";
 import AddressModalInput from "../../../compoent/AutocompleteData";
-import { errorToast, successToast } from "../../../utils/customToast";
 import LoadingModal from "../../../utils/Loader";
-import { AddParcelApi } from "../../../Api/apiRequest";
 import { useNavigation } from "@react-navigation/native";
 import imageIndex from "../../../assets/imageIndex";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import ImagePickerModal from "../../../compoent/ImagePickerModal";
-import ScreenNameEnum from "../../../routes/screenName.enum";
- 
+
 const PickupFromLocation = () => {
   const navgatoon = useNavigation()
   const [pickupDate, setPickupDate] = useState<Date | null>(null);
@@ -105,39 +101,39 @@ const PickupFromLocation = () => {
         if (!value.trim()) error = "This field is required";
         else if (value.trim().length < 1) error = "Name must be at least 1 characters";
         break;
-      
+
       case "senderMobile":
       case "receiverMobile":
         if (!value.trim()) error = "Mobile number is required";
         // else if (!/^\d{10}$/.test(value.replace(/\D/g, ''))) error = "Enter a valid 10-digit mobile number";
         break;
-      
+
       case "senderAddress":
       case "receiverAddress":
       case "pickupLocation":
       case "dropLocation":
         if (!value.trim()) error = "This field is required";
         break;
-      
+
       case "price":
         if (!value.trim()) error = "Price is required";
         else if (isNaN(Number(value)) || Number(value) <= 0) error = "Enter a valid price";
         break;
-      
+
       case "shipmentType":
       case "consignmentType":
       case "deliveryType":
         if (!value) error = "Please select an option";
         break;
-      
+
       case "pickupDate":
         if (!value) error = "Pickup date is required";
         break;
-      
+
       case "pickupTime":
         if (!value) error = "Pickup time is required";
         break;
-      
+
       default:
         break;
     }
@@ -161,7 +157,7 @@ const PickupFromLocation = () => {
       price,
       receiverName,
       receiverMobile,
-      
+
       receiverAddress,
     };
 
@@ -175,53 +171,53 @@ const PickupFromLocation = () => {
 
     return isValid;
   };
-   
-const handleSubmit = async () => {
-  // if (validateForm()) {
-  //   console.log("Form submitted successfully!");
 
-  //   const formDataObj = {
-  //     shipmentType,
-  //     senderName,
-  //     senderMobile,
-  //     senderAddress,
-  //     pickupDate,
-  //     pickupTime,
-  //     consignmentType,
-  //     packageSize,
-  //     deliveryType,
-  //     price,
-  //     receiverName,
-  //     receiverMobile,
-  //     receiverAddress,
-  //     extraMessage,
-  //     pickupLat,
-  //     droplat  ,
-  //     pickupLocation ,
-  //     dropLocation ,
-  //     image
-  //   };
- 
-  //   const response = await AddParcelApi(formDataObj, setIsLoading);
- 
-  //   if (response && response.status == "1") {
-  //       navgatoon.navigate(ScreenNameEnum.RequestLoading,{
-  //       parcelId: response,
-  //      })
-  //     successToast("Pickup request submitted successfully!");
-  //   }
-  // } else {
-  //   console.log("Form has validation errors");
+  const handleSubmit = async () => {
+    // if (validateForm()) {
+    //   console.log("Form submitted successfully!");
 
-  //   const firstErrorField = Object.keys(errors).find(key => errors[key]);
-  //   if (firstErrorField) {
-  //     console.log(`First error in: ${firstErrorField}`);
-  //     // scrollToErrorField(firstErrorField);
-  //   }
+    //   const formDataObj = {
+    //     shipmentType,
+    //     senderName,
+    //     senderMobile,
+    //     senderAddress,
+    //     pickupDate,
+    //     pickupTime,
+    //     consignmentType,
+    //     packageSize,
+    //     deliveryType,
+    //     price,
+    //     receiverName,
+    //     receiverMobile,
+    //     receiverAddress,
+    //     extraMessage,
+    //     pickupLat,
+    //     droplat  ,
+    //     pickupLocation ,
+    //     dropLocation ,
+    //     image
+    //   };
 
-  //   errorToast("Please fill all required fields correctly");
-  // }
-};
+    //   const response = await AddParcelApi(formDataObj, setIsLoading);
+
+    //   if (response && response.status == "1") {
+    //       navgatoon.navigate(ScreenNameEnum.RequestLoading,{
+    //       parcelId: response,
+    //      })
+    //     successToast("Pickup request submitted successfully!");
+    //   }
+    // } else {
+    //   console.log("Form has validation errors");
+
+    //   const firstErrorField = Object.keys(errors).find(key => errors[key]);
+    //   if (firstErrorField) {
+    //     console.log(`First error in: ${firstErrorField}`);
+    //     // scrollToErrorField(firstErrorField);
+    //   }
+
+    //   errorToast("Please fill all required fields correctly");
+    // }
+  };
 
 
 
@@ -280,8 +276,8 @@ const handleSubmit = async () => {
   };
 
   const handleLocationSelect = (type: 'pickup' | 'drop', item: any) => {
-     const fieldName = type === 'pickup' ? 'pickupLocation' : 'dropLocation';
-    
+    const fieldName = type === 'pickup' ? 'pickupLocation' : 'dropLocation';
+
     if (errors[fieldName]) {
       setErrors(prev => ({ ...prev, [fieldName]: "" }));
     }
@@ -315,15 +311,15 @@ const handleSubmit = async () => {
     }}>
       <StatusBarComponent />
       <CustomHeader label={"Parcel Details"} />
-                                        <LoadingModal visible ={isLoading}/>
+      <LoadingModal visible={isLoading} />
 
-      <ScrollView 
+      <ScrollView
         showsVerticalScrollIndicator={false}
         style={styles.container}
       >
         {/* Pickup & Drop */}
         {/* <Text style={styles.sectionTitle}>Pickup & Drop</Text> */}
-        
+
         {/* <TouchableOpacity 
           onPress={() => setPickupModal(true)}
           style={[styles.input, errors.pickupLocation ? styles.inputError : null]}
@@ -367,21 +363,21 @@ const handleSubmit = async () => {
 
         {/* Shipment & Sender Details */}
         <Text style={styles.sectionTitle}>Shipment Type</Text>
-        
+
         <CustomDropdown
           data={shipmentTypeData}
           placeholder="Select"
           onSelect={(value) => handleDropdownSelect("shipmentType", value)}
-         />
+        />
         {errors.shipmentType ? <Text style={styles.errorText}>{errors.shipmentType}</Text> : null}
         <Text style={styles.sectionTitle}>Sender Details</Text>
 
-        <TextInput  
+        <TextInput
           placeholderTextColor={"#ADA4A5"}
           value={senderName}
           onChangeText={(value) => handleInputChange("senderName", value)}
-          style={[styles.input, errors.senderName ? styles.inputError : null]} 
-          placeholder="Enter Name" 
+          style={[styles.input, errors.senderName ? styles.inputError : null]}
+          placeholder="Enter Name"
         />
         {errors.senderName ? <Text style={styles.errorText}>{errors.senderName}</Text> : null}
 
@@ -396,12 +392,12 @@ const handleSubmit = async () => {
         />
         {errors.senderMobile ? <Text style={styles.errorText}>{errors.senderMobile}</Text> : null}
 
-        <TextInput 
+        <TextInput
           placeholderTextColor={"#ADA4A5"}
           value={senderAddress}
           onChangeText={(value) => handleInputChange("senderAddress", value)}
-          style={[styles.input, errors.senderAddress ? styles.inputError : null]} 
-          placeholder="Sender Address" 
+          style={[styles.input, errors.senderAddress ? styles.inputError : null]}
+          placeholder="Sender Address"
         />
         {errors.senderAddress ? <Text style={styles.errorText}>{errors.senderAddress}</Text> : null}
 
@@ -419,7 +415,7 @@ const handleSubmit = async () => {
           <DateTimePicker
             value={pickupDate || new Date()}
             mode="date"
-          display={Platform.OS === "ios" ? "inline" : "default"}
+            display={Platform.OS === "ios" ? "inline" : "default"}
             onChange={(e, date) => {
               setShowDate(false);
               if (date) {
@@ -448,7 +444,7 @@ const handleSubmit = async () => {
           <DateTimePicker
             value={pickupTime || new Date()}
             mode="time"
-          display={Platform.OS === "ios" ? "inline" : "default"}
+            display={Platform.OS === "ios" ? "inline" : "default"}
             onChange={(e, time) => {
               setShowTime(false);
               if (time) {
@@ -465,7 +461,7 @@ const handleSubmit = async () => {
           data={consignmentTypeData}
           placeholder="Consignment Type"
           onSelect={(value) => handleDropdownSelect("consignmentType", value)}
-         />
+        />
         {errors.consignmentType ? <Text style={styles.errorText}>{errors.consignmentType}</Text> : null}
 
         {/* Package Size */}
@@ -497,27 +493,27 @@ const handleSubmit = async () => {
           data={deliveryTypeData}
           placeholder="Delivery Type"
           onSelect={(value) => handleDropdownSelect("deliveryType", value)}
-         />
+        />
         {errors.deliveryType ? <Text style={styles.errorText}>{errors.deliveryType}</Text> : null}
 
-        <TextInput 
+        <TextInput
           placeholderTextColor={"#ADA4A5"}
           value={price}
           onChangeText={(value) => handleInputChange("price", value)}
-          style={[styles.input, errors.price ? styles.inputError : null]} 
-          placeholder="Price" 
-          keyboardType="numeric" 
+          style={[styles.input, errors.price ? styles.inputError : null]}
+          placeholder="Price"
+          keyboardType="numeric"
         />
         {errors.price ? <Text style={styles.errorText}>{errors.price}</Text> : null}
 
         {/* Receiver Details */}
         <Text style={styles.sectionTitle}>Receiver Details</Text>
-        <TextInput 
-          style={[styles.input, errors.receiverName ? styles.inputError : null]}  
+        <TextInput
+          style={[styles.input, errors.receiverName ? styles.inputError : null]}
           placeholderTextColor={"#ADA4A5"}
           value={receiverName}
           onChangeText={(value) => handleInputChange("receiverName", value)}
-          placeholder="Receiver Name" 
+          placeholder="Receiver Name"
         />
         {errors.receiverName ? <Text style={styles.errorText}>{errors.receiverName}</Text> : null}
 
@@ -532,9 +528,9 @@ const handleSubmit = async () => {
         />
         {errors.receiverMobile ? <Text style={styles.errorText}>{errors.receiverMobile}</Text> : null}
 
-        <TextInput 
-          style={[styles.input, errors.receiverAddress ? styles.inputError : null]} 
-          placeholder="Receiver Address" 
+        <TextInput
+          style={[styles.input, errors.receiverAddress ? styles.inputError : null]}
+          placeholder="Receiver Address"
           placeholderTextColor={"#ADA4A5"}
           value={receiverAddress}
           onChangeText={(value) => handleInputChange("receiverAddress", value)}
@@ -544,61 +540,61 @@ const handleSubmit = async () => {
         <TextInput
           style={[styles.input, { height: 80 }]}
           placeholder="Extra Message"
-          multiline 
+          multiline
           placeholderTextColor={"#ADA4A5"}
           value={extraMessage}
           onChangeText={setExtraMessage}
         />
         {image?.uri ? (
-          <TouchableOpacity  
+          <TouchableOpacity
 
-onPress={()=>{
-  setIsModalVisible(true)
-}}
-          style={{
-  borderWidth:1 ,
-  padding:30 ,
-  alignItems:"center" ,
-  borderRadius:10,
-  borderColor:"#EAEAEA" ,
-  borderStyle:"dotted" ,marginTop:5,
-  marginBottom:11
+            onPress={() => {
+              setIsModalVisible(true)
+            }}
+            style={{
+              borderWidth: 1,
+              padding: 30,
+              alignItems: "center",
+              borderRadius: 10,
+              borderColor: "#EAEAEA",
+              borderStyle: "dotted", marginTop: 5,
+              marginBottom: 11
 
-}}
+            }}
           >
-           <Image
+            <Image
               source={image ? { uri: image?.uri || image } : imageIndex.prfile}
-               resizeMode="cover" 
-               style={{
-                height:150,
-                width:150 ,
-                borderRadius:10 ,
-                resizeMode:"contain"
-               }}
+              resizeMode="cover"
+              style={{
+                height: 150,
+                width: 150,
+                borderRadius: 10,
+                resizeMode: "contain"
+              }}
             />
-            </TouchableOpacity>
-        ):(
-<TouchableOpacity  
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
 
-onPress={()=>{
-  setIsModalVisible(true)
-}}
-style={{
-  borderWidth:1 ,
-  padding:30 ,
-  alignItems:"center" ,
-  borderRadius:10,
-  borderColor:"#EAEAEA" ,
-  borderStyle:"dotted" ,marginTop:5,
-  marginBottom:11
+            onPress={() => {
+              setIsModalVisible(true)
+            }}
+            style={{
+              borderWidth: 1,
+              padding: 30,
+              alignItems: "center",
+              borderRadius: 10,
+              borderColor: "#EAEAEA",
+              borderStyle: "dotted", marginTop: 5,
+              marginBottom: 11
 
-}}>
+            }}>
 
-          <Text style={{
-            fontSize:18,
-            fontFamily:font.MonolithRegular ,
-            color: "#ADA4A5"
-          }}>Add Parcel Image +</Text>
+            <Text style={{
+              fontSize: 18,
+              fontFamily: font.MonolithRegular,
+              color: "#ADA4A5"
+            }}>Add Parcel Image +</Text>
           </TouchableOpacity>
         )}
 
@@ -628,31 +624,32 @@ style={{
         onSelect={(item: any) => handleLocationSelect('drop', item)}
         placeholder="Select Drop Address"
       />
-         <ImagePickerModal
-                  modalVisible={isModalVisible}
-                  setModalVisible={setIsModalVisible}
-                  pickImageFromGallery={pickImageFromGallery}
-                  takePhotoFromCamera={takePhotoFromCamera}
-                />
+      <ImagePickerModal
+        modalVisible={isModalVisible}
+        setModalVisible={setIsModalVisible}
+        pickImageFromGallery={pickImageFromGallery}
+        takePhotoFromCamera={takePhotoFromCamera}
+      />
     </SafeAreaView>
   );
 };
 
- 
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-     backgroundColor: "#fff",
-     marginHorizontal:15
+    backgroundColor: "#fff",
+    marginHorizontal: 15
   },
   sectionTitle: {
     fontSize: 16,
-     marginTop: 20,
+    marginTop: 20,
     marginBottom: 10,
     color: "black",
-    fontWeight:"600"
-,  },
+    fontWeight: "600"
+    ,
+  },
   input: {
     height: 58,
     borderWidth: 1.5,
@@ -662,17 +659,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     marginBottom: 15,
     justifyContent: "space-between",
-    color:"black" ,
-    fontFamily:font.MonolithRegular,
-    fontSize:15 ,
-    flexDirection:"row",
-    alignItems:"center",
-    
+    color: "black",
+    fontFamily: font.MonolithRegular,
+    fontSize: 15,
+    flexDirection: "row",
+    alignItems: "center",
+
   },
   placeholderText: {
     color: "#ADA4A5",
     fontSize: 15,
-    fontFamily:font.MonolithRegular ,
+    fontFamily: font.MonolithRegular,
   },
   packageRow: {
     flexDirection: "row",
@@ -687,13 +684,13 @@ const styles = StyleSheet.create({
     borderColor: "#EAEAEA",
     justifyContent: "center",
     alignItems: "center",
-    marginTop:11,
+    marginTop: 11,
   },
   packageText: {
     fontSize: 14,
     color: "#333",
-    fontWeight:"600"
- 
+    fontWeight: "600"
+
   },
   selectedBox: {
     borderColor: "#09BFCD",

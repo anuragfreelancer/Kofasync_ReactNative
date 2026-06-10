@@ -10,7 +10,6 @@ import {
   Keyboard,
   Image,
 } from 'react-native';
-import { color } from '../constant';
 import imageIndex from '../assets/imageIndex';
 import font from '../theme/font';
 

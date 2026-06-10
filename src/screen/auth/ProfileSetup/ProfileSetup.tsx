@@ -45,7 +45,7 @@ const ProfileSetup = () => {
 
   const getProfileApi = async () => {
     try {
-      const response = await GetProfileApi(setIsLoading);
+      const response = await GetProfileApi(setIsLoading, dispatch);
       if (response) {
         dispatch(loginSuccess({ userData: response }));
       }
@@ -105,7 +105,6 @@ const ProfileSetup = () => {
       const response = await UpdateProfile(params, setIsLoading);
       if (response) {
         await getProfileApi();
-
         if (userData?.type === "Delivery") {
           navigation.navigate(ScreenNameEnum.UploadDocumentsScreen);
         } else {
@@ -124,17 +123,13 @@ const ProfileSetup = () => {
       <StatusBarComponent />
       <CustomHeader label="Profile Setup" />
       <LoadingModal visible={isLoading} />
-
-
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0} // adjust offset if needed
 
       >
-        <ScrollView contentContainerStyle={styles.container}
-
-        >
+        <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.profileContainer}>
             <Image
               source={image ? { uri: image.uri || image } : imageIndex.prfile}

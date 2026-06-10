@@ -18,7 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import ScreenNameEnum from "../../../routes/screenName.enum";
 import { useSelector } from "react-redux";
 import { image_url, BASE_URL } from "../../../constant";
-import { GET_API } from "../../../Api/apiRequest";
+import { GET_API, POST_API } from "../../../Api/apiRequest";
 import { errorToast, successToast } from "../../../utils/customToast";
 
 // ---------------------- HEADER -------------------------
@@ -34,10 +34,15 @@ const Header = () => {
           <Text style={styles.name}>{userData?.username}</Text>
         </View>
       </View>
+      <View style={{ flexDirection: "row", gap: 5, alignItems: "center" }}>
+        <TouchableOpacity style={{ flexDirection: "row" }} onPress={() => navigation.navigate(ScreenNameEnum.WishlistScreen)}>
+          <Image source={imageIndex.heart} tintColor={'white'} style={[styles.profileImg, { height: 25, width: 25, }]} />
+        </TouchableOpacity>
+        <TouchableOpacity style={{ flexDirection: "row" }} onPress={() => navigation.navigate(ScreenNameEnum.NotificationsScreen)}>
+          <Image source={imageIndex.notification} style={styles.profileImg} />
 
-      <TouchableOpacity style={{ flexDirection: "row" }} onPress={() => navigation.navigate(ScreenNameEnum.NotificationsScreen)}>
-        <Image source={imageIndex.notification} style={styles.profileImg} />
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -58,13 +63,35 @@ const Banner = () => (
 );
 
 // ---------------------- LIKE BUTTON -------------------
-const LikeButton = () => {
-  const [liked, setLiked] = useState(false);
+const LikeButton = ({ shopId, isWishlisted = false }: { shopId: string, isWishlisted?: boolean }) => {
+  const [liked, setLiked] = useState(isWishlisted);
+  const { token } = useSelector((state: any) => state.auth);
+
+  useEffect(() => {
+    setLiked(isWishlisted);
+  }, [isWishlisted]);
+
+  const handleLike = async () => {
+    setLiked(!liked);
+    try {
+      const result = await POST_API(token, { shopId }, "customer/wishlist", () => {});
+
+      if (result?.success) {
+        // optionally handle success
+      } else {
+        // revert optimistic update on failure
+        setLiked((prev) => !prev);
+      }
+    } catch (error) {
+      console.error("Wishlist API Error:", error);
+      setLiked((prev) => !prev);
+    }
+  };
 
   return (
     <TouchableOpacity
       style={styles.likeBtn}
-      onPress={() => setLiked(!liked)}
+      onPress={handleLike}
       activeOpacity={0.7}
     >
       <Image
@@ -102,7 +129,7 @@ const CompanyCard = ({ item }: any) => (
           <Image source={imageIndex.location} style={[styles.locationIcon, { marginTop: 2 }]} />
           <Text style={[styles.locationText, { flex: 1 }]} numberOfLines={2}>{item.location}</Text>
         </View>
-        <LikeButton />
+        <LikeButton shopId={item.id} isWishlisted={item.isWishlisted} />
       </View>
 
       <TouchableOpacity>
@@ -142,6 +169,7 @@ export default function App() {
         location: shop.address || "N/A",
         rating: shop.providerId?.averageRating?.toString() || "0.0",
         image: shop.shopImage ? { uri: image_url + shop.shopImage } : imageIndex.officeImg,
+        isWishlisted: shop.isWishlisted,
         originalData: shop
       }));
       setTopShops(formattedShops);
@@ -481,8 +509,6 @@ const styles = StyleSheet.create({
   bookingDetailsContainer: { width: "100%", alignItems: "center", marginBottom: 15 },
   serviceName: { fontSize: 16, fontWeight: "bold", color: "#333" },
   providerName: { fontSize: 14, color: "#666", marginTop: 2 },
-  companyName: { fontSize: 12, color: "#999", marginTop: 2 },
-
   starsRow: { flexDirection: "row", marginBottom: 20 },
   starIconBig: { width: 32, height: 32, marginHorizontal: 5 },
   reviewInput: { width: "100%", height: 100, borderWidth: 1, borderColor: "#DDD", borderRadius: 8, padding: 10, textAlignVertical: "top", marginBottom: 20 },

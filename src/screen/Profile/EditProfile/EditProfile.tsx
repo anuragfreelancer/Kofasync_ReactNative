@@ -20,7 +20,6 @@ import CustomButton from "../../../compoent/CustomButton";
 import ImagePickerModal from "../../../compoent/ImagePickerModal";
 import imageIndex from "../../../assets/imageIndex";
 import { GetProfileApi, UpdateProfile } from "../../../Api/apiRequest";
-import { loginSuccess } from "../../../redux/feature/authSlice";
 import { BASE_URL, color, image_url } from "../../../constant";
 
 const EditProfile = () => {

@@ -17,7 +17,6 @@ const ProfileScreen = () => {
     (async () => {
       const role = await AsyncStorage.getItem("selectedRole")
       setRole(role ?? 'user')
-
     })()
   }, [])
   return (

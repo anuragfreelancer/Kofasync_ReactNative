@@ -108,7 +108,8 @@ NotificationsScreen ="NotificationsScreen",
   PresubscriberDetail = "presubscriberDetail",
   DetailScreen = "DetailScreen",
   ProviderList = "ProviderList",
-  BookingDetails = "BookingDetails"
+  BookingDetails = "BookingDetails",
+  WishlistScreen = "WishlistScreen"
 
  }
 
