@@ -7,9 +7,7 @@ import font from '../theme/font';
 import SvgIndex from '../assets/svgIndex';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Orders from '../screen/BottomTab/Orders/Orders';
-import Inbox from '../screen/BottomTab/ChatInbox/Inbox';
 import UserProfile from '../screen/BottomTab/Profile/UserProfile';
-import ChatScreen from '../screen/BottomTab/ChatInbox/ChatScreen';
 import ChatInboxScreen from '../screen/BottomTab/ChatInbox/Inbox';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProviderDashboard from '../screen/DeliveryBottomTab/ProviderDashboard/ProviderDashboard';
@@ -51,7 +49,6 @@ const ICON_SIZE = 26;
 
 export default function TabNavigator() {
   const insets = useSafeAreaInsets();
-  const [loading, setLoading] = useState(true)
   const [role, setRole] = useState('user')
   useEffect(() => {
     (async () => {
@@ -87,13 +84,13 @@ export default function TabNavigator() {
           },
           tabBarIcon: ({ focused }) => {
             let Icon = focused ? tab?.iconActive : tab?.iconInactive;
-            
+
             // Handle fallback for My Calendar icon if name is Booking
             if (route.name === "Booking" && role?.toLowerCase() !== "user") {
               const calendarTab = TAB_CONFIG["My Calendar"];
               Icon = focused ? calendarTab.iconActive : calendarTab.iconInactive;
             }
-            
+
             if (!Icon) return null;
             if (typeof Icon === 'function') {
               return <Icon width={ICON_SIZE} height={ICON_SIZE} />;

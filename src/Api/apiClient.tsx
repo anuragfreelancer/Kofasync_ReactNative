@@ -1,45 +1,17 @@
-// import axios from 'axios';
-
-// import { BASE_URL } from '../constant';
-// import { store } from '../redux/store';
-
-// const apiClient = axios.create({
-//   baseURL: BASE_URL,
-//   timeout: 15000,
-// });
-
-// // 🔐 Request Interceptor
-// apiClient.interceptors.request.use(
-//   async (config) => {
-//     const { token } = store.getState().auth;
-
-//     if (token) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-
-//     return config;
-//   },
-//   (error) => Promise.reject(error)
-// );
-
-// apiClient.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     if (error.response?.status === 401) {
-//       // logout or refresh token
-//     }
-//     return Promise.reject(error);
-//   }
-// );
-
-// export default apiClient;
-
-
-
 import axios from 'axios';
 import { BASE_URL } from '../constant';
 import { store } from '../redux/store';
 // import { logout, setToken } from '../redux/authSlice';
+import {
+  startLoading,
+  stopLoading
+} from '../redux/feature/loadingSlice';
+
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    showLoader?: boolean;
+  }
+}
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -49,21 +21,12 @@ const apiClient = axios.create({
 let isRefreshing = false;
 let failedQueue = [];
 
-// const processQueue = (error, token = null) => {
-//   failedQueue.forEach((promise) => {
-//     if (error) {
-//       promise.reject(error);
-//     } else {
-//       promise.resolve(token);
-//     }
-//   });
-
-//   failedQueue = [];
-// };
-
 // Request Interceptor
 apiClient.interceptors.request.use(
-  async (config) => {
+  async (config: any) => {
+    if (config.showLoader !== false) {
+      store.dispatch(startLoading());
+    }
     const { token } = store.getState().auth;
 
     if (token) {
@@ -72,13 +35,24 @@ apiClient.interceptors.request.use(
 
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    store.dispatch(stopLoading());
+    return Promise.reject(error);
+  }
 );
 
 // Response Interceptor
 apiClient.interceptors.response.use(
-  (response) => response,
-  async (error) => {
+  (response: any) => {
+    if (response.config.showLoader !== false) {
+      store.dispatch(stopLoading());
+    }
+    return response;
+  },
+  async (error: any) => {
+    if (!error.config || error.config.showLoader !== false) {
+      store.dispatch(stopLoading());
+    }
     const originalRequest = error.config;
 
     // Network Error
@@ -110,43 +84,6 @@ apiClient.interceptors.response.use(
           .catch((err) => Promise.reject(err));
       }
 
-      // isRefreshing = true;
-
-      // try {
-      //   const { refreshToken } = store.getState().auth;
-
-      //   const response = await axios.post(
-      //     `${BASE_URL}/auth/refresh`,
-      //     {
-      //       refreshToken,
-      //     }
-      //   );
-
-      //   const newAccessToken =
-      //     response.data.accessToken;
-
-      //   store.dispatch(
-      //     setToken(newAccessToken)
-      //   );
-
-      //   apiClient.defaults.headers.common.Authorization =
-      //     `Bearer ${newAccessToken}`;
-
-      //   processQueue(null, newAccessToken);
-
-      //   originalRequest.headers.Authorization =
-      //     `Bearer ${newAccessToken}`;
-
-      //   return apiClient(originalRequest);
-      // } catch (refreshError) {
-      //   processQueue(refreshError, null);
-
-      //   store.dispatch(logout());
-
-      //   return Promise.reject(refreshError);
-      // } finally {
-      //   isRefreshing = false;
-      // }
     }
 
     switch (error.response.status) {

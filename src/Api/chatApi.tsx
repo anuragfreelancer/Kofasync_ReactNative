@@ -15,7 +15,7 @@ export const getMessages = async (chatRoomId: string) => {
 
 // 🔹 Send message
 export const sendMessage = async (data: any) => {
-  const response = await apiClient.post("/chat/send", data);
+  const response = await apiClient.post("/chat/send", data, { showLoader: false });
   return response.data;
 };
 

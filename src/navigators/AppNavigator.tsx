@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PermissionsAndroid, Platform } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 import NotificationHandler from '../../NotificationHandler';
+import GlobalLoader from '../compoent/globalLoader';
 const AppNavigator: React.FC = () => {
   const [isConnected, setIsConnected] = useState<boolean>(true);
 
@@ -23,7 +24,7 @@ const AppNavigator: React.FC = () => {
 
     return () => unsubscribe();
   }, []);
- useEffect(() => {
+  useEffect(() => {
     requestUserPermission();
   }, []);
 
@@ -64,10 +65,10 @@ const AppNavigator: React.FC = () => {
             modalVisible={!isConnected}
             offlineText="No Internet! Please check your connection."
           />
-<NotificationHandler />
+          <NotificationHandler />
           <RegistrationRoutes />
           <Toast config={toastConfig} />
-
+          <GlobalLoader />
         </NavigationContainer>
       </PersistGate>
     </Provider>

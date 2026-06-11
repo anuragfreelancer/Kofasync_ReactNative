@@ -48,7 +48,7 @@ export default function ChatInboxScreen() {
       if (!isFocused && chats.length > 0) return;
       setLoading(true);
 
-      const res = await getConversations(token, setLoading);
+      const res = await getConversations();
       console.log('res', res)
       const data = Array.isArray(res) ? res : res.data || [];
       const formattedChats: ChatItem[] = data.map((item: any) => ({
@@ -187,23 +187,19 @@ export default function ChatInboxScreen() {
         />
       </View>
 
-      {loading && chats.length === 0 ? (
-        <View style={{ flex: 1, justifyContent: "center" }}>
-          <ActivityIndicator size="large" color="#09BFCD" />
-        </View>
-      ) : (
-        <FlatList
-          data={filteredData}
-          style={{ marginTop: 15 }}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-          contentContainerStyle={{ paddingBottom: 16 }}
-          showsVerticalScrollIndicator={false}
-          onRefresh={loadChats}
-          refreshing={loading}
-        />
-      )}
+
+      <FlatList
+        data={filteredData}
+        style={{ marginTop: 15 }}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        contentContainerStyle={{ paddingBottom: 16 }}
+        showsVerticalScrollIndicator={false}
+        onRefresh={loadChats}
+        refreshing={loading}
+      />
+
     </SafeAreaView>
   );
 }

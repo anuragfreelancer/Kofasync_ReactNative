@@ -12,7 +12,6 @@ import {
   Platform,
 } from "react-native";
 import imageIndex from "../../../assets/imageIndex";
-import CustomButton from "../../../compoent/CustomButton";
 import AboutSection from "./DetailsAbout";
 import ReviewCard from "./ReviewCard";
 import CustomLoader from "../../../compoent/CustomLoader";
@@ -23,46 +22,10 @@ import ScreenNameEnum from "../../../routes/screenName.enum";
 import { image_url } from "../../../constant";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-// Sample data
-const services = [
-  { id: "1", name: "Hair Cut", types: 44 },
-  { id: "2", name: "Hair Coloring", types: 12 },
-  { id: "3", name: "Hair Wash", types: 4 },
-  { id: "4", name: "Shaving", types: 22 },
-  { id: "5", name: "Skin Care", types: 16 },
-
-];
-
-const reviews = [
-  {
-    id: 1,
-    name: "Kadin Calzoni",
-    image: "https://randomuser.me/api/portraits/men/11.jpg",
-    rating: 4,
-    review:
-      "The workers are very professional and the results are very satisfying. I like it very much.",
-  },
-  {
-    id: 2,
-    name: "Hanna Dokidis",
-    image: "https://randomuser.me/api/portraits/women/22.jpg",
-    rating: 5,
-    review:
-      "The workers are very professional and the results are very satisfying. I like it very much.",
-  },
-  {
-    id: 3,
-    name: "Terry Siphron",
-    image: "https://randomuser.me/api/portraits/men/33.jpg",
-    rating: 5,
-    review:
-      "The workers are very professional and the results are very satisfying. I like it very much.",
-  },
-];
 
 
 const images = [
-  imageIndex.banner1, // replace with your images
+  imageIndex.banner1,
   imageIndex.banner1,
   imageIndex.banner1,
 ];
@@ -89,20 +52,19 @@ export default function DetailScreen() {
 
   const fetchReviews = async () => {
     const res = await GET_API(`shops/${providerData._id}/reviews`, token, "GET", setLoading);
-    console.log("Reviews API Response:", res);
-    
+
     if (res?.success) {
-       const reviewList = res.reviews || res.data;
-       if (Array.isArray(reviewList)) {
-          const formattedReviews = reviewList.map((r: any) => ({
-            id: r._id || Math.random().toString(),
-            name: r.user?.username || r.user?.name || "User",
-            image: r.user?.profileImage ? image_url + r.user.profileImage : "https://randomuser.me/api/portraits/men/11.jpg",
-            rating: r.rating || 5,
-            review: r.review || r.comment || "No review text provided"
-          }));
-          setReviewsData(formattedReviews);
-       }
+      const reviewList = res.reviews || res.data;
+      if (Array.isArray(reviewList)) {
+        const formattedReviews = reviewList.map((r: any) => ({
+          id: r._id || Math.random().toString(),
+          name: r.user?.username || r.user?.name || "User",
+          image: r.user?.profileImage ? image_url + r.user.profileImage : "https://randomuser.me/api/portraits/men/11.jpg",
+          rating: r.rating || 5,
+          review: r.review || r.comment || "No review text provided"
+        }));
+        setReviewsData(formattedReviews);
+      }
     }
   };
 
@@ -340,11 +302,35 @@ export default function DetailScreen() {
           {/* <CustomButton title="Book Now" /> */}
         </View>
       </ScrollView>
+      {/* 
+Mobile App
 
+  Customer side 
+
+--- get notification list
+--- get unread notification
+--- mark as read notification
+--- short chat list according to recent chat
+--- pull to refresh in chat list
+--- pagination in chat list
+--- search in chat list
+--- get last message in chat list
+--- get last message time in chat list
+--- show online status in chat list
+--- add notification prefrence
+--- update notification prefrence
+--- get notification prefrence
+ 
+Note - To integrate the payment system in your app, we need to know which payment gateway you would like to use.
+apk - https://we.tl/t-HytwxuvDTY72feqY
+video - https://we.tl/t-wXXskn2hECgSWj4u
+*/}
       {/* Book Button */}
     </SafeAreaView>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   carouselContainer: {

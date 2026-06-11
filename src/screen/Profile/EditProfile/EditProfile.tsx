@@ -20,13 +20,11 @@ import CustomButton from "../../../compoent/CustomButton";
 import ImagePickerModal from "../../../compoent/ImagePickerModal";
 import imageIndex from "../../../assets/imageIndex";
 import { GetProfileApi, UpdateProfile } from "../../../Api/apiRequest";
-import { BASE_URL, color, image_url } from "../../../constant";
+import { color, image_url } from "../../../constant";
 
 const EditProfile = () => {
   const navigation = useNavigation();
   const userData: any = useSelector((state: any) => state.auth.userData);
-  //  const isLogin:any = useSelector <any>((state) => state?.auth?.userData);
-  console.log(userData, 'userData');
   const [fullName, setFullName] = useState(userData?.name || userData?.username || "");
   const [email, setEmail] = useState(userData?.email || "");
   const [address, setAddress] = useState(userData?.address || "");

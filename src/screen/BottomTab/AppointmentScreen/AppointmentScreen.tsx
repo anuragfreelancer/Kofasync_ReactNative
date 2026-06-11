@@ -30,7 +30,6 @@ export default function AppointmentScreen() {
   }, [selectedDate, providerId, subServiceId]);
 
   const fetchSlots = async () => {
-    // API format: customer/slots?providerId=...&date=...&subServiceId=...
     const res = await GET_API(
       `customer/slots?providerId=${providerId}&date=${selectedDate}&subServiceId=${subServiceId}`,
       token,
@@ -143,8 +142,6 @@ export default function AppointmentScreen() {
             onPress={handleBooking}
           />
         </View>
-
-
       </ScrollView>
     </SafeAreaView>
   );

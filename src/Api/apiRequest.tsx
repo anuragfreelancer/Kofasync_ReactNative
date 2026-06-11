@@ -44,7 +44,7 @@ const handleLogout = async (dispatch: any) => {
 
     await AsyncStorage.removeItem('token');
     await AsyncStorage.removeItem('authData');
-    dispatch(logout());    // reset Redux state
+    dispatch(logout());
   } catch (error) {
     console.error('Error during logout:', error);
     try {
@@ -460,8 +460,6 @@ const UpdateProfile = async (
     // : `auth/edit-profile/${param?.id}`;
 
     const fullUrl = `${BASE_URL}${endpoint}`;
-    console.log("Calling UpdateProfile URL:", fullUrl);
-
     const response = await fetch(fullUrl, {
       method: "PUT",
       headers,
