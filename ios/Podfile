@@ -19,7 +19,7 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'ChewbeApp' do
+target 'Kofasync' do
   config = use_native_modules!
   # Firebase related pods removed
   # $RNFirebaseAsStaticFramework = true

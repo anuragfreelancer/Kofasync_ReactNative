@@ -15,7 +15,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import ScreenNameEnum from "../../../routes/screenName.enum";
 import { useSelector } from "react-redux";
 import { GET_API, POST_API } from "../../../Api/apiRequest";
-import { image_url, BASE_URL } from "../../../constant";
+import { image_url } from "../../../constant";
 import { wp, hp } from "../../../utils/Constant";
 import LoadingModal from "../../../utils/Loader";
 
@@ -285,36 +285,5 @@ const styles = StyleSheet.create({
     color: "#888",
     fontStyle: "italic",
     flex: 1,
-  },
-  subCatContainer: {
-    backgroundColor: "#fff",
-    paddingVertical: hp(1.5),
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-  subCatList: {
-    paddingHorizontal: wp(4),
-  },
-  subCatItem: {
-    paddingHorizontal: wp(5),
-    paddingVertical: hp(1),
-    borderRadius: wp(10),
-    backgroundColor: "#f0f0f0",
-    marginRight: wp(3),
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-  },
-  subCatSelected: {
-    backgroundColor: "#09BFCD",
-    borderColor: "#09BFCD",
-  },
-  subCatText: {
-    fontSize: wp(3.5),
-    color: "#666",
-    fontWeight: "500",
-  },
-  subCatTextSelected: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
+  }
 });

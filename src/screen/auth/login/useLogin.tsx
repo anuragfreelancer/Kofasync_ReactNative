@@ -24,13 +24,15 @@ const useLogin = () => {
     password: string;
   }
   const [role, setRole] = useState<string | null>(null);
-  const [credentials, setCredentials] = useState<Credentials>(__DEV__ ? {
-    email: type == "User" ? "customer@yopmail.com" : 'newprovider@yopmail.com',
-    password: type == "User" ? 'Prakash@123' : 'Provider@123',
-  } : {
-    email: "",
-    password: "",
-  });
+  const [credentials, setCredentials] = useState<Credentials>(
+    // __DEV__ ?
+    {
+      email: type == "User" ? "customer@yopmail.com" : 'newprovider@yopmail.com',
+      password: type == "User" ? 'Prakash@123' : 'Provider@123',
+      // } : {
+      //   email: "",
+      //   password: "",
+    });
   const dispatch = useDispatch()
   const handleChange = (field: keyof Credentials, value: string) => {
     setCredentials((prev) => ({ ...prev, [field]: value }));

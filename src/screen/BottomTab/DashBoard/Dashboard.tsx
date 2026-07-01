@@ -9,6 +9,7 @@ import {
   ScrollView,
   Modal,
   TextInput,
+  Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import imageIndex from "../../../assets/imageIndex";
@@ -21,6 +22,7 @@ import { image_url, BASE_URL } from "../../../constant";
 import { GET_API, POST_API } from "../../../Api/apiRequest";
 import { errorToast, successToast } from "../../../utils/customToast";
 
+const { width } = Dimensions.get("window");
 // ---------------------- HEADER -------------------------
 const Header = () => {
   const navigation = useNavigation<any>();
@@ -40,25 +42,25 @@ const Header = () => {
         </TouchableOpacity>
         <TouchableOpacity style={{ flexDirection: "row" }} onPress={() => navigation.navigate(ScreenNameEnum.NotificationsScreen)}>
           <Image source={imageIndex.notification} style={styles.profileImg} />
-
         </TouchableOpacity>
       </View>
     </View>
   );
 }
 // ---------------------- BANNER ------------------------
-const Banner = () => (
-  <View style={styles.bannerContainer}>
-    <Image source={imageIndex.banner1} style={styles.bannerImg} />
+const Banner = ({ item }: { item?: any }) => (
+  <View style={[styles.bannerContainer, item ? { width: width - 30, marginLeft: 15, marginHorizontal: 0 } : {}]}>
+    <Image source={item?.bannerImage ? { uri: image_url + item.bannerImage } : imageIndex.banner1} style={styles.bannerImg} />
 
-    <View style={styles.bannerOverlay}>
-      <Text style={styles.bannerSubtitle}>Get a discount for every service</Text>
-      <Text style={styles.bannerTitle}>Today's Special</Text>
-
-      <TouchableOpacity style={styles.shopNow}>
-        <Text style={styles.shopText}>Shop Now</Text>
-      </TouchableOpacity>
-    </View>
+    {(item && item?.bannerImage) && (
+      <View style={styles.bannerOverlay}>
+        <Text style={styles.bannerSubtitle}>Get a discount for every service</Text>
+        <Text style={styles.bannerTitle}>{item?.companyName}</Text>
+        <TouchableOpacity style={styles.shopNow}>
+          <Text style={styles.shopText}>Shop Now</Text>
+        </TouchableOpacity>
+      </View>
+    )}
   </View>
 );
 
@@ -74,7 +76,7 @@ const LikeButton = ({ shopId, isWishlisted = false }: { shopId: string, isWishli
   const handleLike = async () => {
     setLiked(!liked);
     try {
-      const result = await POST_API(token, { shopId }, "customer/wishlist", () => {});
+      const result = await POST_API(token, { shopId }, "customer/wishlist", () => { });
 
       if (result?.success) {
         // optionally handle success
@@ -146,6 +148,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
   const [topShops, setTopShops] = useState<any[]>([]);
+  const [banners, setBanners] = useState<any[]>([]);
 
   // Popup states
   const [reviewModalVisible, setReviewModalVisible] = useState(false);
@@ -157,7 +160,16 @@ export default function App() {
     fetchCategories();
     fetchUserBookings();
     fetchTopShops();
+    fetchBanners();
   }, []);
+
+  const fetchBanners = async () => {
+    const res = await GET_API("shops/banners", "", "GET", setLoading);
+    console.log("Banners API Response:", res);
+    if (res?.success) {
+      setBanners(res.banners);
+    }
+  };
 
   const fetchTopShops = async () => {
     const res = await GET_API("shops/top-rated", token, "GET", setLoading);
@@ -283,13 +295,29 @@ export default function App() {
               <Header />
             </View>
 
-            <View style={{ marginHorizontal: 10 }}>
-              <SearchBar placeholder="Search Services or Companies" searchBar1={{}} />
-            </View>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => navigation.navigate(ScreenNameEnum.SearchScreen)}
+              style={{ marginHorizontal: 10 }}>
+              <View pointerEvents="none">
+                <SearchBar placeholder="Search Services or Companies" searchBar1={{}} />
+              </View>
+            </TouchableOpacity>
           </View>
 
           {/* Banner */}
-          <Banner />
+          {banners.length > 0 ? (
+            <FlatList
+              data={banners}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => <Banner item={item} />}
+              contentContainerStyle={{ paddingRight: 15 }}
+            />
+          ) : (
+            <Banner />
+          )}
 
           {/* Categories Section */}
           <Text style={styles.sectionTitle}>Categories</Text>
@@ -383,7 +411,6 @@ export default function App() {
             </View>
           </View>
         </Modal>
-
       </View>
     </SafeAreaView>
   );
@@ -408,9 +435,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     borderRadius: 16,
     overflow: "hidden",
-    elevation: 4,
+    backgroundColor: '#000000'
+    // elevation: 4,
   },
-  bannerImg: { width: "100%", height: "100%" },
+  bannerImg: { width: "100%", height: "100%", backgroundColor: '#000000', opacity: 0.7 },
   bannerOverlay: { position: "absolute", left: 15, bottom: 30 },
   bannerSubtitle: { color: "#FFF", fontSize: 19 },
   bannerTitle: { color: "#FFF", fontSize: 18, fontWeight: "bold" },
@@ -450,12 +478,12 @@ const styles = StyleSheet.create({
   catTitle: { marginTop: 6, fontSize: 13, fontWeight: "700", color: "black", textAlign: "center", width: 70 },
 
   sectionRow: {
-    marginTop: 25,
-    marginHorizontal: 20,
+    // marginTop: 25,
+    marginRight: 20,
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  seeAll: { color: "#09BFCD", fontWeight: "600" },
+  seeAll: { color: "#09BFCD", fontWeight: "600", marginTop: 25, },
 
   companyCard: {
     width: 220,

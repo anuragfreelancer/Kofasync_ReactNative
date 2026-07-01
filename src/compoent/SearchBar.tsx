@@ -5,16 +5,16 @@ import imageIndex from "../assets/imageIndex";
 interface SearchBarProps {
   placeholder?: string;
   onSearchChange?: (text: string) => void;
-  value?:string,
-  searchBar1:any
- }
+  value?: string,
+  searchBar1: any
+}
 
-const SearchBar: React.FC<SearchBarProps> = ({ searchBar1,placeholder = "Search", onSearchChange ,value}) => {
+const SearchBar: React.FC<SearchBarProps> = ({ searchBar1, placeholder = "Search", onSearchChange, value }) => {
   return (
-    <View style={[styles.searchBar,searchBar1]}>
-      <Image source={imageIndex.search1} style={styles.icon} resizeMode="cover" />
-      <TextInput 
-       allowFontScaling={false} 
+    <View style={[styles.searchBar, searchBar1]}>
+      {/* <Image source={imageIndex.search1} style={styles.icon} resizeMode="cover" /> */}
+      <TextInput
+        allowFontScaling={false}
         style={styles.input}
         placeholder={placeholder}
         placeholderTextColor="white"
@@ -28,7 +28,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchBar1,placeholder = "Search"
 
 const styles = StyleSheet.create({
   searchBar: {
-     borderRadius: 10,
+    borderRadius: 10,
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 10,
@@ -38,14 +38,12 @@ const styles = StyleSheet.create({
     marginTop: 30,
     borderWidth: 1,
     height: 55,
-    borderColor:"white"
-  
-  
+    borderColor: "white"
   },
   icon: {
     height: 20,
     width: 20,
-    tintColor:"white"
+    tintColor: "white"
   },
   input: {
     flex: 1,

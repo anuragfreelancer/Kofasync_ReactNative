@@ -64,7 +64,7 @@ const BookingsScreen = () => {
         redirect: "follow" as RequestRedirect
       };
       console.log(raw)
-      const url = BASE_URL ? `${BASE_URL}customer/createReview` : "http://localhost:5000/api/customer/createReview";
+      const url = `${BASE_URL}customer/createReview`
       const response = await fetch(url, requestOptions);
       const text = await response.text();
       console.log("Orders Review Submit Result:", text);
@@ -147,9 +147,7 @@ const BookingsScreen = () => {
 
             <View style={{
               borderWidth: 1,
-              borderColor:
-                activeTab === tab ? "#09BFCD" : "white",
-
+              borderColor: activeTab === tab ? "#09BFCD" : "white",
               marginTop: 5
             }} />
           </TouchableOpacity>
@@ -201,7 +199,7 @@ const BookingsScreen = () => {
 
 // ----------------- Card Component -----------------
 
-const BookingCard = ({ item, activeTab, onCancel, onAddReview }) => {
+const BookingCard = ({ item, activeTab, onCancel, onAddReview }: any) => {
   const shopName = item.partnerId?.companyName || "Unknown Shop";
   const serviceName = item.subServiceId?.name || "Unknown Service";
   const date = item.bookingDate ? new Date(item.bookingDate).toDateString() : "N/A";
@@ -363,8 +361,6 @@ const styles = StyleSheet.create({
     color: '#09BFCD',
     fontWeight: '500',
     fontSize: 17
-
-
   },
   input: {
     backgroundColor: '#F3F3F3',

@@ -18,13 +18,11 @@ import font from "../../../theme/font";
 import CustomButton from "../../../compoent/CustomButton";
 import AddressModalInput from "../../../compoent/AutocompleteData";
 import LoadingModal from "../../../utils/Loader";
-import { useNavigation } from "@react-navigation/native";
 import imageIndex from "../../../assets/imageIndex";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import ImagePickerModal from "../../../compoent/ImagePickerModal";
 
 const PickupFromLocation = () => {
-  const navgatoon = useNavigation()
   const [pickupDate, setPickupDate] = useState<Date | null>(null);
   const [pickupTime, setPickupTime] = useState<Date | null>(null);
   const [showDate, setShowDate] = useState(false);
@@ -107,7 +105,6 @@ const PickupFromLocation = () => {
         if (!value.trim()) error = "Mobile number is required";
         // else if (!/^\d{10}$/.test(value.replace(/\D/g, ''))) error = "Enter a valid 10-digit mobile number";
         break;
-
       case "senderAddress":
       case "receiverAddress":
       case "pickupLocation":
@@ -575,7 +572,6 @@ const PickupFromLocation = () => {
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-
             onPress={() => {
               setIsModalVisible(true)
             }}
@@ -633,8 +629,6 @@ const PickupFromLocation = () => {
     </SafeAreaView>
   );
 };
-
-
 
 const styles = StyleSheet.create({
   container: {

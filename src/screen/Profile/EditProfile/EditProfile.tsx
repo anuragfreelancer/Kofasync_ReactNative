@@ -114,12 +114,8 @@ const EditProfile = () => {
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : 'padding'}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0} // adjust offset if needed
-
-      >
-        <ScrollView contentContainerStyle={styles.container}
-
-        >
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}>
+        <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.profileContainer}>
             <Image
               source={image ? { uri: image.uri || image } : imageIndex.profile}
@@ -219,7 +215,7 @@ const styles = StyleSheet.create({
   profileContainer: {
     alignItems: "center",
     marginTop: 20,
-    position: "relative", // needed for absolute edit icon
+    position: "relative",
   },
   profileImage: {
     width: 120,

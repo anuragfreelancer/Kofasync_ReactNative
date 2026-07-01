@@ -302,29 +302,6 @@ export default function DetailScreen() {
           {/* <CustomButton title="Book Now" /> */}
         </View>
       </ScrollView>
-      {/* 
-Mobile App
-
-  Customer side 
-
---- get notification list
---- get unread notification
---- mark as read notification
---- short chat list according to recent chat
---- pull to refresh in chat list
---- pagination in chat list
---- search in chat list
---- get last message in chat list
---- get last message time in chat list
---- show online status in chat list
---- add notification prefrence
---- update notification prefrence
---- get notification prefrence
- 
-Note - To integrate the payment system in your app, we need to know which payment gateway you would like to use.
-apk - https://we.tl/t-HytwxuvDTY72feqY
-video - https://we.tl/t-wXXskn2hECgSWj4u
-*/}
       {/* Book Button */}
     </SafeAreaView>
   );

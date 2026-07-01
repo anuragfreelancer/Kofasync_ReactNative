@@ -109,8 +109,8 @@ NotificationsScreen ="NotificationsScreen",
   DetailScreen = "DetailScreen",
   ProviderList = "ProviderList",
   BookingDetails = "BookingDetails",
-  WishlistScreen = "WishlistScreen"
-
+  WishlistScreen = "WishlistScreen",
+  SearchScreen = "SearchScreen"
  }
 
 export default ScreenNameEnum;

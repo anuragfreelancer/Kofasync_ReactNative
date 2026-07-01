@@ -16,7 +16,7 @@
 		47EBA2556F904A989E817C1A /* TT Neoris Trial ExtraLight Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7633AB502DB44FCA959AF883 /* TT Neoris Trial ExtraLight Italic.ttf */; };
 		600AA01E33514953BDA3327A /* TT Neoris Trial Variable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 23BE6E31B5B8471C95577D4E /* TT Neoris Trial Variable.ttf */; };
 		6D56BC0A46294F81A4BD9F6D /* TT Neoris Trial ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7C69F740E34F30A614668C /* TT Neoris Trial ExtraBold.ttf */; };
-		6EACDC67B15AB21C2216A0F6 /* libPods-ChewbeApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E80F0662DCFFCF3763F908E /* libPods-ChewbeApp.a */; };
+		6EACDC67B15AB21C2216A0F6 /* libPods-Kofasync.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E80F0662DCFFCF3763F908E /* libPods-Kofasync.a */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		7CEF12DAC235479AAA908887 /* TT Neoris Trial ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FE5DCC8FD35747639E3BFEB5 /* TT Neoris Trial ExtraLight.ttf */; };
 		7DF802757CCD449DA5FE836B /* TT Neoris Trial Hairline Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8BF6208708BA4AE586D9D6DE /* TT Neoris Trial Hairline Italic.ttf */; };
@@ -43,27 +43,27 @@
 		0F7FA053AFBA4A92B0BCCDFE /* TT Neoris Trial Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Regular.ttf"; path = "../assets/fonts/TT Neoris Trial Regular.ttf"; sourceTree = "<group>"; };
 		1010E562EFFD4E2CBC7EDE4E /* TT Neoris Trial Medium Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Medium Italic.ttf"; path = "../assets/fonts/TT Neoris Trial Medium Italic.ttf"; sourceTree = "<group>"; };
 		12016C250235407CBD6BA148 /* TT Neoris Trial Light Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Light Italic.ttf"; path = "../assets/fonts/TT Neoris Trial Light Italic.ttf"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* ChewbeApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChewbeApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ChewbeApp/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ChewbeApp/Info.plist; sourceTree = "<group>"; };
-		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = ChewbeApp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* Kofasync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kofasync.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Kofasync/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Kofasync/Info.plist; sourceTree = "<group>"; };
+		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = Kofasync/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		23BE6E31B5B8471C95577D4E /* TT Neoris Trial Variable.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Variable.ttf"; path = "../assets/fonts/TT Neoris Trial Variable.ttf"; sourceTree = "<group>"; };
 		24B536112B9B4271AA20C95B /* TT Neoris Trial DemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial DemiBold.ttf"; path = "../assets/fonts/TT Neoris Trial DemiBold.ttf"; sourceTree = "<group>"; };
 		481BFC8CF45646DC9510075F /* TT Neoris Trial Bold Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Bold Italic.ttf"; path = "../assets/fonts/TT Neoris Trial Bold Italic.ttf"; sourceTree = "<group>"; };
 		54BA20C35C584592B4882FCE /* TT Neoris Trial Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Black.ttf"; path = "../assets/fonts/TT Neoris Trial Black.ttf"; sourceTree = "<group>"; };
-		6E80F0662DCFFCF3763F908E /* libPods-ChewbeApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ChewbeApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6E80F0662DCFFCF3763F908E /* libPods-Kofasync.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Kofasync.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		726D45B3B7B841BA9A3625E6 /* TT Neoris Trial Thin Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Thin Italic.ttf"; path = "../assets/fonts/TT Neoris Trial Thin Italic.ttf"; sourceTree = "<group>"; };
 		72D1A480DE5C4502911C23A5 /* TT Neoris Trial Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Italic.ttf"; path = "../assets/fonts/TT Neoris Trial Italic.ttf"; sourceTree = "<group>"; };
-		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = ChewbeApp/AppDelegate.swift; sourceTree = "<group>"; };
+		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Kofasync/AppDelegate.swift; sourceTree = "<group>"; };
 		7633AB502DB44FCA959AF883 /* TT Neoris Trial ExtraLight Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial ExtraLight Italic.ttf"; path = "../assets/fonts/TT Neoris Trial ExtraLight Italic.ttf"; sourceTree = "<group>"; };
-		7D919E9E2E43309900B6C466 /* ChewbeApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ChewbeApp.entitlements; path = ChewbeApp/ChewbeApp.entitlements; sourceTree = "<group>"; };
+		7D919E9E2E43309900B6C466 /* Kofasync.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Kofasync.entitlements; path = Kofasync/Kofasync.entitlements; sourceTree = "<group>"; };
 		7DA315965DF24FD4811C120A /* Panton-Trial-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Panton-Trial-SemiBold.ttf"; path = "../assets/fonts/Panton-Trial-SemiBold.ttf"; sourceTree = "<group>"; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ChewbeApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Kofasync/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8BF6208708BA4AE586D9D6DE /* TT Neoris Trial Hairline Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Hairline Italic.ttf"; path = "../assets/fonts/TT Neoris Trial Hairline Italic.ttf"; sourceTree = "<group>"; };
 		8DFA08540A50490288791646 /* TT Neoris Trial Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Thin.ttf"; path = "../assets/fonts/TT Neoris Trial Thin.ttf"; sourceTree = "<group>"; };
-		991975CAF0B7F0CA17EBBFC7 /* Pods-ChewbeApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChewbeApp.debug.xcconfig"; path = "Target Support Files/Pods-ChewbeApp/Pods-ChewbeApp.debug.xcconfig"; sourceTree = "<group>"; };
+		991975CAF0B7F0CA17EBBFC7 /* Pods-Kofasync.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kofasync.debug.xcconfig"; path = "Target Support Files/Pods-Kofasync/Pods-Kofasync.debug.xcconfig"; sourceTree = "<group>"; };
 		AA7C69F740E34F30A614668C /* TT Neoris Trial ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial ExtraBold.ttf"; path = "../assets/fonts/TT Neoris Trial ExtraBold.ttf"; sourceTree = "<group>"; };
-		B6389C6E776EB7F14968EA8F /* Pods-ChewbeApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChewbeApp.release.xcconfig"; path = "Target Support Files/Pods-ChewbeApp/Pods-ChewbeApp.release.xcconfig"; sourceTree = "<group>"; };
+		B6389C6E776EB7F14968EA8F /* Pods-Kofasync.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kofasync.release.xcconfig"; path = "Target Support Files/Pods-Kofasync/Pods-Kofasync.release.xcconfig"; sourceTree = "<group>"; };
 		BACC2B2BC9824EE28C331056 /* Monolith Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Monolith Regular.otf"; path = "../assets/fonts/Monolith Regular.otf"; sourceTree = "<group>"; };
 		BDCD7D343A174F34A757877A /* TT Neoris Trial DemiBold Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial DemiBold Italic.ttf"; path = "../assets/fonts/TT Neoris Trial DemiBold Italic.ttf"; sourceTree = "<group>"; };
 		C0EF55C11FF741B980F24B60 /* TT Neoris Trial ExtraBold Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial ExtraBold Italic.ttf"; path = "../assets/fonts/TT Neoris Trial ExtraBold Italic.ttf"; sourceTree = "<group>"; };
@@ -79,31 +79,31 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6EACDC67B15AB21C2216A0F6 /* libPods-ChewbeApp.a in Frameworks */,
+				6EACDC67B15AB21C2216A0F6 /* libPods-Kofasync.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		13B07FAE1A68108700A75B9A /* ChewbeApp */ = {
+		13B07FAE1A68108700A75B9A /* Kofasync */ = {
 			isa = PBXGroup;
 			children = (
-				7D919E9E2E43309900B6C466 /* ChewbeApp.entitlements */,
+				7D919E9E2E43309900B6C466 /* Kofasync.entitlements */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
 			);
-			name = ChewbeApp;
+			name = Kofasync;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				6E80F0662DCFFCF3763F908E /* libPods-ChewbeApp.a */,
+				6E80F0662DCFFCF3763F908E /* libPods-Kofasync.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -118,7 +118,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* ChewbeApp */,
+				13B07FAE1A68108700A75B9A /* Kofasync */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
@@ -133,7 +133,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* ChewbeApp.app */,
+				13B07F961A680F5B00A75B9A /* Kofasync.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -141,8 +141,8 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				991975CAF0B7F0CA17EBBFC7 /* Pods-ChewbeApp.debug.xcconfig */,
-				B6389C6E776EB7F14968EA8F /* Pods-ChewbeApp.release.xcconfig */,
+				991975CAF0B7F0CA17EBBFC7 /* Pods-Kofasync.debug.xcconfig */,
+				B6389C6E776EB7F14968EA8F /* Pods-Kofasync.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -180,9 +180,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13B07F861A680F5B00A75B9A /* ChewbeApp */ = {
+		13B07F861A680F5B00A75B9A /* Kofasync */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ChewbeApp" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Kofasync" */;
 			buildPhases = (
 				78E1516C9146621B67DC1574 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
@@ -196,9 +196,9 @@
 			);
 			dependencies = (
 			);
-			name = ChewbeApp;
-			productName = ChewbeApp;
-			productReference = 13B07F961A680F5B00A75B9A /* ChewbeApp.app */;
+			name = Kofasync;
+			productName = Kofasync;
+			productReference = 13B07F961A680F5B00A75B9A /* Kofasync.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -214,7 +214,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "ChewbeApp" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Kofasync" */;
 			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -227,7 +227,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* ChewbeApp */,
+				13B07F861A680F5B00A75B9A /* Kofasync */,
 			);
 		};
 /* End PBXProject section */
@@ -300,7 +300,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ChewbeApp-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Kofasync-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -313,15 +313,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChewbeApp/Pods-ChewbeApp-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Kofasync/Pods-Kofasync-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChewbeApp/Pods-ChewbeApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Kofasync/Pods-Kofasync-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChewbeApp/Pods-ChewbeApp-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Kofasync/Pods-Kofasync-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E388F6231A5532832F2C41B7 /* [CP] Embed Pods Frameworks */ = {
@@ -330,15 +330,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChewbeApp/Pods-ChewbeApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Kofasync/Pods-Kofasync-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChewbeApp/Pods-ChewbeApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Kofasync/Pods-Kofasync-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChewbeApp/Pods-ChewbeApp-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Kofasync/Pods-Kofasync-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -357,15 +357,15 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 991975CAF0B7F0CA17EBBFC7 /* Pods-ChewbeApp.debug.xcconfig */;
+			baseConfigurationReference = 991975CAF0B7F0CA17EBBFC7 /* Pods-Kofasync.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = ChewbeApp/ChewbeApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Kofasync/Kofasync.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = YK4V89Z262;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = ChewbeApp/Info.plist;
+				INFOPLIST_FILE = Kofasync/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -378,7 +378,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.kofasync.apps;
-				PRODUCT_NAME = ChewbeApp;
+				PRODUCT_NAME = Kofasync;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -387,14 +387,14 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B6389C6E776EB7F14968EA8F /* Pods-ChewbeApp.release.xcconfig */;
+			baseConfigurationReference = B6389C6E776EB7F14968EA8F /* Pods-Kofasync.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = ChewbeApp/ChewbeApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Kofasync/Kofasync.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = YK4V89Z262;
-				INFOPLIST_FILE = ChewbeApp/Info.plist;
+				INFOPLIST_FILE = Kofasync/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -407,7 +407,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.kofasync.apps;
-				PRODUCT_NAME = ChewbeApp;
+				PRODUCT_NAME = Kofasync;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -590,7 +590,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ChewbeApp" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Kofasync" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -599,7 +599,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "ChewbeApp" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Kofasync" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

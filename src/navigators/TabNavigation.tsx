@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text, Platform, Image } from 'react-native';
+import { Text, Platform, Image, Easing } from 'react-native';
 import ScreenNameEnum from '../routes/screenName.enum';
 import HomeStack from './HomeStack';
 import font from '../theme/font';
@@ -63,6 +63,8 @@ export default function TabNavigator() {
         const tab = TAB_CONFIG[route.name];
         return {
           headerShown: false,
+          animation: 'shift',
+
           tabBarLabel: ({ focused }) => {
             let label = tab?.label ?? route.name;
             if (route.name === "Booking" && role?.toLowerCase() !== "user") {

@@ -65,18 +65,18 @@ const BookingDetails = () => {
       <StatusBarComponent />
       <LoadingModal visible={loading} />
       <CustomHeader label="Booking Details" />
-      
+
       <ScrollView contentContainerStyle={styles.content}>
         {/* Service Image */}
-        <Image 
-          source={item?.subServiceId?.image ? { uri: image_url + item.subServiceId.image } : imageIndex.salone} 
-          style={styles.mainImage} 
+        <Image
+          source={item?.subServiceId?.image ? { uri: image_url + item.subServiceId.image } : imageIndex.salone}
+          style={styles.mainImage}
         />
 
         <View style={styles.infoSection}>
           <Text style={styles.serviceTitle}>{serviceName}</Text>
           <Text style={styles.shopName}>{shopName}</Text>
-          
+
           <View style={[styles.statusBadge, { backgroundColor: getStatusColor() + '22' }]}>
             <Text style={[styles.statusText, { color: getStatusColor() }]}>{status}</Text>
           </View>
@@ -86,26 +86,26 @@ const BookingDetails = () => {
 
         {/* Details List */}
         <View style={styles.detailsContainer}>
-          <DetailItem 
-            icon={imageIndex.calneder} 
-            label="Date" 
-            value={date} 
+          <DetailItem
+            icon={imageIndex.calneder}
+            label="Date"
+            value={date}
           />
-          <DetailItem 
-            icon={imageIndex.time2} 
-            label="Time" 
-            value={time} 
+          <DetailItem
+            icon={imageIndex.time2}
+            label="Time"
+            value={time}
           />
-          <DetailItem 
-            icon={imageIndex.profile2} 
-            label="Provider" 
-            value={providerName} 
+          <DetailItem
+            icon={imageIndex.profile2}
+            label="Provider"
+            value={providerName}
             tint={color.primary}
           />
-          <DetailItem 
-            icon={imageIndex.locationCircle} 
-            label="Price" 
-            value={`$${price}`} 
+          <DetailItem
+            icon={imageIndex.locationCircle}
+            label="Price"
+            value={`$${price}`}
           />
         </View>
 
@@ -115,13 +115,13 @@ const BookingDetails = () => {
         <View style={styles.summarySection}>
           <Text style={styles.summaryTitle}>Booking Summary</Text>
           <Text style={styles.summaryText}>
-            Your appointment for {serviceName} is scheduled with {providerName} at {shopName}. 
+            Your appointment for {serviceName} is scheduled with {providerName} at {shopName}.
             Please arrive 10 minutes before your scheduled time.
           </Text>
         </View>
 
         {status === 'COMPLETED' && !item?.isReviewed && (
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.reviewBtn}
             onPress={() => setReviewModalVisible(true)}
           >
@@ -130,7 +130,7 @@ const BookingDetails = () => {
         )}
       </ScrollView>
 
-      <ReviewModal 
+      <ReviewModal
         visible={reviewModalVisible}
         onClose={() => setReviewModalVisible(false)}
         onSubmit={handleReviewSubmit}
